@@ -6,295 +6,309 @@
     <title>SHARKS - منصة اكتشاف الجيمات</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Leaflet CSS للماب -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
+    <!-- ========================================== -->
     <!-- 1. الشريط الجانبي -->
+    <!-- ========================================== -->
     <aside class="sidebar" id="sidebar">
         <div class="logo-container">
             <img src="https://i.ibb.co/btRfr3Z/Whats-App-Image-2026-10-29-at-8-20-02-PM-removebg-preview.png" alt="SHARKS Logo" class="logo-img">
         </div>
         <ul class="nav-menu">
-            <li><a href="#" class="nav-item active" onclick="showView('home')"><i class="fa-solid fa-house"></i> <span>الرئيسية</span></a></li>
-            <li><a href="#" class="nav-item" onclick="showView('calories')"><i class="fa-solid fa-fire"></i> <span>السعرات الحرارية</span></a></li>
-            <li><a href="#" class="nav-item" onclick="showView('favorites')"><i class="fa-solid fa-heart"></i> <span>المفضلة</span></a></li>
-            <li><a href="#" class="nav-item" onclick="showView('top10')"><i class="fa-solid fa-trophy"></i> <span>أفضل 10 جيمات</span></a></li>
-            <li><a href="#" class="nav-item" onclick="showView('messages')"><i class="fa-regular fa-envelope"></i> <span>الرسائل</span></a></li>
+            <li><a href="#" class="nav-item active" data-view="home" onclick="showView('home')"><i class="fa-solid fa-house"></i> <span data-i18n="nav_home">الرئيسية</span></a></li>
+            <li><a href="#" class="nav-item" data-view="map" onclick="showView('map')"><i class="fa-solid fa-map-location-dot"></i> <span data-i18n="nav_map">الخريطة</span></a></li>
+            <li><a href="#" class="nav-item" data-view="calories" onclick="showView('calories')"><i class="fa-solid fa-fire"></i> <span data-i18n="nav_calories">السعرات الحرارية</span></a></li>
+            <li><a href="#" class="nav-item" data-view="favorites" onclick="showView('favorites')"><i class="fa-solid fa-heart"></i> <span data-i18n="nav_favorites">المفضلة</span></a></li>
+            <li><a href="#" class="nav-item" data-view="top10" onclick="showView('top10')"><i class="fa-solid fa-trophy"></i> <span data-i18n="nav_top10">أفضل 10 جيمات</span></a></li>
+            <li><a href="#" class="nav-item" data-view="messages" onclick="showView('messages')"><i class="fa-regular fa-envelope"></i> <span data-i18n="nav_messages">الرسائل</span></a></li>
             
-            <li><a href="#" class="nav-item disabled"><i class="fa-solid fa-robot"></i> <span>SHARKS AI</span> <i class="fa-solid fa-lock lock-icon"></i></a></li>
-            <li><a href="#" class="nav-item disabled"><i class="fa-solid fa-store"></i> <span>المتجر</span> <i class="fa-solid fa-lock lock-icon"></i></a></li>
-            <li><a href="#" class="nav-item disabled"><i class="fa-solid fa-dumbbell"></i> <span>المدربون</span> <i class="fa-solid fa-lock lock-icon"></i></a></li>
+            <li><a href="#" class="nav-item disabled"><i class="fa-solid fa-robot"></i> <span data-i18n="nav_ai">SHARKS AI</span> <i class="fa-solid fa-lock lock-icon"></i></a></li>
+            <li><a href="#" class="nav-item disabled"><i class="fa-solid fa-store"></i> <span data-i18n="nav_store">المتجر</span> <i class="fa-solid fa-lock lock-icon"></i></a></li>
+            <li><a href="#" class="nav-item disabled"><i class="fa-solid fa-dumbbell"></i> <span data-i18n="nav_coaches">المدربون</span> <i class="fa-solid fa-lock lock-icon"></i></a></li>
             
-            <li style="margin-top: 20px;"><a href="#" class="nav-item" onclick="showView('about')"><i class="fa-solid fa-circle-info"></i> <span>حول</span></a></li>
-            <li><a href="#" class="nav-item" onclick="showView('who')"><i class="fa-solid fa-users"></i> <span>من نحن</span></a></li>
-            <li><a href="#" class="nav-item" onclick="showView('settings')"><i class="fa-solid fa-gear"></i> <span>الإعدادات</span></a></li>
+            <li style="margin-top: 20px;"><a href="#" class="nav-item" data-view="about" onclick="showView('about')"><i class="fa-solid fa-circle-info"></i> <span data-i18n="nav_about">حول</span></a></li>
+            <li><a href="#" class="nav-item" data-view="who" onclick="showView('who')"><i class="fa-solid fa-users"></i> <span data-i18n="nav_who">من نحن</span></a></li>
+            <li><a href="#" class="nav-item" data-view="settings" onclick="showView('settings')"><i class="fa-solid fa-gear"></i> <span data-i18n="nav_settings">الإعدادات</span></a></li>
         </ul>
-        <div class="user-profile" id="sidebar-profile" onclick="showView('login')">
+        <div class="user-profile" id="sidebar-profile" onclick="handleProfileClick()">
             <div class="user-avatar" id="sidebar-avatar">U</div>
             <div class="user-info">
-                <div id="sidebar-username" style="font-size: 14px; font-weight: 700;">تسجيل الدخول</div>
-                <div id="sidebar-userstatus" style="font-size: 12px; color: var(--text-muted);">اضغط هنا</div>
+                <div id="sidebar-username" style="font-size: 14px; font-weight: 700;" data-i18n="login">تسجيل الدخول</div>
+                <div id="sidebar-userstatus" style="font-size: 12px; color: var(--text-muted);" data-i18n="click_here">اضغط هنا</div>
             </div>
         </div>
     </aside>
 
-    <!-- 2. المحتوى الرئيسي -->
+    <!-- ========================================== -->
+    <!-- 2. لوحة الفلاتر (Slide-in) -->
+    <!-- ========================================== -->
+    <aside class="filter-panel" id="filter-panel">
+        <div class="filter-header">
+            <h3><i class="fa-solid fa-sliders"></i> <span data-i18n="filters">الفلاتر</span></h3>
+            <div class="filter-header-actions">
+                <button class="btn-text" onclick="clearFilters()"><span data-i18n="clear_all">مسح الكل</span></button>
+                <button class="btn-icon" onclick="toggleFilters()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+        </div>
+
+        <div class="filter-body">
+            <!-- المنطقة -->
+            <div class="filter-group">
+                <label class="filter-label"><i class="fa-solid fa-location-dot"></i> <span data-i18n="filter_area">المنطقة</span></label>
+                <select id="filter-area" class="filter-select">
+                    <option value="" data-i18n="all_areas">كل المناطق</option>
+                    <option value="cairo" data-i18n="cairo">القاهرة</option>
+                    <option value="giza" data-i18n="giza">الجيزة</option>
+                    <option value="alex" data-i18n="alex">الإسكندرية</option>
+                </select>
+            </div>
+
+            <!-- نطاق السعر -->
+            <div class="filter-group">
+                <label class="filter-label"><i class="fa-solid fa-money-bill"></i> <span data-i18n="filter_price">نطاق السعر (جنيه)</span></label>
+                <div class="range-display">
+                    <span id="price-min-display">0</span>
+                    <span> - </span>
+                    <span id="price-max-display">1000</span>
+                </div>
+                <div class="range-slider-container">
+                    <input type="range" id="filter-price-min" min="0" max="1000" step="50" value="0">
+                    <input type="range" id="filter-price-max" min="0" max="1000" step="50" value="1000">
+                </div>
+            </div>
+
+            <!-- التقييم -->
+            <div class="filter-group">
+                <label class="filter-label"><i class="fa-solid fa-star"></i> <span data-i18n="filter_rating">التقييم</span></label>
+                <label class="filter-checkbox">
+                    <input type="checkbox" class="filter-rating" value="4">
+                    <span>⭐ 4+ <span data-i18n="stars">نجوم</span></span>
+                </label>
+                <label class="filter-checkbox">
+                    <input type="checkbox" class="filter-rating" value="3">
+                    <span>⭐ 3+ <span data-i18n="stars">نجوم</span></span>
+                </label>
+            </div>
+
+            <!-- الخدمات -->
+            <div class="filter-group">
+                <label class="filter-label"><i class="fa-solid fa-dumbbell"></i> <span data-i18n="filter_services">الخدمات</span></label>
+                <label class="filter-checkbox">
+                    <input type="checkbox" class="filter-service" value="gym">
+                    <span data-i18n="service_gym">صالة حديد</span>
+                </label>
+                <label class="filter-checkbox">
+                    <input type="checkbox" class="filter-service" value="cardio">
+                    <span data-i18n="service_cardio">كارديو</span>
+                </label>
+                <label class="filter-checkbox">
+                    <input type="checkbox" class="filter-service" value="boxing">
+                    <span data-i18n="service_boxing">ملاكمة</span>
+                </label>
+                <label class="filter-checkbox">
+                    <input type="checkbox" class="filter-service" value="yoga">
+                    <span data-i18n="service_yoga">يوغا</span>
+                </label>
+                <label class="filter-checkbox">
+                    <input type="checkbox" class="filter-service" value="pool">
+                    <span data-i18n="service_pool">مسبح</span>
+                </label>
+                <label class="filter-checkbox">
+                    <input type="checkbox" class="filter-service" value="sauna">
+                    <span data-i18n="service_sauna">ساونا</span>
+                </label>
+            </div>
+
+            <!-- خيارات إضافية -->
+            <div class="filter-group">
+                <label class="filter-label"><i class="fa-solid fa-sliders"></i> <span data-i18n="filter_extra">خيارات إضافية</span></label>
+                <label class="filter-checkbox">
+                    <input type="checkbox" id="filter-women-hours">
+                    <span><i class="fa-solid fa-female" style="color:#FF6FB5;"></i> <span data-i18n="filter_women">مواعيد سيدات</span></span>
+                </label>
+                <label class="filter-checkbox">
+                    <input type="checkbox" id="filter-verified">
+                    <span><i class="fa-solid fa-circle-check" style="color:var(--primary-blue);"></i> <span data-i18n="filter_verified">موثّق فقط</span></span>
+                </label>
+            </div>
+
+            <button class="btn-primary w-100" onclick="applyFilters()"><span data-i18n="apply_filters">تطبيق الفلاتر</span></button>
+        </div>
+    </aside>
+    <div class="filter-overlay" id="filter-overlay" onclick="toggleFilters()"></div>
+
+    <!-- ========================================== -->
+    <!-- 3. المحتوى الرئيسي -->
+    <!-- ========================================== -->
     <main class="main-content">
         
         <!-- الشريط العلوي -->
         <header class="top-header">
             <button class="btn-icon mobile-menu-btn" id="mobile-menu-btn"><i class="fa-solid fa-bars"></i></button>
+            <button class="btn-icon filter-toggle-btn" id="filter-toggle-btn" onclick="toggleFilters()"><i class="fa-solid fa-sliders"></i></button>
             <div class="search-bar">
                 <i class="fa-solid fa-magnifying-glass" style="color: var(--text-muted);"></i>
-                <input type="text" id="global-search" placeholder="ابحث عن جيم، منطقة، أو ميزة...">
+                <input type="text" id="global-search" placeholder="ابحث عن جيم، منطقة، أو ميزة..." data-i18n-placeholder="search_placeholder">
             </div>
             <div class="top-actions">
                 <button class="btn-lang" onclick="toggleLanguage()" id="lang-btn">EN</button>
-                <button class="btn-icon"><i class="fa-regular fa-bell"></i></button>
+                <button class="btn-icon" onclick="showView('messages')"><i class="fa-regular fa-bell"></i></button>
             </div>
         </header>
 
         <!-- ================= صفحة الرئيسية ================= -->
         <section id="view-home" class="view-section">
             
-            <!-- قسم أفضل 3 جيمات (Podium) -->
+            <!-- قسم أفضل 3 جيمات -->
             <div id="top3-section">
                 <div class="section-header">
-                    <h2 class="section-title"><i class="fa-solid fa-crown"></i> أفضل 3 جيمات هذا الشهر</h2>
+                    <h2 class="section-title"><i class="fa-solid fa-crown"></i> <span data-i18n="top3_title">أفضل 3 جيمات هذا الشهر</span></h2>
                 </div>
-                <div class="podium-container">
-                    
-                    <!-- المركز الثاني -->
-                    <div class="podium-item podium-2">
-                        <div class="gym-card podium-card" onclick="showView('details')">
-                            <div class="badge"><i class="fa-solid fa-trophy"></i> المركز الثاني</div>
-                            <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1571902943202-507ec2618e8f?q=80&w=600&auto=format&fit=crop');"></div>
-                            <div class="card-content">
-                                <div class="card-title-row">
-                                    <div class="card-title">فيتنس فيرست</div>
-                                    <i class="fa-solid fa-circle-check verified-icon"></i>
-                                </div>
-                                <div class="card-location"><i class="fa-solid fa-location-dot"></i> الجيزة، المهندسين</div>
-                                <div class="card-footer">
-                                    <div class="rating"><i class="fa-solid fa-star"></i> 4.7 <span>(210)</span></div>
-                                    <button class="btn-primary">التفاصيل</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- المركز الأول -->
-                    <div class="podium-item podium-1">
-                        <div class="gym-card podium-card" onclick="showView('details')">
-                            <div class="badge"><i class="fa-solid fa-trophy"></i> المركز الأول</div>
-                            <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=600&auto=format&fit=crop');"></div>
-                            <div class="card-content">
-                                <div class="card-title-row">
-                                    <div class="card-title">جولدز جيم</div>
-                                    <i class="fa-solid fa-circle-check verified-icon"></i>
-                                </div>
-                                <div class="card-location"><i class="fa-solid fa-location-dot"></i> القاهرة، مدينة نصر</div>
-                                <div class="card-footer">
-                                    <div class="rating"><i class="fa-solid fa-star"></i> 4.9 <span>(320)</span></div>
-                                    <button class="btn-primary">التفاصيل</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- المركز الثالث -->
-                    <div class="podium-item podium-3">
-                        <div class="gym-card podium-card" onclick="showView('details')">
-                            <div class="badge"><i class="fa-solid fa-trophy"></i> المركز الثالث</div>
-                            <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1540497077202-7c8a3999166f?q=80&w=600&auto=format&fit=crop');"></div>
-                            <div class="card-content">
-                                <div class="card-title-row">
-                                    <div class="card-title">ماي جيم</div>
-                                </div>
-                                <div class="card-location"><i class="fa-solid fa-location-dot"></i> الإسكندرية، سموحة</div>
-                                <div class="card-footer">
-                                    <div class="rating"><i class="fa-solid fa-star"></i> 4.5 <span>(150)</span></div>
-                                    <button class="btn-primary">التفاصيل</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
+                <div class="podium-container" id="podium-container">
+                    <!-- يملأها JS -->
                 </div>
             </div>
 
-            <!-- قسم الجيمات الأقرب -->
+            <!-- الجيمات الأقرب -->
             <div class="section-header">
-                <h2 class="section-title"><i class="fa-solid fa-map-location-dot"></i> الجيمات الأقرب إليك</h2>
-                <a href="#" class="view-all">عرض الكل</a>
+                <h2 class="section-title"><i class="fa-solid fa-map-location-dot"></i> <span data-i18n="nearby_title">الجيمات الأقرب إليك</span></h2>
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn-secondary" onclick="showView('map')"><i class="fa-solid fa-map"></i> <span data-i18n="view_map">الخريطة</span></button>
+                    <a href="#" class="view-all" data-i18n="view_all">عرض الكل</a>
+                </div>
             </div>
-            <div class="gyms-grid">
-                <!-- جيم 1 -->
-                <div class="gym-card" onclick="showView('details')">
-                    <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=600&auto=format&fit=crop');"></div>
-                    <div class="card-content">
-                        <div class="card-title-row">
-                            <div class="card-title">جولدز جيم</div>
-                            <i class="fa-solid fa-circle-check verified-icon"></i>
-                        </div>
-                        <div class="card-location"><i class="fa-solid fa-location-dot"></i> القاهرة، مدينة نصر</div>
-                        <div class="card-footer">
-                            <div class="rating"><i class="fa-solid fa-star"></i> 4.9 <span>(320)</span></div>
-                            <button class="btn-primary">التفاصيل</button>
-                        </div>
-                    </div>
-                </div>
-                <!-- جيم 2 -->
-                <div class="gym-card" onclick="showView('details')">
-                    <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1571902943202-507ec2618e8f?q=80&w=600&auto=format&fit=crop');"></div>
-                    <div class="card-content">
-                        <div class="card-title-row">
-                            <div class="card-title">فيتنس فيرست</div>
-                            <i class="fa-solid fa-circle-check verified-icon"></i>
-                        </div>
-                        <div class="card-location"><i class="fa-solid fa-location-dot"></i> الجيزة، المهندسين</div>
-                        <div class="card-footer">
-                            <div class="rating"><i class="fa-solid fa-star"></i> 4.7 <span>(210)</span></div>
-                            <button class="btn-primary">التفاصيل</button>
-                        </div>
-                    </div>
-                </div>
+            <div class="gyms-grid" id="nearby-gyms-grid">
+                <!-- يملأها JS -->
             </div>
 
-            <!-- قسم كل الجيمات -->
+            <!-- كل الجيمات -->
             <div class="section-header">
-                <h2 class="section-title"><i class="fa-solid fa-dumbbell"></i> كل الجيمات</h2>
+                <h2 class="section-title"><i class="fa-solid fa-dumbbell"></i> <span data-i18n="all_gyms_title">كل الجيمات</span></h2>
+                <span id="results-count" style="color: var(--text-muted); font-size: 14px;"></span>
             </div>
-            <div class="gyms-grid">
-                <!-- جيم 1 -->
-                <div class="gym-card" onclick="showView('details')">
-                    <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=600&auto=format&fit=crop');"></div>
-                    <div class="card-content">
-                        <div class="card-title-row">
-                            <div class="card-title">جولدز جيم</div>
-                            <i class="fa-solid fa-circle-check verified-icon"></i>
-                        </div>
-                        <div class="card-location"><i class="fa-solid fa-location-dot"></i> القاهرة، مدينة نصر</div>
-                        <div class="card-footer">
-                            <div class="rating"><i class="fa-solid fa-star"></i> 4.9 <span>(320)</span></div>
-                            <button class="btn-primary">التفاصيل</button>
-                        </div>
-                    </div>
-                </div>
-                <!-- جيم 2 -->
-                <div class="gym-card" onclick="showView('details')">
-                    <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1571902943202-507ec2618e8f?q=80&w=600&auto=format&fit=crop');"></div>
-                    <div class="card-content">
-                        <div class="card-title-row">
-                            <div class="card-title">فيتنس فيرست</div>
-                            <i class="fa-solid fa-circle-check verified-icon"></i>
-                        </div>
-                        <div class="card-location"><i class="fa-solid fa-location-dot"></i> الجيزة، المهندسين</div>
-                        <div class="card-footer">
-                            <div class="rating"><i class="fa-solid fa-star"></i> 4.7 <span>(210)</span></div>
-                            <button class="btn-primary">التفاصيل</button>
-                        </div>
-                    </div>
-                </div>
-                <!-- جيم 3 -->
-                <div class="gym-card" onclick="showView('details')">
-                    <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1540497077202-7c8a3999166f?q=80&w=600&auto=format&fit=crop');"></div>
-                    <div class="card-content">
-                        <div class="card-title-row">
-                            <div class="card-title">ماي جيم</div>
-                        </div>
-                        <div class="card-location"><i class="fa-solid fa-location-dot"></i> الإسكندرية، سموحة</div>
-                        <div class="card-footer">
-                            <div class="rating"><i class="fa-solid fa-star"></i> 4.5 <span>(150)</span></div>
-                            <button class="btn-primary">التفاصيل</button>
-                        </div>
-                    </div>
-                </div>
+            <div class="gyms-grid" id="all-gyms-grid">
+                <!-- يملأها JS -->
             </div>
+        </section>
 
+        <!-- ================= صفحة الخريطة ================= -->
+        <section id="view-map" class="view-section hidden">
+            <div class="section-header">
+                <h2 class="section-title"><i class="fa-solid fa-map-location-dot"></i> <span data-i18n="map_title">خريطة الجيمات</span></h2>
+                <button class="btn-secondary" onclick="showView('home')"><i class="fa-solid fa-list"></i> <span data-i18n="view_list">عرض القائمة</span></button>
+            </div>
+            <div id="gyms-map"></div>
         </section>
 
         <!-- ================= صفحة تسجيل الدخول ================= -->
         <section id="view-login" class="view-section hidden">
             <div class="auth-container">
                 <div id="login-section" class="auth-box">
-                    <div class="logo-container text-center"><img src="https://i.ibb.co/btRfr3Z/Whats-App-Image-2026-10-29-at-8-20-02-PM-removebg-preview.png" alt="SHARKS" class="logo-img"></div>
-                    <h2 class="auth-title">مرحباً بك في SHARKS</h2>
-                    <p class="auth-subtitle">اكتشف أفضل الجيمات في مصر، قيم تجربتك، وتابع أهدافك.</p>
+                    <div class="logo-container text-center">
+                        <img src="https://i.ibb.co/btRfr3Z/Whats-App-Image-2026-10-29-at-8-20-02-PM-removebg-preview.png" alt="SHARKS" class="logo-img">
+                    </div>
+                    <h2 class="auth-title" data-i18n="login_title">مرحباً بك في SHARKS</h2>
+                    <p class="auth-subtitle" data-i18n="login_subtitle">اكتشف أفضل الجيمات في مصر، قيم تجربتك، وتابع أهدافك.</p>
                     <button id="google-login-btn" class="btn-google">
-                        <i class="fa-brands fa-google"></i> تسجيل الدخول باستخدام Google
+                        <i class="fa-brands fa-google"></i> <span data-i18n="login_google">تسجيل الدخول باستخدام Google</span>
                     </button>
                 </div>
                 <div id="profile-section" class="auth-box hidden">
-                    <h2 class="auth-title">استكمال الملف الشخصي</h2>
-                    <p class="auth-subtitle">محتاجين شوية بيانات عشان نكمل معاك.</p>
+                    <h2 class="auth-title" data-i18n="profile_title">استكمال الملف الشخصي</h2>
+                    <p class="auth-subtitle" data-i18n="profile_subtitle">محتاجين شوية بيانات عشان نكمل معاك.</p>
                     <form id="profile-form">
-                        <div class="input-group"><label>الاسم الرباعي</label><input type="text" id="reg-name" required></div>
-                        <div class="input-group"><label>اسم المستخدم</label><input type="text" id="reg-username" required></div>
-                        <div class="input-group"><label>رقم الهاتف</label><input type="tel" id="reg-phone" required></div>
-                        <div class="input-group"><label>المحافظة</label>
+                        <div class="input-group"><label data-i18n="full_name">الاسم الرباعي</label><input type="text" id="reg-name" required></div>
+                        <div class="input-group"><label data-i18n="username">اسم المستخدم</label><input type="text" id="reg-username" required></div>
+                        <div class="input-group"><label data-i18n="phone">رقم الهاتف</label><input type="tel" id="reg-phone" required></div>
+                        <div class="input-group"><label data-i18n="governorate">المحافظة</label>
                             <select id="reg-gov" required>
-                                <option value="cairo">القاهرة</option>
-                                <option value="giza">الجيزة</option>
-                                <option value="alex">الإسكندرية</option>
+                                <option value="cairo" data-i18n="cairo">القاهرة</option>
+                                <option value="giza" data-i18n="giza">الجيزة</option>
+                                <option value="alex" data-i18n="alex">الإسكندرية</option>
                             </select>
                         </div>
-                        <div class="input-group"><label>المركز / المنطقة</label><input type="text" id="reg-city" required></div>
-                        <div class="input-group"><label>البريد الإلكتروني</label><input type="email" id="reg-email" disabled></div>
-                        <button type="submit" class="btn-primary w-100">حفظ ومتابعة</button>
+                        <div class="input-group"><label data-i18n="city">المركز / المنطقة</label><input type="text" id="reg-city" required></div>
+                        <div class="input-group"><label data-i18n="email">البريد الإلكتروني</label><input type="email" id="reg-email" disabled></div>
+                        <button type="submit" class="btn-primary w-100" data-i18n="save_continue">حفظ ومتابعة</button>
                     </form>
                 </div>
             </div>
         </section>
 
-        <!-- ================= صفحة تفاصيل الجيم ================= -->
+        <!-- ================= صفحة التفاصيل ================= -->
         <section id="view-details" class="view-section hidden">
-            <div class="gym-cover" id="details-cover" style="background-image: url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=1200&auto=format&fit=crop');">
-                <button class="btn-back" onclick="showView('home')"><i class="fa-solid fa-arrow-right"></i> رجوع</button>
+            <div class="gym-cover" id="details-cover">
+                <button class="btn-back" onclick="showView('home')"><i class="fa-solid fa-arrow-right"></i> <span data-i18n="back">رجوع</span></button>
             </div>
             <div class="details-container">
                 <div class="details-header">
                     <div>
-                        <h1 class="gym-title" id="details-title">جولدز جيم <i class="fa-solid fa-circle-check verified-icon"></i></h1>
-                        <p class="gym-location" id="details-location"><i class="fa-solid fa-location-dot"></i> القاهرة، مدينة نصر</p>
+                        <h1 class="gym-title" id="details-title">اسم الجيم</h1>
+                        <p class="gym-location" id="details-location"><i class="fa-solid fa-location-dot"></i></p>
                     </div>
                     <div class="details-actions">
                         <button class="btn-icon" id="fav-btn" onclick="toggleFavorite()"><i class="fa-regular fa-heart"></i></button>
                     </div>
                 </div>
+
+                <!-- أزرار التواصل -->
                 <div class="contact-actions">
-                    <button class="btn-secondary"><i class="fa-solid fa-phone"></i> اتصال</button>
-                    <button class="btn-secondary"><i class="fa-brands fa-whatsapp"></i> واتساب</button>
-                    <button class="btn-secondary"><i class="fa-solid fa-map-location-dot"></i> الموقع</button>
+                    <button class="btn-secondary" onclick="requireLogin()"><i class="fa-solid fa-phone"></i> <span data-i18n="call">اتصال</span></button>
+                    <!-- زر واتساب مباشر -->
+                    <a href="#" id="whatsapp-btn" target="_blank" class="btn-secondary btn-whatsapp">
+                        <i class="fa-brands fa-whatsapp"></i> <span data-i18n="whatsapp">واتساب</span>
+                    </a>
+                    <button class="btn-secondary" onclick="requireLogin()"><i class="fa-solid fa-map-location-dot"></i> <span data-i18n="map">الموقع</span></button>
                 </div>
+
                 <div class="details-grid">
                     <div class="reviews-section">
+                        <!-- أشرطة التقييم -->
                         <div class="section-header">
-                            <h2 class="section-title">التقييمات</h2>
-                            <span id="details-review-count" style="color: var(--text-muted); font-size: 14px;">(320)</span>
+                            <h2 class="section-title" data-i18n="reviews_title">التقييمات</h2>
+                            <span id="details-review-count" style="color: var(--text-muted); font-size: 14px;"></span>
                         </div>
-                        <div class="rating-criteria" id="rating-criteria">
-                            <div class="criteria-row"><span>الأجهزة والمعدات</span><div class="progress-bar"><div class="progress" style="width: 90%;"></div></div><span>4.5</span></div>
-                            <div class="criteria-row"><span>النظافة</span><div class="progress-bar"><div class="progress" style="width: 80%;"></div></div><span>4.0</span></div>
-                            <div class="criteria-row"><span>المكان والموقع</span><div class="progress-bar"><div class="progress" style="width: 95%;"></div></div><span>4.8</span></div>
-                            <div class="criteria-row"><span>التعامل وخدمة العملاء</span><div class="progress-bar"><div class="progress" style="width: 85%;"></div></div><span>4.3</span></div>
-                            <div class="criteria-row"><span>النظام والتنظيم</span><div class="progress-bar"><div class="progress" style="width: 88%;"></div></div><span>4.4</span></div>
-                            <div class="criteria-row"><span>السعر</span><div class="progress-bar"><div class="progress" style="width: 70%;"></div></div><span>3.5</span></div>
-                        </div>
+                        <div class="rating-criteria" id="rating-criteria"></div>
+
+                        <!-- زر إضافة تقييم -->
                         <div class="add-review-box">
-                            <h3>قيم تجربتك</h3>
-                            <p style="font-size: 12px; color: var(--text-muted);">يجب تسجيل الدخول لتتمكن من التقييم.</p>
-                            <button class="btn-primary">أضف تقييمك</button>
+                            <h3 data-i18n="rate_experience">قيم تجربتك</h3>
+                            <p style="font-size: 12px; color: var(--text-muted);" data-i18n="login_to_rate">يجب تسجيل الدخول لتتمكن من التقييم.</p>
+                            <button class="btn-primary" onclick="openReviewModal()"><span data-i18n="add_review">أضف تقييمك</span></button>
                         </div>
                     </div>
+
                     <div class="info-sidebar">
+                        <!-- مواعيد العمل -->
                         <div class="info-card">
-                            <h3>معلومات إضافية</h3>
-                            <p><strong>الأسعار:</strong> تبدأ من 500 جنيه / شهر</p>
-                            <p><strong>آخر تحديث:</strong> 15 أكتوبر 2026</p>
-                            <p><strong>الحالة:</strong> موثّق <i class="fa-solid fa-circle-check" style="color: var(--primary-blue);"></i></p>
-                            <button class="btn-text"><i class="fa-solid fa-flag"></i> الإبلاغ عن بيانات خاطئة</button>
+                            <h3><i class="fa-solid fa-clock"></i> <span data-i18n="working_hours">مواعيد العمل</span></h3>
+                            <table class="hours-table">
+                                <tr><td data-i18n="day_sat">السبت</td><td>6:00 ص - 12:00 م</td></tr>
+                                <tr><td data-i18n="day_sun">الأحد</td><td>6:00 ص - 12:00 م</td></tr>
+                                <tr><td data-i18n="day_mon">الإثنين</td><td>6:00 ص - 12:00 م</td></tr>
+                                <tr><td data-i18n="day_tue">الثلاثاء</td><td>6:00 ص - 12:00 م</td></tr>
+                                <tr><td data-i18n="day_wed">الأربعاء</td><td>6:00 ص - 12:00 م</td></tr>
+                                <tr><td data-i18n="day_thu">الخميس</td><td>6:00 ص - 12:00 م</td></tr>
+                                <tr><td data-i18n="day_fri">الجمعة</td><td>10:00 ص - 8:00 م</td></tr>
+                            </table>
+                            <div class="women-hours-card">
+                                <h4><i class="fa-solid fa-female"></i> <span data-i18n="women_hours">مواعيد السيدات</span></h4>
+                                <p data-i18n="women_hours_desc">كل يوم من 2:00 م إلى 5:00 م</p>
+                            </div>
+                        </div>
+
+                        <!-- معلومات إضافية -->
+                        <div class="info-card">
+                            <h3 data-i18n="extra_info">معلومات إضافية</h3>
+                            <p><strong data-i18n="price">الأسعار:</strong> <span id="details-price">-</span></p>
+                            <p><strong data-i18n="last_update">آخر تحديث:</strong> <span id="details-update">-</span></p>
+                            <p><strong data-i18n="status">الحالة:</strong> <span id="details-verified">-</span></p>
+                            <button class="btn-text"><i class="fa-solid fa-flag"></i> <span data-i18n="report">الإبلاغ عن بيانات خاطئة</span></button>
                         </div>
                     </div>
                 </div>
@@ -303,22 +317,22 @@
 
         <!-- ================= صفحة الرسائل ================= -->
         <section id="view-messages" class="view-section hidden">
-            <div class="section-header"><h2 class="section-title"><i class="fa-regular fa-envelope"></i> الرسائل</h2></div>
+            <div class="section-header"><h2 class="section-title"><i class="fa-regular fa-envelope"></i> <span data-i18n="messages_title">الرسائل</span></h2></div>
             <div class="messages-container">
                 <div class="message-item unread">
                     <div class="message-icon"><i class="fa-solid fa-bullhorn"></i></div>
                     <div class="message-content">
-                        <h4>أهلاً بك في SHARKS</h4>
-                        <p>شكراً لانضمامك إلينا. ابدأ باكتشاف الجيمات القريبة منك.</p>
-                        <span class="message-time">منذ ساعتين</span>
+                        <h4 data-i18n="msg_welcome_title">أهلاً بك في SHARKS</h4>
+                        <p data-i18n="msg_welcome_body">شكراً لانضمامك إلينا.</p>
+                        <span class="message-time" data-i18n="msg_time_2h">منذ ساعتين</span>
                     </div>
                 </div>
                 <div class="message-item">
                     <div class="message-icon"><i class="fa-solid fa-trophy"></i></div>
                     <div class="message-content">
-                        <h4>إعلان الفائزين الشهريين</h4>
-                        <p>تم إعلان أفضل 3 جيمات لهذا الشهر. تصفح الصفحة الرئيسية لمعرفة الفائزين.</p>
-                        <span class="message-time">منذ يوم</span>
+                        <h4 data-i18n="msg_winner_title">إعلان الفائزين الشهريين</h4>
+                        <p data-i18n="msg_winner_body">تم إعلان أفضل 3 جيمات لهذا الشهر.</p>
+                        <span class="message-time" data-i18n="msg_time_1d">منذ يوم</span>
                     </div>
                 </div>
             </div>
@@ -326,40 +340,45 @@
 
         <!-- ================= صفحة حاسبة السعرات ================= -->
         <section id="view-calories" class="view-section hidden">
-            <div class="section-header"><h2 class="section-title">حاسبة السعرات الحرارية</h2></div>
+            <div class="section-header"><h2 class="section-title" data-i18n="calories_title">حاسبة السعرات الحرارية</h2></div>
             <div class="calc-container">
                 <form id="calorie-form">
                     <div class="input-row">
-                        <div class="input-group"><label>العمر</label><input type="number" id="calc-age" required></div>
-                        <div class="input-group"><label>الجنس</label><select id="calc-gender"><option value="male">ذكر</option><option value="female">أنثى</option></select></div>
+                        <div class="input-group"><label data-i18n="age">العمر</label><input type="number" id="calc-age" required></div>
+                        <div class="input-group"><label data-i18n="gender">الجنس</label>
+                            <select id="calc-gender">
+                                <option value="male" data-i18n="male">ذكر</option>
+                                <option value="female" data-i18n="female">أنثى</option>
+                            </select>
+                        </div>
                     </div>
                     <div class="input-row">
-                        <div class="input-group"><label>الطول (سم)</label><input type="number" id="calc-height" required></div>
-                        <div class="input-group"><label>الوزن (كجم)</label><input type="number" id="calc-weight" required></div>
+                        <div class="input-group"><label data-i18n="height">الطول (سم)</label><input type="number" id="calc-height" required></div>
+                        <div class="input-group"><label data-i18n="weight">الوزن (كجم)</label><input type="number" id="calc-weight" required></div>
                     </div>
                     <div class="input-group">
-                        <label>مستوى النشاط</label>
+                        <label data-i18n="activity">مستوى النشاط</label>
                         <select id="calc-activity">
-                            <option value="1.2">قليل الحركة</option>
-                            <option value="1.375">نشاط خفيف</option>
-                            <option value="1.55">نشاط متوسط</option>
-                            <option value="1.725">نشاط عالي</option>
+                            <option value="1.2" data-i18n="sedentary">قليل الحركة</option>
+                            <option value="1.375" data-i18n="light">نشاط خفيف</option>
+                            <option value="1.55" data-i18n="moderate">نشاط متوسط</option>
+                            <option value="1.725" data-i18n="active">نشاط عالي</option>
                         </select>
                     </div>
                     <div class="input-group">
-                        <label>الهدف</label>
+                        <label data-i18n="goal">الهدف</label>
                         <select id="calc-goal">
-                            <option value="lose">خفض الدهون</option>
-                            <option value="maintain">المحافظة على الوزن</option>
-                            <option value="gain">بناء العضلات</option>
+                            <option value="lose" data-i18n="lose">خفض الدهون</option>
+                            <option value="maintain" data-i18n="maintain">المحافظة على الوزن</option>
+                            <option value="gain" data-i18n="gain">بناء العضلات</option>
                         </select>
                     </div>
-                    <button type="submit" class="btn-primary w-100">احسب</button>
+                    <button type="submit" class="btn-primary w-100" data-i18n="calculate">احسب</button>
                 </form>
                 <div id="calorie-result" class="result-box hidden">
-                    <h3>احتياجك اليومي:</h3>
+                    <h3 data-i18n="daily_need">احتياجك اليومي:</h3>
                     <h1 id="result-calories" style="color: var(--primary-blue); font-size: 40px;">0</h1>
-                    <p>سعرة حرارية</p>
+                    <p data-i18n="calories_unit">سعرة حرارية</p>
                     <div id="macros-result" style="margin-top: 20px;"></div>
                 </div>
             </div>
@@ -367,36 +386,32 @@
 
         <!-- ================= صفحة المفضلة ================= -->
         <section id="view-favorites" class="view-section hidden">
-            <div class="section-header"><h2 class="section-title"><i class="fa-solid fa-heart" style="color: #ff4757;"></i> المفضلة</h2></div>
-            <div class="gyms-grid">
-                <p style="color: var(--text-muted);">لا توجد جيمات في المفضلة حالياً.</p>
+            <div class="section-header"><h2 class="section-title"><i class="fa-solid fa-heart" style="color: #ff4757;"></i> <span data-i18n="favorites_title">المفضلة</span></h2></div>
+            <div class="gyms-grid" id="favorites-grid">
+                <p style="color: var(--text-muted);" data-i18n="no_favorites">لا توجد جيمات في المفضلة حالياً.</p>
             </div>
         </section>
 
-        <!-- ================= صفحة أفضل 10 جيمات ================= -->
+        <!-- ================= صفحة أفضل 10 ================= -->
         <section id="view-top10" class="view-section hidden">
-            <div class="section-header"><h2 class="section-title"><i class="fa-solid fa-trophy" style="color: var(--gold);"></i> أفضل 10 جيمات</h2></div>
-            <div class="list-container">
-                <div class="list-item"><span class="rank">1</span><div class="list-img" style="background-image: url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=200');"></div><div class="list-info"><h3>جولدز جيم</h3><p>القاهرة، مدينة نصر</p></div><div class="rating"><i class="fa-solid fa-star"></i> 4.9</div></div>
-                <div class="list-item"><span class="rank">2</span><div class="list-img" style="background-image: url('https://images.unsplash.com/photo-1571902943202-507ec2618e8f?q=80&w=200');"></div><div class="list-info"><h3>فيتنس فيرست</h3><p>الجيزة، المهندسين</p></div><div class="rating"><i class="fa-solid fa-star"></i> 4.7</div></div>
-                <div class="list-item"><span class="rank">3</span><div class="list-img" style="background-image: url('https://images.unsplash.com/photo-1540497077202-7c8a3999166f?q=80&w=200');"></div><div class="list-info"><h3>ماي جيم</h3><p>الإسكندرية، سموحة</p></div><div class="rating"><i class="fa-solid fa-star"></i> 4.5</div></div>
-            </div>
+            <div class="section-header"><h2 class="section-title"><i class="fa-solid fa-trophy" style="color: var(--gold);"></i> <span data-i18n="top10_title">أفضل 10 جيمات</span></h2></div>
+            <div class="list-container" id="top10-list"></div>
         </section>
 
         <!-- ================= صفحة الإعدادات ================= -->
         <section id="view-settings" class="view-section hidden">
-            <div class="section-header"><h2 class="section-title"><i class="fa-solid fa-gear"></i> الإعدادات</h2></div>
+            <div class="section-header"><h2 class="section-title"><i class="fa-solid fa-gear"></i> <span data-i18n="settings_title">الإعدادات</span></h2></div>
             <div class="settings-container">
                 <div class="settings-group">
-                    <h3>الحساب</h3>
-                    <button class="settings-btn"><i class="fa-solid fa-user-pen"></i> تعديل البيانات الشخصية</button>
-                    <button class="settings-btn"><i class="fa-solid fa-bell"></i> تفضيلات الإشعارات</button>
-                    <button class="settings-btn"><i class="fa-solid fa-location-dot"></i> إذن الموقع</button>
+                    <h3 data-i18n="account_settings">الحساب</h3>
+                    <button class="settings-btn"><i class="fa-solid fa-user-pen"></i> <span data-i18n="edit_profile">تعديل البيانات الشخصية</span></button>
+                    <button class="settings-btn"><i class="fa-solid fa-bell"></i> <span data-i18n="notifications">تفضيلات الإشعارات</span></button>
+                    <button class="settings-btn"><i class="fa-solid fa-location-dot"></i> <span data-i18n="location_permission">إذن الموقع</span></button>
                 </div>
                 <div class="settings-group">
-                    <h3>العرض</h3>
+                    <h3 data-i18n="display_settings">العرض</h3>
                     <div class="settings-toggle-row">
-                        <span>إظهار قسم أفضل 3 جيمات</span>
+                        <span data-i18n="show_top3">إظهار قسم أفضل 3 جيمات</span>
                         <label class="switch">
                             <input type="checkbox" id="toggle-top3" checked onchange="toggleTop3Visibility(this)">
                             <span class="slider round"></span>
@@ -404,12 +419,12 @@
                     </div>
                 </div>
                 <div class="settings-group">
-                    <h3>عن المنصة</h3>
-                    <button class="settings-btn" onclick="showView('about')"><i class="fa-solid fa-circle-info"></i> حول</button>
-                    <button class="settings-btn" onclick="showView('who')"><i class="fa-solid fa-users"></i> من نحن</button>
+                    <h3 data-i18n="about_platform">عن المنصة</h3>
+                    <button class="settings-btn" onclick="showView('about')"><i class="fa-solid fa-circle-info"></i> <span data-i18n="nav_about">حول</span></button>
+                    <button class="settings-btn" onclick="showView('who')"><i class="fa-solid fa-users"></i> <span data-i18n="nav_who">من نحن</span></button>
                 </div>
                 <div class="settings-group">
-                    <button class="settings-btn text-danger" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> تسجيل الخروج</button>
+                    <button class="settings-btn text-danger" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> <span data-i18n="logout">تسجيل الخروج</span></button>
                     <p style="text-align: center; color: var(--text-muted); margin-top: 15px; font-size: 12px;">v1.0.0</p>
                 </div>
             </div>
@@ -417,34 +432,102 @@
 
         <!-- ================= صفحة حول ================= -->
         <section id="view-about" class="view-section hidden">
-            <div class="section-header"><h2 class="section-title">حول SHARKS</h2></div>
+            <div class="section-header"><h2 class="section-title" data-i18n="about_title">حول SHARKS</h2></div>
             <div class="about-content">
-                <h3>كيفية استخدام المنصة</h3>
-                <p>1. ابحث عن الجيمات في منطقتك من خلال الصفحة الرئيسية.</p>
-                <p>2. تصفح التفاصيل، الصور، والأسعار.</p>
-                <p>3. قيم الجيم بناءً على 6 معايير (أجهزة، نظافة، مكان، تعامل، نظام، سعر).</p>
-                <p>4. استخدم حاسبة السعرات لمعرفة احتياجك اليومي.</p>
-                <h3 style="margin-top: 20px;">آلية التقييم الشهرية</h3>
-                <p>يتم احتساب التقييمات كل شهر، ويتم إعلان أفضل 3 جيمات وتثبيتهم لمدة 10 أيام على الصفحة الرئيسية.</p>
+                <h3 data-i18n="how_to_use">كيفية استخدام المنصة</h3>
+                <p data-i18n="about_step1">1. ابحث عن الجيمات في منطقتك.</p>
+                <p data-i18n="about_step2">2. تصفح التفاصيل والأسعار.</p>
+                <p data-i18n="about_step3">3. قيم الجيم على 6 معايير.</p>
+                <p data-i18n="about_step4">4. استخدم حاسبة السعرات.</p>
+                <h3 style="margin-top: 20px;" data-i18n="monthly_system">آلية التقييم الشهرية</h3>
+                <p data-i18n="monthly_desc">يتم احتساب التقييمات كل شهر.</p>
             </div>
         </section>
 
         <!-- ================= صفحة من نحن ================= -->
         <section id="view-who" class="view-section hidden">
-            <div class="section-header"><h2 class="section-title">من نحن</h2></div>
+            <div class="section-header"><h2 class="section-title" data-i18n="who_title">من نحن</h2></div>
             <div class="about-content">
-                <h3>رؤيتنا</h3>
-                <p>أن نكون المنصة الأولى في مصر لاكتشاف وتقييم الجيمات، لنساعد كل شخص على تحقيق أهدافه الرياضية.</p>
-                <h3 style="margin-top: 20px;">رسالتنا</h3>
-                <p>توفير بيانات دقيقة وشفافة عن الجيمات، مع تجربة مستخدم احترافية تدعم اللغتين العربية والإنجليزية.</p>
-                <h3 style="margin-top: 20px;">تواصل معنا</h3>
+                <h3 data-i18n="vision">رؤيتنا</h3>
+                <p data-i18n="vision_desc">المنصة الأولى لاكتشاف الجيمات في مصر.</p>
+                <h3 style="margin-top: 20px;" data-i18n="mission">رسالتنا</h3>
+                <p data-i18n="mission_desc">بيانات دقيقة وشفافة.</p>
+                <h3 style="margin-top: 20px;" data-i18n="contact">تواصل معنا</h3>
                 <p>partners@sharks.com</p>
             </div>
         </section>
 
     </main>
 
-    <!-- ربط ملف الجافاسكريبت (هيتم إضافة الكود في الرسالة الجاية) -->
+    <!-- ========================================== -->
+    <!-- 4. مودال التقييم مع رفع الصور -->
+    <!-- ========================================== -->
+    <div id="review-modal" class="modal-overlay hidden">
+        <div class="modal-box">
+            <h2 class="modal-title" data-i18n="rate_title">قيم تجربتك</h2>
+            <form id="review-form">
+                <div class="rating-item"><span data-i18n="crit_equipment">الأجهزة والمعدات</span><div class="stars" data-crit="equipment">★★★★★</div></div>
+                <div class="rating-item"><span data-i18n="crit_cleanliness">النظافة</span><div class="stars" data-crit="cleanliness">★★★★★</div></div>
+                <div class="rating-item"><span data-i18n="crit_location">المكان والموقع</span><div class="stars" data-crit="location">★★★★★</div></div>
+                <div class="rating-item"><span data-i18n="crit_staff">التعامل وخدمة العملاء</span><div class="stars" data-crit="staff">★★★★★</div></div>
+                <div class="rating-item"><span data-i18n="crit_organization">النظام والتنظيم</span><div class="stars" data-crit="organization">★★★★★</div></div>
+                <div class="rating-item"><span data-i18n="crit_price">السعر</span><div class="stars" data-crit="price">★★★★★</div></div>
+
+                <!-- رفع الصور -->
+                <div class="photo-upload-group">
+                    <label data-i18n="add_photos">أضف صور (اختياري)</label>
+                    <div class="photo-upload-area" onclick="document.getElementById('review-photos').click()">
+                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                        <span data-i18n="photo_hint">اضغط لرفع صور من جهازك</span>
+                        <small data-i18n="photo_limit">بحد أقصى 3 صور</small>
+                    </div>
+                    <input type="file" id="review-photos" accept="image/*" multiple style="display:none;">
+                    <div id="photo-preview" class="photo-preview"></div>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary" onclick="closeReviewModal()" data-i18n="cancel">إلغاء</button>
+                    <button type="submit" class="btn-primary" data-i18n="submit">إرسال التقييم</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- 5. شريط المقارنة -->
+    <!-- ========================================== -->
+    <div id="compare-bar" class="compare-bar hidden">
+        <div class="compare-bar-info">
+            <i class="fa-solid fa-scale-balanced"></i>
+            <span><span id="compare-count">0</span> <span data-i18n="compare_selected">جيم مختار</span></span>
+        </div>
+        <div id="compare-slots" class="compare-slots"></div>
+        <div class="compare-bar-actions">
+            <button class="btn-primary" onclick="openCompareModal()"><span data-i18n="compare_now">قارن الآن</span></button>
+            <button class="btn-icon" onclick="clearCompare()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- 6. مودال المقارنة -->
+    <!-- ========================================== -->
+    <div id="compare-modal" class="modal-overlay hidden">
+        <div class="modal-box compare-modal-box">
+            <div class="compare-modal-header">
+                <h2 data-i18n="compare_title">مقارنة الجيمات</h2>
+                <button class="btn-icon" onclick="closeCompareModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div id="compare-table-container" class="compare-table-container"></div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- Scripts -->
+    <!-- ========================================== -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
