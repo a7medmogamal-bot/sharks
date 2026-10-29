@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SHARKS - منصة اكتشاف الجيمات</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- ========================================== -->
+    <!-- 1. الشريط الجانبي (ثابت في كل الصفحات) -->
+    <!-- ========================================== -->
+    <aside class="sidebar">
+        <div class="logo-container">
+            <div class="logo-text">SH<span>A</span>RKS</div>
+        </div>
+        <ul class="nav-menu">
+            <li><a href="#" class="nav-item active" onclick="showView('home')"><i class="fa-solid fa-house"></i> الرئيسية</a></li>
+            <li><a href="#" class="nav-item" onclick="showView('calories')"><i class="fa-solid fa-fire"></i> السعرات الحرارية</a></li>
+            <li><a href="#" class="nav-item" onclick="showView('favorites')"><i class="fa-solid fa-heart"></i> المفضلة</a></li>
+            <li><a href="#" class="nav-item" onclick="showView('top10')"><i class="fa-solid fa-trophy"></i> أفضل 10 جيمات</a></li>
+            
+            <li><a href="#" class="nav-item disabled"><i class="fa-solid fa-robot"></i> SHARKS AI <i class="fa-solid fa-lock lock-icon"></i></a></li>
+            <li><a href="#" class="nav-item disabled"><i class="fa-solid fa-store"></i> المتجر <i class="fa-solid fa-lock lock-icon"></i></a></li>
+            <li><a href="#" class="nav-item disabled"><i class="fa-solid fa-dumbbell"></i> المدربون <i class="fa-solid fa-lock lock-icon"></i></a></li>
+            
+            <li style="margin-top: 20px;"><a href="#" class="nav-item" onclick="showView('about')"><i class="fa-solid fa-circle-info"></i> حول</a></li>
+            <li><a href="#" class="nav-item" onclick="showView('who')"><i class="fa-solid fa-users"></i> من نحن</a></li>
+            <li><a href="#" class="nav-item" onclick="showView('settings')"><i class="fa-solid fa-gear"></i> الإعدادات</a></li>
+        </ul>
+        <div class="user-profile" id="sidebar-profile" onclick="showView('login')">
+            <div class="user-avatar">U</div>
+            <div class="user-info">
+                <div style="font-size: 14px; font-weight: 700;">تسجيل الدخول</div>
+                <div style="font-size: 12px; color: var(--text-muted);">اضغط هنا</div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- ========================================== -->
+    <!-- 2. المحتوى الرئيسي (الصفحات) -->
+    <!-- ========================================== -->
+    <main class="main-content">
+        
+        <!-- الشريط العلوي الثابت -->
+        <header class="top-header">
+            <div class="search-bar">
+                <i class="fa-solid fa-magnifying-glass" style="color: var(--text-muted);"></i>
+                <input type="text" placeholder="ابحث عن جيم، منطقة، أو ميزة...">
+            </div>
+            <div class="top-actions">
+                <button class="btn-lang" onclick="toggleLanguage()" id="lang-btn">EN</button>
+                <button class="btn-icon"><i class="fa-regular fa-bell"></i></button>
+            </div>
+        </header>
+
+        <!-- ================= صفحة الرئيسية ================= -->
+        <section id="view-home" class="view-section">
+            <div class="section-header">
+                <h2 class="section-title"><i class="fa-solid fa-crown"></i> أفضل 3 جيمات هذا الشهر</h2>
+            </div>
+            <div class="gyms-grid">
+                <div class="gym-card">
+                    <div class="badge"><i class="fa-solid fa-trophy"></i> المركز الأول</div>
+                    <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=600&auto=format&fit=crop');"></div>
+                    <div class="card-content">
+                        <div class="card-title-row">
+                            <div class="card-title">جولدز جيم</div>
+                            <i class="fa-solid fa-circle-check verified-icon"></i>
+                        </div>
+                        <div class="card-location"><i class="fa-solid fa-location-dot"></i> القاهرة، مدينة نصر</div>
+                        <div class="card-footer">
+                            <div class="rating"><i class="fa-solid fa-star"></i> 4.9 <span>(320)</span></div>
+                            <a href="#" class="btn-primary" onclick="showView('details')">التفاصيل</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="gym-card">
+                    <div class="badge"><i class="fa-solid fa-trophy"></i> المركز الثاني</div>
+                    <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1571902943202-507ec2618e8f?q=80&w=600&auto=format&fit=crop');"></div>
+                    <div class="card-content">
+                        <div class="card-title-row">
+                            <div class="card-title">فيتنس فيرست</div>
+                            <i class="fa-solid fa-circle-check verified-icon"></i>
+                        </div>
+                        <div class="card-location"><i class="fa-solid fa-location-dot"></i> الجيزة، المهندسين</div>
+                        <div class="card-footer">
+                            <div class="rating"><i class="fa-solid fa-star"></i> 4.7 <span>(210)</span></div>
+                            <a href="#" class="btn-primary" onclick="showView('details')">التفاصيل</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="gym-card">
+                    <div class="badge"><i class="fa-solid fa-trophy"></i> المركز الثالث</div>
+                    <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1540497077202-7c8a3999166f?q=80&w=600&auto=format&fit=crop');"></div>
+                    <div class="card-content">
+                        <div class="card-title-row">
+                            <div class="card-title">ماي جيم</div>
+                        </div>
+                        <div class="card-location"><i class="fa-solid fa-location-dot"></i> الإسكندرية، سموحة</div>
+                        <div class="card-footer">
+                            <div class="rating"><i class="fa-solid fa-star"></i> 4.5 <span>(150)</span></div>
+                            <a href="#" class="btn-primary" onclick="showView('details')">التفاصيل</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-header">
+                <h2 class="section-title"><i class="fa-solid fa-map-location-dot"></i> الجيمات الأقرب إليك</h2>
+                <a href="#" class="view-all">عرض الكل</a>
+            </div>
+            <div class="gyms-grid">
+                <div class="gym-card">
+                    <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1517836357463-d25dfeac3438?q=80&w=600&auto=format&fit=crop');"></div>
+                    <div class="card-content">
+                        <div class="card-title-row"><div class="card-title">جيم بلس</div></div>
+                        <div class="card-location"><i class="fa-solid fa-location-dot"></i> القاهرة، المعادي</div>
+                        <div class="card-footer">
+                            <div class="rating"><i class="fa-solid fa-star"></i> 4.2 <span>(85)</span></div>
+                            <a href="#" class="btn-primary" onclick="showView('details')">التفاصيل</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="gym-card">
+                    <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?q=80&w=600&auto=format&fit=crop');"></div>
+                    <div class="card-content">
+                        <div class="card-title-row"><div class="card-title">أوليمبيا جيم</div></div>
+                        <div class="card-location"><i class="fa-solid fa-location-dot"></i> القاهرة، مصر الجديدة</div>
+                        <div class="card-footer">
+                            <div class="rating"><i class="fa-solid fa-star"></i> 4.6 <span>(112)</span></div>
+                            <a href="#" class="btn-primary" onclick="showView('details')">التفاصيل</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= صفحة تسجيل الدخول ================= -->
+        <section id="view-login" class="view-section hidden">
+            <div class="auth-container">
+                <div id="login-section" class="auth-box">
+                    <div class="logo-container text-center"><div class="logo-text">SH<span>A</span>RKS</div></div>
+                    <h2 class="auth-title">مرحباً بك في SHARKS</h2>
+                    <p class="auth-subtitle">اكتشف أفضل الجيمات في مصر، قيم تجربتك، وتابع أهدافك.</p>
+                    <button id="google-login-btn" class="btn-google">
+                        <i class="fa-brands fa-google"></i> تسجيل الدخول باستخدام Google
+                    </button>
+                </div>
+
+                <div id="profile-section" class="auth-box hidden">
+                    <h2 class="auth-title">استكمال الملف الشخصي</h2>
+                    <p class="auth-subtitle">محتاجين شوية بيانات عشان نكمل معاك.</p>
+                    <form id="profile-form">
+                        <div class="input-group"><label>الاسم الرباعي</label><input type="text" id="reg-name" required></div>
+                        <div class="input-group"><label>اسم المستخدم (فريد)</label><input type="text" id="reg-username" required></div>
+                        <div class="input-group"><label>رقم الهاتف</label><input type="tel" id="reg-phone" required></div>
+                        <div class="input-group">
+                            <label>المحافظة</label>
+                            <select id="reg-gov" required>
+                                <option value="">اختر المحافظة</option>
+                                <option value="cairo">القاهرة</option>
+                                <option value="giza">الجيزة</option>
+                                <option value="alex">الإسكندرية</option>
+                            </select>
+                        </div>
+                        <div class="input-group"><label>المركز / المنطقة</label><input type="text" id="reg-city" required></div>
+                        <div class="input-group"><label>البريد الإلكتروني</label><input type="email" id="reg-email" disabled></div>
+                        <button type="submit" class="btn-primary w-100">حفظ ومتابعة</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= صفحة تفاصيل الجيم ================= -->
+        <section id="view-details" class="view-section hidden">
+            <div class="gym-cover" style="background-image: url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=1200&auto=format&fit=crop');">
+                <button class="btn-back" onclick="showView('home')"><i class="fa-solid fa-arrow-right"></i> رجوع</button>
+            </div>
+            <div class="details-container">
+                <div class="details-header">
+                    <div>
+                        <h1 class="gym-title">جولدز جيم <i class="fa-solid fa-circle-check verified-icon"></i></h1>
+                        <p class="gym-location"><i class="fa-solid fa-location-dot"></i> القاهرة، مدينة نصر، شارع عباس العقاد</p>
+                    </div>
+                    <div class="details-actions">
+                        <button class="btn-icon" id="fav-btn" onclick="toggleFavorite()"><i class="fa-regular fa-heart"></i></button>
+                    </div>
+                </div>
+
+                <div class="contact-actions">
+                    <button class="btn-secondary" onclick="requireLogin()"><i class="fa-solid fa-phone"></i> اتصال</button>
+                    <button class="btn-secondary" onclick="requireLogin()"><i class="fa-brands fa-whatsapp"></i> واتساب</button>
+                    <button class="btn-secondary" onclick="requireLogin()"><i class="fa-solid fa-map-location-dot"></i> الموقع</button>
+                </div>
+
+                <div class="details-grid">
+                    <div class="reviews-section">
+                        <div class="section-header">
+                            <h2 class="section-title">التقييمات (4.9 من 5)</h2>
+                            <span style="color: var(--text-muted); font-size: 14px;">320 تقييم</span>
+                        </div>
+                        <div class="rating-criteria">
+                            <div class="criteria-row"><span>الأجهزة والمعدات</span><div class="progress-bar"><div class="progress" style="width: 90%;"></div></div><span>4.5</span></div>
+                            <div class="criteria-row"><span>النظافة</span><div class="progress-bar"><div class="progress" style="width: 80%;"></div></div><span>4.0</span></div>
+                            <div class="criteria-row"><span>المكان والموقع</span><div class="progress-bar"><div class="progress" style="width: 95%;"></div></div><span>4.8</span></div>
+                            <div class="criteria-row"><span>التعامل وخدمة العملاء</span><div class="progress-bar"><div class="progress" style="width: 85%;"></div></div><span>4.3</span></div>
+                            <div class="criteria-row"><span>النظام والتنظيم</span><div class="progress-bar"><div class="progress" style="width: 88%;"></div></div><span>4.4</span></div>
+                            <div class="criteria-row"><span>السعر</span><div class="progress-bar"><div class="progress" style="width: 70%;"></div></div><span>3.5</span></div>
+                        </div>
+                        <div class="add-review-box">
+                            <h3>قيم تجربتك</h3>
+                            <p style="font-size: 12px; color: var(--text-muted);">يجب تسجيل الدخول لتتمكن من التقييم.</p>
+                            <button class="btn-primary" onclick="requireLogin()">أضف تقييمك</button>
+                        </div>
+                    </div>
+                    <div class="info-sidebar">
+                        <div class="info-card">
+                            <h3>معلومات إضافية</h3>
+                            <p><strong>الأسعار:</strong> تبدأ من 500 جنيه / شهر</p>
+                            <p><strong>آخر تحديث:</strong> 15 أكتوبر 2023</p>
+                            <p><strong>الحالة:</strong> موثّق <i class="fa-solid fa-circle-check" style="color: var(--primary-blue);"></i></p>
+                            <button class="btn-text"><i class="fa-solid fa-flag"></i> الإبلاغ عن بيانات خاطئة</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= صفحة حاسبة السعرات ================= -->
+        <section id="view-calories" class="view-section hidden">
+            <div class="section-header"><h2 class="section-title">حاسبة السعرات الحرارية</h2></div>
+            <div class="calc-container">
+                <form id="calorie-form">
+                    <div class="input-row">
+                        <div class="input-group"><label>العمر</label><input type="number" id="calc-age" required></div>
+                        <div class="input-group"><label>الجنس</label><select id="calc-gender"><option value="male">ذكر</option><option value="female">أنثى</option></select></div>
+                    </div>
+                    <div class="input-row">
+                        <div class="input-group"><label>الطول (سم)</label><input type="number" id="calc-height" required></div>
+                        <div class="input-group"><label>الوزن (كجم)</label><input type="number" id="calc-weight" required></div>
+                    </div>
+                    <div class="input-group">
+                        <label>مستوى النشاط</label>
+                        <select id="calc-activity">
+                            <option value="1.2">قليل الحركة</option>
+                            <option value="1.375">نشاط خفيف</option>
+                            <option value="1.55">نشاط متوسط</option>
+                            <option value="1.725">نشاط عالي</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>الهدف</label>
+                        <select id="calc-goal">
+                            <option value="lose">خفض الدهون</option>
+                            <option value="maintain">المحافظة على الوزن</option>
+                            <option value="gain">بناء العضلات</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn-primary w-100">احسب</button>
+                </form>
+                <div id="calorie-result" class="result-box hidden">
+                    <h3>احتياجك اليومي:</h3>
+                    <h1 id="result-calories" style="color: var(--primary-blue); font-size: 40px;">0</h1>
+                    <p>سعرة حرارية</p>
+                    <div id="macros-result" style="margin-top: 20px;"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= صفحة المفضلة ================= -->
+        <section id="view-favorites" class="view-section hidden">
+            <div class="section-header"><h2 class="section-title"><i class="fa-solid fa-heart" style="color: #ff4757;"></i> المفضلة</h2></div>
+            <div class="gyms-grid" id="favorites-grid">
+                <p style="color: var(--text-muted);">لا توجد جيمات في المفضلة حالياً.</p>
+            </div>
+        </section>
+
+        <!-- ================= صفحة أفضل 10 جيمات ================= -->
+        <section id="view-top10" class="view-section hidden">
+            <div class="section-header"><h2 class="section-title"><i class="fa-solid fa-trophy" style="color: var(--gold);"></i> أفضل 10 جيمات</h2></div>
+            <div class="list-container">
+                <div class="list-item"><span class="rank">1</span><div class="list-img" style="background-image: url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=200');"></div><div class="list-info"><h3>جولدز جيم</h3><p>القاهرة، مدينة نصر</p></div><div class="rating"><i class="fa-solid fa-star"></i> 4.9</div></div>
+                <div class="list-item"><span class="rank">2</span><div class="list-img" style="background-image: url('https://images.unsplash.com/photo-1571902943202-507ec2618e8f?q=80&w=200');"></div><div class="list-info"><h3>فيتنس فيرست</h3><p>الجيزة، المهندسين</p></div><div class="rating"><i class="fa-solid fa-star"></i> 4.7</div></div>
+                <div class="list-item"><span class="rank">3</span><div class="list-img" style="background-image: url('https://images.unsplash.com/photo-1540497077202-7c8a3999166f?q=80&w=200');"></div><div class="list-info"><h3>ماي جيم</h3><p>الإسكندرية، سموحة</p></div><div class="rating"><i class="fa-solid fa-star"></i> 4.5</div></div>
+            </div>
+        </section>
+
+        <!-- ================= صفحة الإعدادات ================= -->
+        <section id="view-settings" class="view-section hidden">
+            <div class="section-header"><h2 class="section-title"><i class="fa-solid fa-gear"></i> الإعدادات</h2></div>
+            <div class="settings-container">
+                <div class="settings-group">
+                    <h3>الحساب</h3>
+                    <button class="settings-btn"><i class="fa-solid fa-user-pen"></i> تعديل البيانات الشخصية</button>
+                    <button class="settings-btn"><i class="fa-solid fa-bell"></i> تفضيلات الإشعارات</button>
+                    <button class="settings-btn"><i class="fa-solid fa-location-dot"></i> إذن الموقع</button>
+                </div>
+                <div class="settings-group">
+                    <h3>عن المنصة</h3>
+                    <button class="settings-btn" onclick="showView('about')"><i class="fa-solid fa-circle-info"></i> حول</button>
+                    <button class="settings-btn" onclick="showView('who')"><i class="fa-solid fa-users"></i> من نحن</button>
+                </div>
+                <div class="settings-group">
+                    <button class="settings-btn text-danger" id="logout-btn" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> تسجيل الخروج</button>
+                    <p style="text-align: center; color: var(--text-muted); margin-top: 15px; font-size: 12px;">الإصدار 1.0.0</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= صفحة حول ================= -->
+        <section id="view-about" class="view-section hidden">
+            <div class="section-header"><h2 class="section-title">حول SHARKS</h2></div>
+            <div class="about-content">
+                <h3>كيفية استخدام المنصة</h3>
+                <p>1. ابحث عن الجيمات في منطقتك من خلال الصفحة الرئيسية.</p>
+                <p>2. تصفح التفاصيل، الصور، والأسعار.</p>
+                <p>3. قيم الجيم بناءً على 6 معايير (أجهزة، نظافة، مكان، تعامل، نظام، سعر).</p>
+                <p>4. استخدم حاسبة السعرات لمعرفة احتياجك اليومي.</p>
+                <h3 style="margin-top: 20px;">آلية التقييم الشهرية</h3>
+                <p>يتم احتساب التقييمات كل شهر، ويتم إعلان أفضل 3 جيمات وتثبيتهم لمدة 10 أيام على الصفحة الرئيسية.</p>
+            </div>
+        </section>
+
+        <!-- ================= صفحة من نحن ================= -->
+        <section id="view-who" class="view-section hidden">
+            <div class="section-header"><h2 class="section-title">من نحن</h2></div>
+            <div class="about-content">
+                <h3>رؤيتنا</h3>
+                <p>أن نكون المنصة الأولى في مصر لاكتشاف وتقييم الجيمات، لنساعد كل شخص على تحقيق أهدافه الرياضية.</p>
+                <h3 style="margin-top: 20px;">رسالتنا</h3>
+                <p>توفير بيانات دقيقة وشفافة عن الجيمات، مع تجربة مستخدم احترافية تدعم اللغتين العربية والإنجليزية.</p>
+                <h3 style="margin-top: 20px;">تواصل معنا</h3>
+                <p>للشراكات: partners@sharks.com</p>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ربط ملف الجافاسكريبت -->
+    <script src="script.js"></script>
+</body>
+</html>
