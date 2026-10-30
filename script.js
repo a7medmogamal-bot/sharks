@@ -36,6 +36,8 @@
     let galleryImages = [];
     let galleryIndex = 0;
     let lightboxIndex = 0;
+    let usernameCheckTimeout = null;
+    let lastUsernameCheck = { username: '', available: null };
 
     const getCycleId = () => {
         const d = new Date();
@@ -154,22 +156,18 @@
             msg_time_2h: 'منذ ساعتين', msg_winner_title: 'إعلان الفائزين الشهريين',
             msg_winner_body: 'تم إعلان أفضل 3 جيمات لهذا الشهر.', msg_time_1d: 'منذ يوم',
             calories_title: 'حاسبة السعرات الحرارية', age: 'العمر', gender: 'الجنس', male: 'ذكر', female: 'أنثى',
-            height: 'الطول (سم)', weight: 'الوزن (كجم)', activity: 'مستوى النشاط', sedentary: 'قليل الحركة',
-            light: 'نشاط خفيف', moderate: 'نشاط متوسط', active: 'نشاط عالي', goal: 'الهدف',
-            lose: 'خفض الدهون', maintain: 'المحافظة على الوزن', gain: 'بناء العضلات', calculate: 'احسب',
-            daily_need: 'احتياجك اليومي:', calories_unit: 'سعرة حرارية', favorites_title: 'المفضلة',
+            height: 'الطول', weight: 'الوزن', activity: 'مستوى النشاط', sedentary: 'قليل الحركة (لا رياضة)',
+            light: 'نشاط خفيف (1-3 أيام)', moderate: 'نشاط متوسط (3-5 أيام)', active: 'نشاط عالي (6-7 أيام)',
+            very_active: 'نشاط شديد (رياضي محترف)', goal: 'الهدف',
+            lose: 'خفض الدهون', maintain: 'المحافظة', gain: 'بناء العضلات', calculate: 'احسب',
+            daily_need: 'احتياجك اليومي:', calories_unit: 'سعرة', favorites_title: 'المفضلة',
             no_favorites: 'لا توجد جيمات في المفضلة حالياً.', top10_title: 'أفضل 10 جيمات',
             settings_title: 'الإعدادات', account_settings: 'الحساب', my_profile: 'ملفي الشخصي',
-            edit_profile: 'تعديل البيانات الشخصية', notifications: 'تفضيلات الإشعارات',
-            location_permission: 'إذن الموقع', display_settings: 'العرض', show_top3: 'إظهار قسم أفضل 3 جيمات',
-            about_platform: 'عن المنصة', logout: 'تسجيل الخروج', about_title: 'حول SHARKS',
-            how_to_use: 'كيفية استخدام المنصة', about_step1: '1. ابحث عن الجيمات في منطقتك.',
-            about_step2: '2. تصفح التفاصيل والأسعار.', about_step3: '3. قيم الجيم على 6 معايير.',
-            about_step4: '4. استخدم حاسبة السعرات.', monthly_system: 'آلية التقييم الشهرية',
-            monthly_desc: 'يتم احتساب التقييمات كل شهر.', who_title: 'من نحن', vision: 'رؤيتنا',
-            vision_desc: 'المنصة الأولى لاكتشاف الجيمات في مصر.', mission: 'رسالتنا',
-            mission_desc: 'بيانات دقيقة وشفافة.', contact: 'تواصل معنا', filters: 'الفلاتر', filter_area: 'المنطقة',
-            all_areas: 'كل المناطق', filter_price: 'نطاق السعر (جنيه)', filter_rating: 'التقييم', stars: 'نجوم',
+            edit_profile: 'تعديل البيانات الشخصية', location_permission: 'إذن الموقع',
+            display_settings: 'العرض', show_top3: 'إظهار قسم أفضل 3 جيمات',
+            about_platform: 'عن المنصة', logout: 'تسجيل الخروج',
+            filters: 'الفلاتر', filter_area: 'المنطقة', all_areas: 'كل المناطق',
+            filter_price: 'نطاق السعر (جنيه)', filter_rating: 'التقييم', stars: 'نجوم',
             filter_services: 'الخدمات', service_gym: 'صالة حديد', service_cardio: 'كارديو',
             service_boxing: 'ملاكمة', service_yoga: 'يوغا', service_pool: 'مسبح', service_sauna: 'ساونا',
             filter_extra: 'خيارات إضافية', filter_women: 'مواعيد سيدات', filter_verified: 'موثّق فقط',
@@ -177,21 +175,50 @@
             compare_now: 'قارن الآن', compare_title: 'مقارنة الجيمات', compare_criteria: 'المعيار',
             compare_name: 'الجيم', compare_location: 'الموقع', compare_rating: 'التقييم',
             compare_reviews: 'عدد التقييمات', compare_price: 'السعر', compare_verified: 'موثّق',
-            compare_services: 'الخدمات', compare_women: 'مواعيد السيدات', lang_changed: 'تم تغيير اللغة',
-            welcome_back: 'مرحباً بعودتك', save_profile: 'تم حفظ بياناتك بنجاح!', logout_success: 'تم تسجيل الخروج',
-            must_login: 'يجب تسجيل الدخول أولاً', added_fav: 'تمت الإضافة للمفضلة', removed_fav: 'تمت الإزالة من المفضلة',
-            top3_shown: 'تم إظهار قسم أفضل 3', top3_hidden: 'تم إخفاء قسم أفضل 3', login_error: 'فشل تسجيل الدخول',
+            compare_services: 'الخدمات', compare_women: 'مواعيد السيدات', compare_distance: 'المسافة',
+            lang_changed: 'تم تغيير اللغة', welcome_back: 'مرحباً بعودتك',
+            save_profile: 'تم حفظ بياناتك بنجاح!', logout_success: 'تم تسجيل الخروج',
+            must_login: 'يجب تسجيل الدخول أولاً', added_fav: 'تمت الإضافة للمفضلة',
+            removed_fav: 'تمت الإزالة من المفضلة', top3_shown: 'تم إظهار قسم أفضل 3',
+            top3_hidden: 'تم إخفاء قسم أفضل 3', login_error: 'فشل تسجيل الدخول',
             review_success: 'تم إرسال تقييمك! شكراً لك', filters_applied: 'تم تطبيق الفلاتر',
-            filters_cleared: 'تم مسح الفلاتر', max_compare: 'الحد الأقصى 3 جيمات', min_compare: 'اختر جيمين على الأقل',
-            result_count: 'نتيجة', offline_msg: 'أنت غير متصل بالإنترنت', error_title: 'حدث خطأ ما',
-            retry: 'إعادة المحاولة', profile_loading: 'جاري التحميل...', profile_reviews: 'تقييمات',
+            filters_cleared: 'تم مسح الفلاتر', max_compare: 'الحد الأقصى 3 جيمات',
+            min_compare: 'اختر جيمين على الأقل', result_count: 'نتيجة',
+            offline_msg: 'أنت غير متصل بالإنترنت', error_title: 'حدث خطأ ما', retry: 'إعادة المحاولة',
+            profile_loading: 'جاري التحميل...', profile_reviews: 'تقييمات',
             profile_favorites: 'مفضلة', profile_joined: 'عضو منذ', my_reviews: 'تقييماتي',
             no_reviews_yet: 'لم تقم بأي تقييم بعد.', badge_new: 'عضو جديد', badge_active: 'عضو نشط',
             badge_expert: 'خبير', badge_verified: 'موثّق', badge_reviewer: 'مقيّم',
             review_already_done: 'لقد قمت بتقييم هذا الجيم هذا الشهر. هل تريد تعديل تقييمك؟',
             review_updated: 'تم تحديث تقييمك', location_denied: 'يتم استخدام محافظتك من الملف الشخصي',
             km: 'كم', photo: 'صورة', get_location: 'تحديد موقعي', location_success: 'تم تحديد موقعك بنجاح',
-            location_error: 'فشل تحديد الموقع', location_unsupported: 'المتصفح لا يدعم خدمة الموقع'
+            location_error: 'فشل تحديد الموقع', location_unsupported: 'المتصفح لا يدعم خدمة الموقع',
+            your_data: 'بياناتك', your_data_sub: 'أدخل بياناتك لنتائج دقيقة',
+            your_results: 'نتائجك', your_results_sub: 'بناءً على بياناتك',
+            age_unit: 'سنة', height_unit: 'سم', weight_unit: 'كجم',
+            daily_calories: 'السعرات اليومية المستهدفة', bmr: 'معدل الأيض الأساسي',
+            bmr_desc: 'السعرات التي يحرقها جسمك في الراحة', tdee: 'الحرق اليومي الكلي',
+            tdee_desc: 'السعرات التي يحرقها جسمك مع نشاطك', bmi: 'مؤشر كتلة الجسم',
+            bmi_under: 'نقص', bmi_normal: 'طبيعي', bmi_over: 'زيادة', bmi_obese: 'سمنة',
+            bmi_status_under: 'وزنك أقل من الطبيعي، حاول تزود وزنك بشكل صحي',
+            bmi_status_normal: 'وزنك مثالي، حافظ على نمط حياتك الصحي',
+            bmi_status_over: 'وزنك أعلى من الطبيعي، انتبه لنظامك الغذائي',
+            bmi_status_obese: 'وزنك مرتفع بشكل ملحوظ، يُنصح باستشارة متخصص',
+            macros_title: 'توزيع الماكروز اليومي', macros_protein: 'بروتين',
+            macros_carbs: 'كربوهيدرات', macros_fats: 'دهون',
+            water_intake: 'المياه الموصى بها', liters: 'لتر يومياً',
+            goal_badge_lose: '🎯 هدفك: خسارة الوزن',
+            goal_badge_maintain: '🎯 هدفك: الحفاظ على الوزن',
+            goal_badge_gain: '🎯 هدفك: بناء العضلات',
+            edit_profile_title: 'تعديل الملف الشخصي', edit_profile_sub: 'حدّث بياناتك في أي وقت',
+            save: 'حفظ التغييرات', username_hint: '3-30 حرف، إنجليزي وأرقام و_',
+            username_available: 'متاح للاستخدام', username_taken: 'مستخدم بالفعل',
+            username_checking: 'جاري التحقق...', username_invalid: 'صيغة غير صحيحة',
+            username_saved: 'تم تحديث اسم المستخدم بنجاح',
+            profile_updated: 'تم تحديث بياناتك بنجاح', profile_error: 'حدث خطأ أثناء الحفظ',
+            username_length: 'اسم المستخدم يجب أن يكون 3-30 حرف',
+            username_format: 'استخدم حروف إنجليزية وأرقام و _ فقط',
+            name_required: 'الاسم مطلوب', phone_invalid: 'رقم الهاتف غير صحيح'
         },
         en: {
             nav_home: 'Home', nav_map: 'Map', nav_calories: 'Calories', nav_favorites: 'Favorites',
@@ -220,20 +247,16 @@
             msg_welcome_body: 'Thanks for joining.', msg_time_2h: '2 hours ago',
             msg_winner_title: 'Monthly Winners Announced', msg_winner_body: 'Top 3 gyms this month announced.',
             msg_time_1d: '1 day ago', calories_title: 'Calorie Calculator', age: 'Age', gender: 'Gender',
-            male: 'Male', female: 'Female', height: 'Height (cm)', weight: 'Weight (kg)',
-            activity: 'Activity Level', sedentary: 'Sedentary', light: 'Light', moderate: 'Moderate',
-            active: 'Active', goal: 'Goal', lose: 'Lose Fat', maintain: 'Maintain', gain: 'Build Muscle',
-            calculate: 'Calculate', daily_need: 'Daily Need:', calories_unit: 'Calories',
-            favorites_title: 'Favorites', no_favorites: 'No favorite gyms yet.', top10_title: 'Top 10 Gyms',
+            male: 'Male', female: 'Female', height: 'Height', weight: 'Weight',
+            activity: 'Activity Level', sedentary: 'Sedentary (no exercise)', light: 'Light (1-3 days)',
+            moderate: 'Moderate (3-5 days)', active: 'Active (6-7 days)', very_active: 'Very Active (athlete)',
+            goal: 'Goal', lose: 'Lose Fat', maintain: 'Maintain', gain: 'Build Muscle', calculate: 'Calculate',
+            daily_need: 'Daily Need:', calories_unit: 'kcal', favorites_title: 'Favorites',
+            no_favorites: 'No favorite gyms yet.', top10_title: 'Top 10 Gyms',
             settings_title: 'Settings', account_settings: 'Account', my_profile: 'My Profile',
-            edit_profile: 'Edit Profile', notifications: 'Notifications', location_permission: 'Location',
-            display_settings: 'Display', show_top3: 'Show Top 3 Section', about_platform: 'About',
-            logout: 'Logout', about_title: 'About SHARKS', how_to_use: 'How to use',
-            about_step1: '1. Search for gyms in your area.', about_step2: '2. Browse details and prices.',
-            about_step3: '3. Rate on 6 criteria.', about_step4: '4. Use calorie calculator.',
-            monthly_system: 'Monthly Rating', monthly_desc: 'Ratings calculated monthly.',
-            who_title: 'Who We Are', vision: 'Our Vision', vision_desc: "Egypt's #1 gym platform.",
-            mission: 'Our Mission', mission_desc: 'Accurate transparent data.', contact: 'Contact',
+            edit_profile: 'Edit Profile', location_permission: 'Location',
+            display_settings: 'Display', show_top3: 'Show Top 3 Section',
+            about_platform: 'About', logout: 'Logout',
             filters: 'Filters', filter_area: 'Area', all_areas: 'All Areas', filter_price: 'Price Range (EGP)',
             filter_rating: 'Rating', stars: 'stars', filter_services: 'Services', service_gym: 'Gym',
             service_cardio: 'Cardio', service_boxing: 'Boxing', service_yoga: 'Yoga', service_pool: 'Pool',
@@ -243,6 +266,7 @@
             compare_criteria: 'Criteria', compare_name: 'Gym', compare_location: 'Location',
             compare_rating: 'Rating', compare_reviews: 'Reviews', compare_price: 'Price',
             compare_verified: 'Verified', compare_services: 'Services', compare_women: 'Women Hours',
+            compare_distance: 'Distance',
             lang_changed: 'Language changed', welcome_back: 'Welcome back', save_profile: 'Profile saved!',
             logout_success: 'Logged out', must_login: 'Please login first', added_fav: 'Added to favorites',
             removed_fav: 'Removed from favorites', top3_shown: 'Top 3 shown', top3_hidden: 'Top 3 hidden',
@@ -257,7 +281,33 @@
             review_already_done: 'Already reviewed this month. Edit your review?',
             review_updated: 'Review updated', location_denied: 'Using governorate from profile',
             km: 'km', photo: 'photo', get_location: 'Locate me', location_success: 'Location detected',
-            location_error: 'Failed to detect location', location_unsupported: 'Geolocation not supported'
+            location_error: 'Failed to detect location', location_unsupported: 'Geolocation not supported',
+            your_data: 'Your Data', your_data_sub: 'Enter your details for accurate results',
+            your_results: 'Your Results', your_results_sub: 'Based on your data',
+            age_unit: 'years', height_unit: 'cm', weight_unit: 'kg',
+            daily_calories: 'Daily Target Calories', bmr: 'Basal Metabolic Rate',
+            bmr_desc: 'Calories burned at rest', tdee: 'Total Daily Energy',
+            tdee_desc: 'Calories burned with activity', bmi: 'Body Mass Index',
+            bmi_under: 'Under', bmi_normal: 'Normal', bmi_over: 'Over', bmi_obese: 'Obese',
+            bmi_status_under: 'You are underweight, try gaining weight healthily',
+            bmi_status_normal: 'Your weight is ideal, keep up the healthy lifestyle',
+            bmi_status_over: 'You are overweight, watch your diet',
+            bmi_status_obese: 'You are significantly overweight, consult a specialist',
+            macros_title: 'Daily Macros Distribution', macros_protein: 'Protein',
+            macros_carbs: 'Carbs', macros_fats: 'Fats',
+            water_intake: 'Recommended Water', liters: 'L/day',
+            goal_badge_lose: '🎯 Goal: Lose Fat',
+            goal_badge_maintain: '🎯 Goal: Maintain Weight',
+            goal_badge_gain: '🎯 Goal: Build Muscle',
+            edit_profile_title: 'Edit Profile', edit_profile_sub: 'Update your info anytime',
+            save: 'Save Changes', username_hint: '3-30 chars, English letters, numbers & _',
+            username_available: 'Available', username_taken: 'Already taken',
+            username_checking: 'Checking...', username_invalid: 'Invalid format',
+            username_saved: 'Username updated successfully',
+            profile_updated: 'Profile updated successfully', profile_error: 'Error saving profile',
+            username_length: 'Username must be 3-30 characters',
+            username_format: 'Use English letters, numbers, and _ only',
+            name_required: 'Name is required', phone_invalid: 'Invalid phone number'
         }
     };
 
@@ -279,11 +329,12 @@
         if (!el) return;
         duration = duration || 1200;
         const startTime = performance.now();
+        const startVal = 0;
         function update(t) {
             const elapsed = t - startTime;
             const p = Math.min(elapsed / duration, 1);
             const eased = 1 - Math.pow(1 - p, 3);
-            el.textContent = Math.round(target * eased);
+            el.textContent = Math.round(startVal + (target - startVal) * eased);
             if (p < 1) requestAnimationFrame(update);
         }
         requestAnimationFrame(update);
@@ -518,7 +569,7 @@
         let html = '';
         compareList.forEach(id => {
             const g = gyms.find(x => x.id === id);
-            if (g) html += `<div class="compare-slot" style="background-image:url('${g.cover}')"><button class="remove-slot" onclick="event.stopPropagation(); removeCompare('${id}')"><i class="fa-solid fa-xmark"></i></button></div>`;
+            if (g) html += `<div class="compare-slot" style="background-image:url('${g.cover}')"><button class="remove-slot" onclick="event.stopPropagation(); window.removeCompare('${id}')"><i class="fa-solid fa-xmark"></i></button></div>`;
         });
         for (let i = compareList.length; i < 3; i++) html += '<div class="compare-slot empty"><i class="fa-solid fa-plus"></i></div>';
         slots.innerHTML = html;
@@ -543,14 +594,26 @@
         const selected = compareList.map(id => gyms.find(g => g.id === id)).filter(Boolean);
         const rows = [
             { label: tr('compare_name'), render: g => `<div class="compare-img" style="background-image:url('${g.cover}')"></div><div class="compare-name">${currentLang === 'ar' ? g.name : g.nameEn}</div>` },
-            { label: tr('compare_location'), render: g => currentLang === 'ar' ? g.location : g.locationEn },
+            { label: tr('compare_location'), render: g => currentLang === 'ar' ? g.location : g.locationEn }
+        ];
+
+        if (userLocation) {
+            rows.push({
+                label: tr('compare_distance'),
+                render: g => `<span class="rating-value">${haversine(userLocation.lat, userLocation.lng, g.lat, g.lng).toFixed(1)} ${tr('km')}</span>`,
+                best: g => -haversine(userLocation.lat, userLocation.lng, g.lat, g.lng)
+            });
+        }
+
+        rows.push(
             { label: tr('compare_rating'), render: g => `<span class="rating-value">⭐ ${g.rating}</span>`, best: g => g.rating },
             { label: tr('compare_reviews'), render: g => g.reviews, best: g => g.reviews },
             { label: tr('compare_price'), render: g => g.price, best: g => -g.priceNumeric },
             { label: tr('compare_verified'), render: g => g.verified ? '<span style="color:var(--primary-blue);">✔</span>' : '<span style="color:var(--text-muted);">✘</span>', best: g => g.verified ? 1 : 0 },
             { label: tr('compare_services'), render: g => g.services.map(s => tr('service_' + s)).join(', ') },
             { label: tr('compare_women'), render: g => (currentLang === 'ar' ? g.womenHoursAr : g.womenHours) || '—' }
-        ];
+        );
+
         let html = '<table class="compare-table"><thead><tr><th>' + tr('compare_criteria') + '</th>';
         selected.forEach(g => html += `<th>${currentLang === 'ar' ? g.name : g.nameEn}</th>`);
         html += '</tr></thead><tbody>';
@@ -872,23 +935,102 @@
             const height = parseFloat(document.getElementById('calc-height').value) || 0;
             const weight = parseFloat(document.getElementById('calc-weight').value) || 0;
             const activity = parseFloat(document.getElementById('calc-activity').value) || 1.2;
-            const goal = document.getElementById('calc-goal').value;
-            if (!age || !height || !weight) { showToast(currentLang === 'ar' ? 'أدخل كل البيانات' : 'Fill all data', 'error'); return; }
+            const goalEl = document.querySelector('input[name="calc-goal"]:checked');
+            const goal = goalEl ? goalEl.value : 'lose';
+
+            if (!age || !height || !weight) {
+                showToast(currentLang === 'ar' ? 'أدخل كل البيانات' : 'Fill all data', 'error');
+                return;
+            }
+
             const bmr = (10 * weight) + (6.25 * height) - (5 * age) + (gender === 'male' ? 5 : -161);
             let tdee = bmr * activity;
-            if (goal === 'lose') tdee -= 500;
-            if (goal === 'gain') tdee += 500;
-            const protein = Math.round((tdee * 0.30) / 4);
-            const carbs = Math.round((tdee * 0.40) / 4);
-            const fats = Math.round((tdee * 0.30) / 9);
-            animateNumber(document.getElementById('result-calories'), Math.round(tdee));
+            let targetCalories = tdee;
+            if (goal === 'lose') targetCalories -= 500;
+            if (goal === 'gain') targetCalories += 500;
+
+            const proteinG = Math.round((targetCalories * 0.30) / 4);
+            const carbsG = Math.round((targetCalories * 0.40) / 4);
+            const fatsG = Math.round((targetCalories * 0.30) / 9);
+
+            const heightM = height / 100;
+            const bmi = weight / (heightM * heightM);
+            const water = (weight * 0.035).toFixed(1);
+
+            animateNumber(document.getElementById('result-calories'), Math.round(targetCalories));
+            animateNumber(document.getElementById('result-bmr'), Math.round(bmr));
+            animateNumber(document.getElementById('result-tdee'), Math.round(tdee));
+            document.getElementById('result-bmi').textContent = bmi.toFixed(1);
+            document.getElementById('result-water').textContent = water;
+
+            const goalBadge = document.getElementById('goal-badge');
+            const badgeKey = 'goal_badge_' + goal;
+            goalBadge.textContent = tr(badgeKey);
+            goalBadge.style.color = goal === 'lose' ? '#FF4757' : (goal === 'gain' ? '#2ED573' : '#0055FF');
+            goalBadge.style.background = goal === 'lose' ? 'rgba(255,71,87,0.15)' : (goal === 'gain' ? 'rgba(46,213,115,0.15)' : 'rgba(0,85,255,0.15)');
+            goalBadge.style.borderColor = goal === 'lose' ? 'rgba(255,71,87,0.4)' : (goal === 'gain' ? 'rgba(46,213,115,0.4)' : 'rgba(0,85,255,0.4)');
+
+            const marker = document.getElementById('bmi-marker');
+            let markerPos = 0;
+            if (bmi < 18.5) markerPos = (bmi / 18.5) * 25;
+            else if (bmi < 25) markerPos = 25 + ((bmi - 18.5) / 6.5) * 25;
+            else if (bmi < 30) markerPos = 50 + ((bmi - 25) / 5) * 25;
+            else markerPos = 75 + Math.min(((bmi - 30) / 10) * 25, 25);
+            marker.style.left = markerPos + '%';
+
+            const statusEl = document.getElementById('bmi-status-text');
+            let statusText = '', statusColor = '', statusBg = '';
+            if (bmi < 18.5) {
+                statusText = tr('bmi_status_under');
+                statusColor = '#4A9EFF';
+                statusBg = 'rgba(74,158,255,0.1)';
+            } else if (bmi < 25) {
+                statusText = tr('bmi_status_normal');
+                statusColor = '#2ED573';
+                statusBg = 'rgba(46,213,115,0.1)';
+            } else if (bmi < 30) {
+                statusText = tr('bmi_status_over');
+                statusColor = '#FFA502';
+                statusBg = 'rgba(255,165,2,0.1)';
+            } else {
+                statusText = tr('bmi_status_obese');
+                statusColor = '#FF4757';
+                statusBg = 'rgba(255,71,87,0.1)';
+            }
+            statusEl.textContent = statusText;
+            statusEl.style.color = statusColor;
+            statusEl.style.background = statusBg;
+
             document.getElementById('macros-result').innerHTML = `
-                <div style="display:flex;justify-content:space-between;gap:10px;margin-top:15px;">
-                    <div style="flex:1;background:var(--bg-card);padding:10px;border-radius:10px;border:1px solid var(--border-color);"><div style="font-size:12px;color:var(--text-muted);">${currentLang === 'ar' ? 'بروتين' : 'Protein'}</div><div style="font-weight:700;color:#FF4757;">${protein} g</div></div>
-                    <div style="flex:1;background:var(--bg-card);padding:10px;border-radius:10px;border:1px solid var(--border-color);"><div style="font-size:12px;color:var(--text-muted);">${currentLang === 'ar' ? 'كارب' : 'Carbs'}</div><div style="font-weight:700;color:#FFA502;">${carbs} g</div></div>
-                    <div style="flex:1;background:var(--bg-card);padding:10px;border-radius:10px;border:1px solid var(--border-color);"><div style="font-size:12px;color:var(--text-muted);">${currentLang === 'ar' ? 'دهون' : 'Fats'}</div><div style="font-weight:700;color:#2ED573;">${fats} g</div></div>
+                <div class="macro-item">
+                    <div class="macro-color" style="background:#FF4757;"></div>
+                    <div class="macro-info">
+                        <div class="macro-name">${tr('macros_protein')}</div>
+                        <div class="macro-value" style="color:#FF4757;">${proteinG}g</div>
+                    </div>
+                    <div class="macro-percent">30%</div>
+                </div>
+                <div class="macro-item">
+                    <div class="macro-color" style="background:#FFA502;"></div>
+                    <div class="macro-info">
+                        <div class="macro-name">${tr('macros_carbs')}</div>
+                        <div class="macro-value" style="color:#FFA502;">${carbsG}g</div>
+                    </div>
+                    <div class="macro-percent">40%</div>
+                </div>
+                <div class="macro-item">
+                    <div class="macro-color" style="background:#2ED573;"></div>
+                    <div class="macro-info">
+                        <div class="macro-name">${tr('macros_fats')}</div>
+                        <div class="macro-value" style="color:#2ED573;">${fatsG}g</div>
+                    </div>
+                    <div class="macro-percent">30%</div>
                 </div>`;
+
             document.getElementById('calorie-result').classList.remove('hidden');
+            setTimeout(() => {
+                document.getElementById('calorie-result').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 100);
         });
     }
 
@@ -1037,6 +1179,222 @@
                         </div>
                     </div>`;
             }).join('');
+        }
+    }
+
+    function validateUsername(username) {
+        if (!username || username.length < 3 || username.length > 30) return { valid: false, reason: 'length' };
+        if (!/^[a-zA-Z0-9_]+$/.test(username)) return { valid: false, reason: 'format' };
+        return { valid: true };
+    }
+
+    async function checkUsernameAvailability(username) {
+        if (!db) return { available: null };
+        try {
+            const doc = await db.collection('usernames').doc(username.toLowerCase()).get();
+            if (!doc.exists) return { available: true };
+            const data = doc.data();
+            if (currentUser && data.uid === currentUser.uid) return { available: true, isCurrent: true };
+            return { available: false };
+        } catch (e) {
+            return { available: true };
+        }
+    }
+
+    function updateUsernameStatusUI(status, message) {
+        const statusEl = document.getElementById('username-status');
+        const hintEl = document.getElementById('username-hint');
+        if (!statusEl || !hintEl) return;
+
+        statusEl.className = 'username-status';
+        hintEl.className = 'input-hint';
+
+        if (status === 'checking') {
+            statusEl.classList.add('checking');
+            statusEl.innerHTML = '';
+            hintEl.textContent = tr('username_checking');
+        } else if (status === 'available') {
+            statusEl.classList.add('available');
+            statusEl.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
+            hintEl.textContent = tr('username_available');
+            hintEl.classList.add('success');
+        } else if (status === 'unavailable') {
+            statusEl.classList.add('unavailable');
+            statusEl.innerHTML = '<i class="fa-solid fa-circle-xmark"></i>';
+            hintEl.textContent = tr('username_taken');
+            hintEl.classList.add('error');
+        } else if (status === 'invalid') {
+            statusEl.classList.add('unavailable');
+            statusEl.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i>';
+            hintEl.textContent = message || tr('username_invalid');
+            hintEl.classList.add('error');
+        } else {
+            statusEl.innerHTML = '';
+            hintEl.textContent = tr('username_hint');
+        }
+    }
+
+    function setupUsernameChecker() {
+        const input = document.getElementById('edit-username');
+        if (!input) return;
+        input.addEventListener('input', function () {
+            const val = this.value.trim().toLowerCase();
+            if (usernameCheckTimeout) clearTimeout(usernameCheckTimeout);
+
+            if (!val) {
+                updateUsernameStatusUI('default');
+                lastUsernameCheck = { username: '', available: null };
+                return;
+            }
+
+            const validation = validateUsername(val);
+            if (!validation.valid) {
+                const msg = validation.reason === 'length' ? tr('username_length') : tr('username_format');
+                updateUsernameStatusUI('invalid', msg);
+                lastUsernameCheck = { username: val, available: false };
+                return;
+            }
+
+            if (currentUser && val === (currentUser.username || '').toLowerCase()) {
+                updateUsernameStatusUI('available');
+                lastUsernameCheck = { username: val, available: true, isCurrent: true };
+                return;
+            }
+
+            updateUsernameStatusUI('checking');
+            lastUsernameCheck = { username: val, available: null };
+
+            usernameCheckTimeout = setTimeout(async () => {
+                const result = await checkUsernameAvailability(val);
+                if (lastUsernameCheck.username === val && lastUsernameCheck.available === null) {
+                    if (result.available === true) {
+                        updateUsernameStatusUI('available');
+                        lastUsernameCheck = { username: val, available: true };
+                    } else if (result.available === false) {
+                        updateUsernameStatusUI('unavailable');
+                        lastUsernameCheck = { username: val, available: false };
+                    } else {
+                        updateUsernameStatusUI('default');
+                        lastUsernameCheck = { username: val, available: true };
+                    }
+                }
+            }, 500);
+        });
+    }
+
+    window.openEditProfile = function () {
+        if (!currentUser) { showToast(tr('must_login'), 'error'); showView('login'); return; }
+        document.getElementById('edit-name').value = currentUser.name || '';
+        document.getElementById('edit-username').value = currentUser.username || '';
+        document.getElementById('edit-phone').value = currentUser.phone || '';
+        document.getElementById('edit-gov').value = currentUser.gov || 'cairo';
+        document.getElementById('edit-city').value = currentUser.city || '';
+        updateUsernameStatusUI('default');
+        lastUsernameCheck = { username: currentUser.username || '', available: true, isCurrent: true };
+        document.getElementById('edit-profile-modal').classList.remove('hidden');
+    };
+
+    window.closeEditProfile = function () {
+        document.getElementById('edit-profile-modal').classList.add('hidden');
+    };
+
+    async function saveProfileChanges(e) {
+        e.preventDefault();
+        if (!currentUser) { showToast(tr('must_login'), 'error'); return; }
+
+        const newName = document.getElementById('edit-name').value.trim();
+        const newUsername = document.getElementById('edit-username').value.trim().toLowerCase();
+        const newPhone = document.getElementById('edit-phone').value.trim();
+        const newGov = document.getElementById('edit-gov').value;
+        const newCity = document.getElementById('edit-city').value.trim();
+
+        if (!newName || newName.length < 3) {
+            showToast(tr('name_required'), 'error');
+            return;
+        }
+        if (!newPhone || !/^[0-9+]+$/.test(newPhone) || newPhone.length < 10) {
+            showToast(tr('phone_invalid'), 'error');
+            return;
+        }
+
+        const validation = validateUsername(newUsername);
+        if (!validation.valid) {
+            showToast(validation.reason === 'length' ? tr('username_length') : tr('username_format'), 'error');
+            return;
+        }
+
+        if (!lastUsernameCheck.available && lastUsernameCheck.username === newUsername) {
+            showToast(tr('username_taken'), 'error');
+            return;
+        }
+
+        const submitBtn = document.querySelector('#edit-profile-form button[type="submit"]');
+        submitBtn.innerHTML = '<span class="spinner"></span>';
+        submitBtn.disabled = true;
+
+        try {
+            const oldUsername = (currentUser.username || '').toLowerCase();
+            const usernameChanged = newUsername !== oldUsername;
+
+            if (usernameChanged) {
+                const availability = await checkUsernameAvailability(newUsername);
+                if (availability.available === false) {
+                    showToast(tr('username_taken'), 'error');
+                    return;
+                }
+
+                if (db) {
+                    const batch = db.batch();
+
+                    if (oldUsername) {
+                        batch.delete(db.collection('usernames').doc(oldUsername));
+                    }
+                    batch.set(db.collection('usernames').doc(newUsername), {
+                        uid: currentUser.uid,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+
+                    const userRef = db.collection('users').doc(currentUser.uid);
+                    batch.update(userRef, {
+                        name: newName,
+                        username: newUsername,
+                        phone: newPhone,
+                        gov: newGov,
+                        city: newCity,
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+
+                    await batch.commit();
+                }
+            } else {
+                if (db) {
+                    await db.collection('users').doc(currentUser.uid).update({
+                        name: newName,
+                        phone: newPhone,
+                        gov: newGov,
+                        city: newCity,
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                }
+            }
+
+            currentUser.name = newName;
+            currentUser.username = newUsername;
+            currentUser.phone = newPhone;
+            currentUser.gov = newGov;
+            currentUser.city = newCity;
+
+            updateProfileUI();
+            showToast(usernameChanged ? tr('username_saved') : tr('profile_updated'), 'success');
+            closeEditProfile();
+
+            if (!document.getElementById('view-profile').classList.contains('hidden')) loadProfile();
+        } catch (err) {
+            console.error(err);
+            showToast(tr('profile_error') + ': ' + (err.message || ''), 'error');
+        } finally {
+            submitBtn.innerHTML = tr('save');
+            submitBtn.disabled = false;
         }
     }
 
@@ -1239,18 +1597,45 @@
             form.addEventListener('submit', async function (e) {
                 e.preventDefault();
                 if (!auth || !auth.currentUser) { showToast('Not authenticated', 'error'); return; }
-                const newUser = {
-                    name: document.getElementById('reg-name').value.trim(),
-                    username: document.getElementById('reg-username').value.trim(),
-                    phone: document.getElementById('reg-phone').value.trim(),
-                    gov: document.getElementById('reg-gov').value,
-                    city: document.getElementById('reg-city').value.trim(),
-                    email: document.getElementById('reg-email').value,
-                    favorites: [],
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                };
+
+                const newName = document.getElementById('reg-name').value.trim();
+                const newUsername = document.getElementById('reg-username').value.trim().toLowerCase();
+                const newPhone = document.getElementById('reg-phone').value.trim();
+                const newGov = document.getElementById('reg-gov').value;
+                const newCity = document.getElementById('reg-city').value.trim();
+
+                const validation = validateUsername(newUsername);
+                if (!validation.valid) {
+                    showToast(validation.reason === 'length' ? tr('username_length') : tr('username_format'), 'error');
+                    return;
+                }
+
                 try {
-                    await db.collection('users').doc(auth.currentUser.uid).set(newUser);
+                    const usernameDoc = await db.collection('usernames').doc(newUsername).get();
+                    if (usernameDoc.exists) {
+                        showToast(tr('username_taken'), 'error');
+                        return;
+                    }
+
+                    const newUser = {
+                        name: newName,
+                        username: newUsername,
+                        phone: newPhone,
+                        gov: newGov,
+                        city: newCity,
+                        email: document.getElementById('reg-email').value,
+                        favorites: [],
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    };
+
+                    const batch = db.batch();
+                    batch.set(db.collection('users').doc(auth.currentUser.uid), newUser);
+                    batch.set(db.collection('usernames').doc(newUsername), {
+                        uid: auth.currentUser.uid,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                    await batch.commit();
+
                     currentUser = { uid: auth.currentUser.uid, ...newUser };
                     updateProfileUI();
                     showToast(tr('save_profile'), 'success');
@@ -1530,9 +1915,13 @@
         setupImageProtection();
         setupSwipe();
         setupOfflineDetection();
+        setupUsernameChecker();
         loadState();
         updateProfileUI();
         checkUnreadMessages();
+
+        const editForm = document.getElementById('edit-profile-form');
+        if (editForm) editForm.addEventListener('submit', saveProfileChanges);
 
         await loadGymsFromFirestore();
 
