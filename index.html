@@ -38,11 +38,9 @@
             <li><a href="#" class="nav-item" data-view="favorites" onclick="showView('favorites')"><i class="fa-solid fa-heart"></i> <span data-i18n="nav_favorites">المفضلة</span></a></li>
             <li><a href="#" class="nav-item" data-view="top10" onclick="showView('top10')"><i class="fa-solid fa-trophy"></i> <span data-i18n="nav_top10">أفضل 10 جيمات</span></a></li>
             <li><a href="#" class="nav-item" data-view="messages" onclick="showView('messages')"><i class="fa-regular fa-envelope"></i> <span data-i18n="nav_messages">الرسائل</span></a></li>
-
             <li><a href="#" class="nav-item disabled"><i class="fa-solid fa-robot"></i> <span data-i18n="nav_ai">SHARKS AI</span> <i class="fa-solid fa-lock lock-icon"></i></a></li>
             <li><a href="#" class="nav-item disabled"><i class="fa-solid fa-store"></i> <span data-i18n="nav_store">المتجر</span> <i class="fa-solid fa-lock lock-icon"></i></a></li>
             <li><a href="#" class="nav-item disabled"><i class="fa-solid fa-dumbbell"></i> <span data-i18n="nav_coaches">المدربون</span> <i class="fa-solid fa-lock lock-icon"></i></a></li>
-
             <li style="margin-top: 20px;"><a href="#" class="nav-item" data-view="about" onclick="showView('about')"><i class="fa-solid fa-circle-info"></i> <span data-i18n="nav_about">حول</span></a></li>
             <li><a href="#" class="nav-item" data-view="who" onclick="showView('who')"><i class="fa-solid fa-users"></i> <span data-i18n="nav_who">من نحن</span></a></li>
             <li><a href="#" class="nav-item" data-view="settings" onclick="showView('settings')"><i class="fa-solid fa-gear"></i> <span data-i18n="nav_settings">الإعدادات</span></a></li>
@@ -64,7 +62,6 @@
                 <button class="btn-icon" onclick="toggleFilters()"><i class="fa-solid fa-xmark"></i></button>
             </div>
         </div>
-
         <div class="filter-body">
             <div class="filter-group">
                 <label class="filter-label"><i class="fa-solid fa-location-dot"></i> <span data-i18n="filter_area">المنطقة</span></label>
@@ -75,7 +72,6 @@
                     <option value="alex" data-i18n="alex">الإسكندرية</option>
                 </select>
             </div>
-
             <div class="filter-group">
                 <label class="filter-label"><i class="fa-solid fa-money-bill"></i> <span data-i18n="filter_price">نطاق السعر (جنيه)</span></label>
                 <div class="range-display">
@@ -88,7 +84,6 @@
                     <input type="range" id="filter-price-max" min="0" max="1000" step="50" value="1000">
                 </div>
             </div>
-
             <div class="filter-group">
                 <label class="filter-label"><i class="fa-solid fa-star"></i> <span data-i18n="filter_rating">التقييم</span></label>
                 <label class="filter-checkbox">
@@ -100,7 +95,6 @@
                     <span>⭐ 3+ <span data-i18n="stars">نجوم</span></span>
                 </label>
             </div>
-
             <div class="filter-group">
                 <label class="filter-label"><i class="fa-solid fa-dumbbell"></i> <span data-i18n="filter_services">الخدمات</span></label>
                 <label class="filter-checkbox"><input type="checkbox" class="filter-service" value="gym"><span data-i18n="service_gym">صالة حديد</span></label>
@@ -110,7 +104,6 @@
                 <label class="filter-checkbox"><input type="checkbox" class="filter-service" value="pool"><span data-i18n="service_pool">مسبح</span></label>
                 <label class="filter-checkbox"><input type="checkbox" class="filter-service" value="sauna"><span data-i18n="service_sauna">ساونا</span></label>
             </div>
-
             <div class="filter-group">
                 <label class="filter-label"><i class="fa-solid fa-sliders"></i> <span data-i18n="filter_extra">خيارات إضافية</span></label>
                 <label class="filter-checkbox">
@@ -122,7 +115,6 @@
                     <span><i class="fa-solid fa-circle-check" style="color:var(--primary-blue);"></i> <span data-i18n="filter_verified">موثّق فقط</span></span>
                 </label>
             </div>
-
             <button class="btn-primary w-100" onclick="applyFilters()"><span data-i18n="apply_filters">تطبيق الفلاتر</span></button>
         </div>
     </aside>
@@ -154,13 +146,11 @@
                 </div>
                 <div class="podium-container" id="podium-container"></div>
             </div>
-
             <div class="section-header">
                 <h2 class="section-title"><i class="fa-solid fa-map-location-dot"></i> <span data-i18n="nearby_title">الجيمات الأقرب إليك</span></h2>
                 <a href="#" class="view-all" data-i18n="view_all">عرض الكل</a>
             </div>
             <div class="gyms-grid" id="nearby-gyms-grid"></div>
-
             <div class="section-header">
                 <h2 class="section-title"><i class="fa-solid fa-dumbbell"></i> <span data-i18n="all_gyms_title">كل الجيمات</span></h2>
                 <span id="results-count" style="color: var(--text-muted); font-size: 14px;"></span>
@@ -250,7 +240,6 @@
                         <button class="btn-icon" id="fav-btn" onclick="toggleFavorite()"><i class="fa-regular fa-heart"></i></button>
                     </div>
                 </div>
-
                 <div class="contact-actions">
                     <button class="btn-secondary" onclick="requireLogin()"><i class="fa-solid fa-phone"></i> <span data-i18n="call">اتصال</span></button>
                     <a href="#" id="whatsapp-btn" target="_blank" class="btn-secondary btn-whatsapp">
@@ -258,7 +247,6 @@
                     </a>
                     <button class="btn-secondary" onclick="requireLogin()"><i class="fa-solid fa-map-location-dot"></i> <span data-i18n="map">الموقع</span></button>
                 </div>
-
                 <div class="details-grid">
                     <div class="reviews-section">
                         <div class="section-header">
@@ -272,7 +260,6 @@
                             <button class="btn-primary" onclick="openReviewModal()"><span data-i18n="add_review">أضف تقييمك</span></button>
                         </div>
                     </div>
-
                     <div class="info-sidebar">
                         <div class="info-card">
                             <h3><i class="fa-solid fa-clock"></i> <span data-i18n="working_hours">مواعيد العمل</span></h3>
@@ -287,7 +274,6 @@
                             </table>
                             <div id="women-hours-container"></div>
                         </div>
-
                         <div class="info-card">
                             <h3 data-i18n="extra_info">معلومات إضافية</h3>
                             <p><strong data-i18n="price">الأسعار:</strong> <span id="details-price">-</span></p>
@@ -323,46 +309,145 @@
         </section>
 
         <section id="view-calories" class="view-section hidden">
-            <div class="section-header"><h2 class="section-title" data-i18n="calories_title">حاسبة السعرات الحرارية</h2></div>
-            <div class="calc-container">
-                <form id="calorie-form">
-                    <div class="input-row">
-                        <div class="input-group"><label data-i18n="age">العمر</label><input type="number" id="calc-age" required></div>
-                        <div class="input-group"><label data-i18n="gender">الجنس</label>
-                            <select id="calc-gender">
-                                <option value="male" data-i18n="male">ذكر</option>
-                                <option value="female" data-i18n="female">أنثى</option>
-                            </select>
+            <div class="section-header">
+                <h2 class="section-title"><i class="fa-solid fa-fire" style="color: #FF6B35;"></i> <span data-i18n="calories_title">حاسبة السعرات الحرارية</span></h2>
+            </div>
+            <div class="calc-wrapper">
+                <div class="calc-inputs-card">
+                    <div class="calc-card-header">
+                        <div class="calc-header-icon"><i class="fa-solid fa-user-circle"></i></div>
+                        <div>
+                            <h3 data-i18n="your_data">بياناتك</h3>
+                            <p data-i18n="your_data_sub">أدخل بياناتك لنتائج دقيقة</p>
                         </div>
                     </div>
-                    <div class="input-row">
-                        <div class="input-group"><label data-i18n="height">الطول (سم)</label><input type="number" id="calc-height" required></div>
-                        <div class="input-group"><label data-i18n="weight">الوزن (كجم)</label><input type="number" id="calc-weight" required></div>
+                    <form id="calorie-form">
+                        <div class="calc-input-grid">
+                            <div class="calc-input-group">
+                                <label><i class="fa-solid fa-cake-candles"></i> <span data-i18n="age">العمر</span></label>
+                                <input type="number" id="calc-age" min="10" max="100" placeholder="25" required>
+                                <small data-i18n="age_unit">سنة</small>
+                            </div>
+                            <div class="calc-input-group">
+                                <label><i class="fa-solid fa-venus-mars"></i> <span data-i18n="gender">الجنس</span></label>
+                                <select id="calc-gender">
+                                    <option value="male" data-i18n="male">ذكر</option>
+                                    <option value="female" data-i18n="female">أنثى</option>
+                                </select>
+                            </div>
+                            <div class="calc-input-group">
+                                <label><i class="fa-solid fa-ruler-vertical"></i> <span data-i18n="height">الطول</span></label>
+                                <input type="number" id="calc-height" min="100" max="250" placeholder="175" required>
+                                <small data-i18n="height_unit">سم</small>
+                            </div>
+                            <div class="calc-input-group">
+                                <label><i class="fa-solid fa-weight-scale"></i> <span data-i18n="weight">الوزن</span></label>
+                                <input type="number" id="calc-weight" min="30" max="300" placeholder="75" required>
+                                <small data-i18n="weight_unit">كجم</small>
+                            </div>
+                        </div>
+                        <div class="calc-input-group full">
+                            <label><i class="fa-solid fa-bolt"></i> <span data-i18n="activity">مستوى النشاط</span></label>
+                            <select id="calc-activity">
+                                <option value="1.2" data-i18n="sedentary">قليل الحركة (لا رياضة)</option>
+                                <option value="1.375" data-i18n="light">نشاط خفيف (1-3 أيام)</option>
+                                <option value="1.55" data-i18n="moderate">نشاط متوسط (3-5 أيام)</option>
+                                <option value="1.725" data-i18n="active">نشاط عالي (6-7 أيام)</option>
+                                <option value="1.9" data-i18n="very_active">نشاط شديد (رياضي محترف)</option>
+                            </select>
+                        </div>
+                        <div class="calc-input-group full">
+                            <label><i class="fa-solid fa-bullseye"></i> <span data-i18n="goal">الهدف</span></label>
+                            <div class="goal-options">
+                                <label class="goal-option">
+                                    <input type="radio" name="calc-goal" value="lose" checked>
+                                    <span><i class="fa-solid fa-arrow-trend-down"></i> <span data-i18n="lose">خفض الدهون</span></span>
+                                </label>
+                                <label class="goal-option">
+                                    <input type="radio" name="calc-goal" value="maintain">
+                                    <span><i class="fa-solid fa-equals"></i> <span data-i18n="maintain">المحافظة</span></span>
+                                </label>
+                                <label class="goal-option">
+                                    <input type="radio" name="calc-goal" value="gain">
+                                    <span><i class="fa-solid fa-arrow-trend-up"></i> <span data-i18n="gain">بناء العضلات</span></span>
+                                </label>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn-primary w-100 calc-submit-btn">
+                            <i class="fa-solid fa-calculator"></i>
+                            <span data-i18n="calculate">احسب</span>
+                        </button>
+                    </form>
+                </div>
+                <div id="calorie-result" class="calc-results-card hidden">
+                    <div class="calc-card-header">
+                        <div class="calc-header-icon"><i class="fa-solid fa-chart-line"></i></div>
+                        <div>
+                            <h3 data-i18n="your_results">نتائجك</h3>
+                            <p data-i18n="your_results_sub">بناءً على بياناتك</p>
+                        </div>
                     </div>
-                    <div class="input-group">
-                        <label data-i18n="activity">مستوى النشاط</label>
-                        <select id="calc-activity">
-                            <option value="1.2" data-i18n="sedentary">قليل الحركة</option>
-                            <option value="1.375" data-i18n="light">نشاط خفيف</option>
-                            <option value="1.55" data-i18n="moderate">نشاط متوسط</option>
-                            <option value="1.725" data-i18n="active">نشاط عالي</option>
-                        </select>
+                    <div class="main-calorie-card">
+                        <div class="main-calorie-label" data-i18n="daily_calories">السعرات اليومية المستهدفة</div>
+                        <div class="calorie-value">
+                            <span id="result-calories">0</span>
+                            <small data-i18n="calories_unit">سعرة</small>
+                        </div>
+                        <div class="calorie-goal-badge" id="goal-badge"></div>
                     </div>
-                    <div class="input-group">
-                        <label data-i18n="goal">الهدف</label>
-                        <select id="calc-goal">
-                            <option value="lose" data-i18n="lose">خفض الدهون</option>
-                            <option value="maintain" data-i18n="maintain">المحافظة على الوزن</option>
-                            <option value="gain" data-i18n="gain">بناء العضلات</option>
-                        </select>
+                    <div class="calc-stats-grid">
+                        <div class="calc-stat">
+                            <div class="calc-stat-icon bmr"><i class="fa-solid fa-heart-pulse"></i></div>
+                            <div class="calc-stat-value"><span id="result-bmr">0</span> <small data-i18n="calories_unit">سعرة</small></div>
+                            <div class="calc-stat-label" data-i18n="bmr">معدل الأيض الأساسي</div>
+                            <div class="calc-stat-desc" data-i18n="bmr_desc">السعرات التي يحرقها جسمك في الراحة</div>
+                        </div>
+                        <div class="calc-stat">
+                            <div class="calc-stat-icon tdee"><i class="fa-solid fa-fire-flame-curved"></i></div>
+                            <div class="calc-stat-value"><span id="result-tdee">0</span> <small data-i18n="calories_unit">سعرة</small></div>
+                            <div class="calc-stat-label" data-i18n="tdee">الحرق اليومي الكلي</div>
+                            <div class="calc-stat-desc" data-i18n="tdee_desc">السعرات التي يحرقها جسمك مع نشاطك</div>
+                        </div>
                     </div>
-                    <button type="submit" class="btn-primary w-100" data-i18n="calculate">احسب</button>
-                </form>
-                <div id="calorie-result" class="result-box hidden">
-                    <h3 data-i18n="daily_need">احتياجك اليومي:</h3>
-                    <h1 id="result-calories" style="color: var(--primary-blue); font-size: 40px;">0</h1>
-                    <p data-i18n="calories_unit">سعرة حرارية</p>
-                    <div id="macros-result" style="margin-top: 20px;"></div>
+                    <div class="bmi-section">
+                        <div class="bmi-header">
+                            <div class="bmi-title">
+                                <i class="fa-solid fa-weight-scale"></i>
+                                <span data-i18n="bmi">مؤشر كتلة الجسم</span>
+                            </div>
+                            <div class="bmi-value"><span id="result-bmi">0</span></div>
+                        </div>
+                        <div class="bmi-meter">
+                            <div class="bmi-bar">
+                                <div class="bmi-segment seg-under"></div>
+                                <div class="bmi-segment seg-normal"></div>
+                                <div class="bmi-segment seg-over"></div>
+                                <div class="bmi-segment seg-obese"></div>
+                                <div class="bmi-marker" id="bmi-marker"></div>
+                            </div>
+                            <div class="bmi-labels">
+                                <span data-i18n="bmi_under">نقص</span>
+                                <span data-i18n="bmi_normal">طبيعي</span>
+                                <span data-i18n="bmi_over">زيادة</span>
+                                <span data-i18n="bmi_obese">سمنة</span>
+                            </div>
+                        </div>
+                        <div class="bmi-status-text" id="bmi-status-text"></div>
+                    </div>
+                    <div class="macros-section">
+                        <div class="macros-header">
+                            <i class="fa-solid fa-chart-pie"></i>
+                            <h4 data-i18n="macros_title">توزيع الماكروز اليومي</h4>
+                        </div>
+                        <div id="macros-result"></div>
+                    </div>
+                    <div class="water-section">
+                        <div class="water-icon"><i class="fa-solid fa-droplet"></i></div>
+                        <div class="water-info">
+                            <div class="water-title" data-i18n="water_intake">المياه الموصى بها</div>
+                            <div class="water-value"><span id="result-water">0</span> <small data-i18n="liters">لتر يومياً</small></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -385,8 +470,7 @@
                 <div class="settings-group">
                     <h3 data-i18n="account_settings">الحساب</h3>
                     <button class="settings-btn" onclick="handleProfileClick()"><i class="fa-solid fa-user"></i> <span data-i18n="my_profile">ملفي الشخصي</span></button>
-                    <button class="settings-btn"><i class="fa-solid fa-user-pen"></i> <span data-i18n="edit_profile">تعديل البيانات الشخصية</span></button>
-                    <button class="settings-btn"><i class="fa-solid fa-bell"></i> <span data-i18n="notifications">تفضيلات الإشعارات</span></button>
+                    <button class="settings-btn" onclick="openEditProfile()"><i class="fa-solid fa-user-pen"></i> <span data-i18n="edit_profile">تعديل البيانات الشخصية</span></button>
                     <button class="settings-btn" onclick="requestUserLocation()"><i class="fa-solid fa-location-dot"></i> <span data-i18n="location_permission">إذن الموقع</span></button>
                 </div>
                 <div class="settings-group">
@@ -419,11 +503,11 @@
                     <p id="profile-username" style="color: var(--text-muted); font-size: 14px;"></p>
                     <div class="profile-badges" id="profile-badges"></div>
                 </div>
-                <button class="btn-secondary" onclick="showView('settings')">
-                    <i class="fa-solid fa-gear"></i> <span data-i18n="settings_title">الإعدادات</span>
-                </button>
+                <div style="display:flex;gap:10px;">
+                    <button class="btn-secondary" onclick="openEditProfile()"><i class="fa-solid fa-user-pen"></i> <span data-i18n="edit_profile">تعديل</span></button>
+                    <button class="btn-secondary" onclick="showView('settings')"><i class="fa-solid fa-gear"></i></button>
+                </div>
             </div>
-
             <div class="profile-stats">
                 <div class="stat-card">
                     <h3 id="stat-reviews">0</h3>
@@ -438,7 +522,6 @@
                     <p data-i18n="profile_joined">عضو منذ</p>
                 </div>
             </div>
-
             <div class="section-header">
                 <h2 class="section-title"><i class="fa-solid fa-star"></i> <span data-i18n="my_reviews">تقييماتي</span></h2>
             </div>
@@ -448,27 +531,244 @@
         </section>
 
         <section id="view-about" class="view-section hidden">
-            <div class="section-header"><h2 class="section-title" data-i18n="about_title">حول SHARKS</h2></div>
-            <div class="about-content">
-                <h3 data-i18n="how_to_use">كيفية استخدام المنصة</h3>
-                <p data-i18n="about_step1">1. ابحث عن الجيمات في منطقتك.</p>
-                <p data-i18n="about_step2">2. تصفح التفاصيل والأسعار.</p>
-                <p data-i18n="about_step3">3. قيم الجيم على 6 معايير.</p>
-                <p data-i18n="about_step4">4. استخدم حاسبة السعرات.</p>
-                <h3 style="margin-top: 20px;" data-i18n="monthly_system">آلية التقييم الشهرية</h3>
-                <p data-i18n="monthly_desc">يتم احتساب التقييمات كل شهر.</p>
+            <div class="about-hero">
+                <div class="about-hero-badge" data-i18n="about_badge">📖 حول SHARKS</div>
+                <h1 data-i18n="about_hero_title">دليلك الكامل للمنصة</h1>
+                <p data-i18n="about_hero_sub">كل حاجة محتاج تعرفها عن SHARKS في صفحة واحدة</p>
+            </div>
+
+            <div class="about-what">
+                <h2 data-i18n="about_what_title">SHARKS إيه بالظبط؟</h2>
+                <div class="about-what-grid">
+                    <div class="about-what-card">
+                        <div class="about-what-icon"><i class="fa-solid fa-magnifying-glass-location"></i></div>
+                        <h4 data-i18n="about_what_1_title">اكتشف</h4>
+                        <p data-i18n="about_what_1_text">ابحث عن جيمات في منطقتك، شوف الصور، اعرف الأسعار، وقارن بينهم.</p>
+                    </div>
+                    <div class="about-what-card">
+                        <div class="about-what-icon"><i class="fa-solid fa-star-half-stroke"></i></div>
+                        <h4 data-i18n="about_what_2_title">قيّم</h4>
+                        <p data-i18n="about_what_2_text">شارك تجربتك في 6 معايير. تقييمك بيساعد غيرك يختار صح.</p>
+                    </div>
+                    <div class="about-what-card">
+                        <div class="about-what-icon"><i class="fa-solid fa-fire-flame-curved"></i></div>
+                        <h4 data-i18n="about_what_3_title">احسب</h4>
+                        <p data-i18n="about_what_3_text">حاسبة سعرات ذكية تحسب احتياجك اليومي وماكروز ومياه.</p>
+                    </div>
+                    <div class="about-what-card">
+                        <div class="about-what-icon"><i class="fa-solid fa-heart"></i></div>
+                        <h4 data-i18n="about_what_4_title">احفظ</h4>
+                        <p data-i18n="about_what_4_text">احفظ جيماتك المفضلة، ارجع لها في أي وقت، وشاركها مع أصحابك.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="about-how">
+                <h2 data-i18n="about_how_title">إزاي تستخدم المنصة؟ 4 خطوات</h2>
+                <div class="about-steps">
+                    <div class="about-step">
+                        <div class="about-step-num">1</div>
+                        <div class="about-step-content">
+                            <h4 data-i18n="about_step_1_title">دوّر على جيمك</h4>
+                            <p data-i18n="about_step_1_text">من الرئيسية، اختار منطقتك أو استخدم البحث. هتلاقي جيمات قريبة منك بمسافات حقيقية.</p>
+                        </div>
+                    </div>
+                    <div class="about-step">
+                        <div class="about-step-num">2</div>
+                        <div class="about-step-content">
+                            <h4 data-i18n="about_step_2_title">شوف التفاصيل</h4>
+                            <p data-i18n="about_step_2_text">دوس على أي جيم. هتلاقي صور، أسعار، مواعيد، ومواعيد السيدات لو موجودة. اتصل بيهم أو كلمهم على واتساب.</p>
+                        </div>
+                    </div>
+                    <div class="about-step">
+                        <div class="about-step-num">3</div>
+                        <div class="about-step-content">
+                            <h4 data-i18n="about_step_3_title">قارن وقيّم</h4>
+                            <p data-i18n="about_step_3_text">عايز تقارن بين 2-3 جيمات؟ استخدم زرار المقارنة. دخلت جيم؟ قيّمه من 6 معايير.</p>
+                        </div>
+                    </div>
+                    <div class="about-step">
+                        <div class="about-step-num">4</div>
+                        <div class="about-step-content">
+                            <h4 data-i18n="about_step_4_title">حقق هدفك</h4>
+                            <p data-i18n="about_step_4_text">استخدم حاسبة السعرات، اعرف احتياجك اليومي، وابدأ رحلتك وانت فاهم جسمك محتاج إيه.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="about-rating-system">
+                <h2 data-i18n="about_rating_title">نظام التقييم — إيه اللي بيميز SHARKS</h2>
+                <p class="about-rating-intro" data-i18n="about_rating_intro">مش بنقيس الجيم بنجمة أو اتنين. بنقيسه على 6 معايير، كل واحد ليه وزنه:</p>
+                <div class="about-rating-grid">
+                    <div class="about-rating-item"><i class="fa-solid fa-dumbbell"></i><span data-i18n="crit_equipment">الأجهزة والمعدات</span></div>
+                    <div class="about-rating-item"><i class="fa-solid fa-broom"></i><span data-i18n="crit_cleanliness">النظافة</span></div>
+                    <div class="about-rating-item"><i class="fa-solid fa-location-dot"></i><span data-i18n="crit_location">المكان والموقع</span></div>
+                    <div class="about-rating-item"><i class="fa-solid fa-headset"></i><span data-i18n="crit_staff">التعامل وخدمة العملاء</span></div>
+                    <div class="about-rating-item"><i class="fa-solid fa-list-check"></i><span data-i18n="crit_organization">النظام والتنظيم</span></div>
+                    <div class="about-rating-item"><i class="fa-solid fa-money-bill"></i><span data-i18n="crit_price">السعر</span></div>
+                </div>
+                <p class="about-rating-note" data-i18n="about_rating_note">كل معيار له وزن متساوي. التقييم النهائي = متوسط الـ 6 معايير.</p>
+            </div>
+
+            <div class="about-monthly">
+                <div class="about-monthly-card">
+                    <div class="about-monthly-icon"><i class="fa-solid fa-crown"></i></div>
+                    <h3 data-i18n="about_monthly_title">نظام الدورة الشهرية</h3>
+                    <p data-i18n="about_monthly_p1">كل بداية شهر، بنفتح صفحة جديدة. التقييمات القديمة بتتحفظ في الأرشيف، والتقييمات الجديدة بتحدد الفايزين.</p>
+                    <p data-i18n="about_monthly_p2">أفضل 3 جيمات بيظهروا على الصفحة الرئيسية لمدة 10 أيام. بعد كده، الإبراز بيتشال، ونستعد للشهر الجاي.</p>
+                    <p data-i18n="about_monthly_p3">كل مستخدم ليه تقييم واحد لكل جيم كل شهر. لو غيّر رأيه، يعدّل تقييمه، مش يضيف جديد.</p>
+                </div>
+            </div>
+
+            <div class="about-faq">
+                <h2 data-i18n="about_faq_title">أسئلة بتتكرر كتير</h2>
+                <div class="faq-list">
+                    <details class="faq-item">
+                        <summary data-i18n="faq_1_q">هل لازم أسجل عشان أستخدم المنصة؟</summary>
+                        <p data-i18n="faq_1_a">لأ. تقدر تتصفح كل حاجة كزائر. بس لو عايز تقيّم، تحفظ مفضلة، أو تتواصل مع الجيم، لازم تسجل دخول بـ Google.</p>
+                    </details>
+                    <details class="faq-item">
+                        <summary data-i18n="faq_2_q">إزاي الجيمات بتتضاف على المنصة؟</summary>
+                        <p data-i18n="faq_2_a">فريق SHARKS هو اللي بيضيف الجيمات، مش بتتضاف تلقائياً. بنتعاقد مع الجيم، بنصوره، بنتأكد من أسعاره، وبعدها بننشره.</p>
+                    </details>
+                    <details class="faq-item">
+                        <summary data-i18n="faq_3_q">إيه معنى "موثّق"؟</summary>
+                        <p data-i18n="faq_3_a">يعني إن فريقنا زار الجيم وتأكد من بياناته. مش معناه إن الجيم ده أحسن من غيره. التوثيق منفصل عن التقييم.</p>
+                    </details>
+                    <details class="faq-item">
+                        <summary data-i18n="faq_4_q">هل التقييمات حقيقية؟</summary>
+                        <p data-i18n="faq_4_a">بنعمل أقصى جهدنا نمنع التلاعب. كل تقييم مرتبط بحساب Google، فيه نظام لمكافحة التكرار، وفريقنا بمراجع البلاغات. مش هنقول 100%، بس بنعمل كل حاجة نقدر عليها.</p>
+                    </details>
+                    <details class="faq-item">
+                        <summary data-i18n="faq_5_q">إزاي أضيف جيمي على المنصة؟</summary>
+                        <p data-i18n="faq_5_a">كلمنا على partners@sharks.com. فريقنا هيتواصل معاك، يتفق على التفاصيل، ويضيف جيمك.</p>
+                    </details>
+                    <details class="faq-item">
+                        <summary data-i18n="faq_6_q">إيه البيانات اللي بتتجمع عني؟</summary>
+                        <p data-i18n="faq_6_a">الاسم، اسم المستخدم، رقم الهاتف، المحافظة، والمركز. بنستخدمهم عشان نقدر نعرضلك جيمات قريبة منك. مفيش مشاركة مع أطراف تالتة.</p>
+                    </details>
+                </div>
+            </div>
+
+            <div class="about-footer">
+                <div class="about-footer-links">
+                    <a href="#" onclick="showView('who')" data-i18n="about_footer_who">من نحن</a>
+                    <a href="mailto:partners@sharks.com" data-i18n="about_footer_contact">تواصل معنا</a>
+                </div>
+                <p class="about-version" data-i18n="about_version">الإصدار 1.0.0 — آخر تحديث: أكتوبر 2026</p>
             </div>
         </section>
 
         <section id="view-who" class="view-section hidden">
-            <div class="section-header"><h2 class="section-title" data-i18n="who_title">من نحن</h2></div>
-            <div class="about-content">
-                <h3 data-i18n="vision">رؤيتنا</h3>
-                <p data-i18n="vision_desc">المنصة الأولى لاكتشاف الجيمات في مصر.</p>
-                <h3 style="margin-top: 20px;" data-i18n="mission">رسالتنا</h3>
-                <p data-i18n="mission_desc">بيانات دقيقة وشفافة.</p>
-                <h3 style="margin-top: 20px;" data-i18n="contact">تواصل معنا</h3>
-                <p>partners@sharks.com</p>
+            <div class="who-hero">
+                <div class="who-hero-content">
+                    <span class="who-hero-badge" data-i18n="who_badge">🏢 من نحن</span>
+                    <h1 data-i18n="who_hero_title">اتعبنا من التدوير.. فبنينا الحل</h1>
+                    <p data-i18n="who_hero_sub">SHARKS مش مجرد موقع، ده الحل اللي كنا بندور عليه ومش لاقيينه</p>
+                </div>
+            </div>
+
+            <div class="who-story">
+                <div class="who-story-text">
+                    <h2 data-i18n="who_story_title">الحكاية بدأت من سؤال بسيط</h2>
+                    <p data-i18n="who_story_p1">"فين أقرب جيم كويس جنبي؟"</p>
+                    <p data-i18n="who_story_p2">سؤال بيرتبك كل واحد بيبدأ رحلته الرياضية. بتفتح Google Maps، بتلاقي أسماء بس. بتسأل أصحابك، بتدور في Groups. وفي الآخر بتروح تدور بنفسك، لأن مفيش حد بيدلك بجد.</p>
+                    <p data-i18n="who_story_p3">فقلنا: <strong>ليه لأ؟</strong></p>
+                </div>
+                <div class="who-story-highlight">
+                    <div class="who-highlight-icon"><i class="fa-solid fa-lightbulb"></i></div>
+                    <div class="who-highlight-text" data-i18n="who_story_highlight">منصة واحدة. أسعار حقيقية. تقييمات بجد. ومعلومات متأكدين منها.</div>
+                </div>
+            </div>
+
+            <div class="who-mission-vision">
+                <div class="who-card">
+                    <div class="who-card-icon"><i class="fa-solid fa-eye"></i></div>
+                    <h3 data-i18n="who_vision_title">رؤيتنا</h3>
+                    <p data-i18n="who_vision_text">إننا نبقى البوابة الأولى لأي حد في مصر بيدور على جيم. متبقاش المنصة "الكويسة"، نبقى المنصة "الوحيدة اللي إنت بتفتحها".</p>
+                </div>
+                <div class="who-card">
+                    <div class="who-card-icon"><i class="fa-solid fa-rocket"></i></div>
+                    <h3 data-i18n="who_mission_title">مهمتنا</h3>
+                    <p data-i18n="who_mission_text">نوفر بيانات حقيقية عن كل جيم في مصر. أسعار مكتوبة بوضوح. صور بدون فلاتر. تقييمات من ناس دخلت ومارست فعلاً.</p>
+                </div>
+                <div class="who-card">
+                    <div class="who-card-icon"><i class="fa-solid fa-shield-halved"></i></div>
+                    <h3 data-i18n="who_values_title">قيمنا</h3>
+                    <p data-i18n="who_values_text">الشفافية قبل كل حاجة. لو جيم وحش، هنقول. لو غالي على الفاضي، هتوضح. الثقة مش هتتبني بالإعلانات، هتتبني بإنك متكدبش.</p>
+                </div>
+            </div>
+
+            <div class="who-numbers">
+                <div class="who-number-card">
+                    <div class="who-number" data-i18n="who_num_gyms">100+</div>
+                    <div class="who-number-label" data-i18n="who_num_gyms_label">جيم في القاهرة والجيزة والإسكندرية</div>
+                </div>
+                <div class="who-number-card">
+                    <div class="who-number" data-i18n="who_num_reviews">5,000+</div>
+                    <div class="who-number-label" data-i18n="who_num_reviews_label">تقييم من مستخدمين حقيقيين</div>
+                </div>
+                <div class="who-number-card">
+                    <div class="who-number" data-i18n="who_num_monthly">10,000+</div>
+                    <div class="who-number-label" data-i18n="who_num_monthly_label">زيارة شهرية للمنصة</div>
+                </div>
+            </div>
+
+            <div class="who-different">
+                <h2 data-i18n="who_diff_title">إيه اللي بيفرقنا عن أي حد تاني؟</h2>
+                <div class="who-diff-grid">
+                    <div class="who-diff-item">
+                        <div class="who-diff-check"><i class="fa-solid fa-check"></i></div>
+                        <div>
+                            <h4 data-i18n="who_diff_1_title">الجيمات متعاقد عليها</h4>
+                            <p data-i18n="who_diff_1_text">مش بنجيب أسماء من Google. كل جيم على المنصة، فريقنا راح بنفسه، صوره، عرف أسعاره، وتكلم معاهم.</p>
+                        </div>
+                    </div>
+                    <div class="who-diff-item">
+                        <div class="who-diff-check"><i class="fa-solid fa-check"></i></div>
+                        <div>
+                            <h4 data-i18n="who_diff_2_title">تقييم على 6 معايير</h4>
+                            <p data-i18n="who_diff_2_text">مش "5 نجوم" وخلاص. بنقيس الأجهزة، النظافة، المكان، التعامل، التنظيم، والسعر. عشان تعرف الجيم ده يناسبك ولا لأ.</p>
+                        </div>
+                    </div>
+                    <div class="who-diff-item">
+                        <div class="who-diff-check"><i class="fa-solid fa-check"></i></div>
+                        <div>
+                            <h4 data-i18n="who_diff_3_title">نظام شهري عادل</h4>
+                            <p data-i18n="who_diff_3_text">كل شهر بنعمل دورة جديدة. أفضل 3 جيمات بتظهر على الرئيسية. مفيش حد بيقدر يشتري مكانه، التقييمات هي اللي بتحكم.</p>
+                        </div>
+                    </div>
+                    <div class="who-diff-item">
+                        <div class="who-diff-check"><i class="fa-solid fa-check"></i></div>
+                        <div>
+                            <h4 data-i18n="who_diff_4_title">بنسمعك</h4>
+                            <p data-i18n="who_diff_4_text">شفت معلومة غلط؟ في زرار بلاغ. عندك اقتراح؟ في وسيلة تواصل. إحنا مش شركة كبيرة، إحنا ناس زيك.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="who-cta">
+                <h2 data-i18n="who_cta_title">جاهز تبدأ؟</h2>
+                <p data-i18n="who_cta_text">اختار جيمك، قيّم تجربتك، وخلّي الناس التانية تعرف الصح.</p>
+                <div class="who-cta-buttons">
+                    <button class="btn-primary" onclick="showView('home')">
+                        <i class="fa-solid fa-dumbbell"></i> <span data-i18n="who_cta_browse">تصفح الجيمات</span>
+                    </button>
+                    <button class="btn-secondary" onclick="showView('about')">
+                        <i class="fa-solid fa-circle-info"></i> <span data-i18n="who_cta_how">اعرف إزاي بنشتغل</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="who-contact">
+                <div class="who-contact-card">
+                    <i class="fa-solid fa-envelope"></i>
+                    <h4 data-i18n="who_contact_title">تواصل معنا</h4>
+                    <p data-i18n="who_contact_text">للشراكات، الاستفسارات، أو أي حاجة في دماغك</p>
+                    <a href="mailto:partners@sharks.com" class="who-contact-email">partners@sharks.com</a>
+                </div>
             </div>
         </section>
 
@@ -497,6 +797,57 @@
                 <div class="modal-actions">
                     <button type="button" class="btn-secondary" onclick="closeReviewModal()" data-i18n="cancel">إلغاء</button>
                     <button type="submit" class="btn-primary" data-i18n="submit">إرسال التقييم</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="edit-profile-modal" class="modal-overlay hidden">
+        <div class="modal-box">
+            <div class="modal-header">
+                <div style="display:flex;align-items:center;gap:12px;">
+                    <div style="width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#0055FF,#0077FF);display:flex;align-items:center;justify-content:center;color:white;font-size:18px;">
+                        <i class="fa-solid fa-user-pen"></i>
+                    </div>
+                    <div>
+                        <h2 style="font-size:18px;" data-i18n="edit_profile_title">تعديل الملف الشخصي</h2>
+                        <p style="font-size:12px;color:var(--text-muted);" data-i18n="edit_profile_sub">حدّث بياناتك في أي وقت</p>
+                    </div>
+                </div>
+                <button class="btn-icon" onclick="closeEditProfile()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form id="edit-profile-form" style="margin-top:20px;">
+                <div class="input-group">
+                    <label data-i18n="full_name">الاسم الرباعي</label>
+                    <input type="text" id="edit-name" required>
+                </div>
+                <div class="input-group">
+                    <label data-i18n="username">اسم المستخدم</label>
+                    <div class="username-input-wrapper">
+                        <input type="text" id="edit-username" required>
+                        <span class="username-status" id="username-status"></span>
+                    </div>
+                    <small class="input-hint" id="username-hint" data-i18n="username_hint">3-30 حرف، إنجليزي وأرقام و_</small>
+                </div>
+                <div class="input-group">
+                    <label data-i18n="phone">رقم الهاتف</label>
+                    <input type="tel" id="edit-phone" required>
+                </div>
+                <div class="input-group">
+                    <label data-i18n="governorate">المحافظة</label>
+                    <select id="edit-gov" required>
+                        <option value="cairo" data-i18n="cairo">القاهرة</option>
+                        <option value="giza" data-i18n="giza">الجيزة</option>
+                        <option value="alex" data-i18n="alex">الإسكندرية</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label data-i18n="city">المركز / المنطقة</label>
+                    <input type="text" id="edit-city" required>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary" onclick="closeEditProfile()" data-i18n="cancel">إلغاء</button>
+                    <button type="submit" class="btn-primary" data-i18n="save">حفظ التغييرات</button>
                 </div>
             </form>
         </div>
