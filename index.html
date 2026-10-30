@@ -11,9 +11,6 @@
 </head>
 <body>
 
-    <!-- ========================================== -->
-    <!-- Offline Banner + Error Boundary -->
-    <!-- ========================================== -->
     <div id="offline-banner" class="offline-banner hidden">
         <i class="fa-solid fa-wifi"></i>
         <span data-i18n="offline_msg">أنت غير متصل بالإنترنت</span>
@@ -30,9 +27,6 @@
         </div>
     </div>
 
-    <!-- ========================================== -->
-    <!-- 1. الشريط الجانبي -->
-    <!-- ========================================== -->
     <aside class="sidebar" id="sidebar">
         <div class="logo-container">
             <img src="https://i.ibb.co/btRfr3Z/Whats-App-Image-2026-10-29-at-8-20-02-PM-removebg-preview.png" alt="SHARKS Logo" class="logo-img">
@@ -62,9 +56,6 @@
         </div>
     </aside>
 
-    <!-- ========================================== -->
-    <!-- 2. لوحة الفلاتر -->
-    <!-- ========================================== -->
     <aside class="filter-panel" id="filter-panel">
         <div class="filter-header">
             <h3><i class="fa-solid fa-sliders"></i> <span data-i18n="filters">الفلاتر</span></h3>
@@ -137,12 +128,8 @@
     </aside>
     <div class="filter-overlay" id="filter-overlay" onclick="toggleFilters()"></div>
 
-    <!-- ========================================== -->
-    <!-- 3. المحتوى الرئيسي -->
-    <!-- ========================================== -->
     <main class="main-content">
 
-        <!-- الشريط العلوي -->
         <header class="top-header">
             <button class="btn-icon mobile-menu-btn" id="mobile-menu-btn"><i class="fa-solid fa-bars"></i></button>
             <button class="btn-icon filter-toggle-btn" id="filter-toggle-btn" onclick="toggleFilters()"><i class="fa-solid fa-sliders"></i></button>
@@ -151,15 +138,15 @@
                 <input type="text" id="global-search" placeholder="ابحث عن جيم، منطقة، أو ميزة..." data-i18n-placeholder="search_placeholder">
             </div>
             <div class="top-actions">
+                <button class="btn-icon" onclick="requestUserLocation()" title="تحديد موقعي"><i class="fa-solid fa-location-crosshairs"></i></button>
                 <button class="btn-lang" onclick="toggleLanguage()" id="lang-btn">EN</button>
-                <button class="btn-icon" onclick="showView('messages')" style="position:relative;">
+                <button class="btn-icon" onclick="openMessages()" style="position:relative;">
                     <i class="fa-regular fa-bell"></i>
-                    <span class="bell-badge"></span>
+                    <span class="bell-badge hidden" id="bell-badge"></span>
                 </button>
             </div>
         </header>
 
-        <!-- ================= الرئيسية ================= -->
         <section id="view-home" class="view-section">
             <div id="top3-section">
                 <div class="section-header">
@@ -170,10 +157,7 @@
 
             <div class="section-header">
                 <h2 class="section-title"><i class="fa-solid fa-map-location-dot"></i> <span data-i18n="nearby_title">الجيمات الأقرب إليك</span></h2>
-                <div style="display: flex; gap: 10px;">
-                    <button class="btn-secondary" onclick="showView('map')"><i class="fa-solid fa-map"></i> <span data-i18n="view_map">الخريطة</span></button>
-                    <a href="#" class="view-all" data-i18n="view_all">عرض الكل</a>
-                </div>
+                <a href="#" class="view-all" data-i18n="view_all">عرض الكل</a>
             </div>
             <div class="gyms-grid" id="nearby-gyms-grid"></div>
 
@@ -184,7 +168,6 @@
             <div class="gyms-grid" id="all-gyms-grid"></div>
         </section>
 
-        <!-- ================= الخريطة ================= -->
         <section id="view-map" class="view-section hidden">
             <div class="section-header">
                 <h2 class="section-title"><i class="fa-solid fa-map-location-dot"></i> <span data-i18n="map_title">خريطة الجيمات</span></h2>
@@ -193,7 +176,6 @@
             <div id="gyms-map"></div>
         </section>
 
-        <!-- ================= تسجيل الدخول ================= -->
         <section id="view-login" class="view-section hidden">
             <div class="auth-container">
                 <div id="login-section" class="auth-box">
@@ -228,21 +210,13 @@
             </div>
         </section>
 
-        <!-- ================= تفاصيل الجيم (مع Gallery الجديد) ================= -->
         <section id="view-details" class="view-section hidden">
-
-            <!-- 🖼️ Gallery الجديد -->
             <div class="gym-gallery" id="gym-gallery">
-                <!-- الصورة الرئيسية -->
                 <div class="gallery-main" id="gallery-main" onclick="openLightbox(0)">
                     <div class="gallery-main-img" id="gallery-main-img"></div>
-
-                    <!-- زر الرجوع -->
                     <button class="btn-back" onclick="event.stopPropagation(); showView('home')">
                         <i class="fa-solid fa-arrow-right"></i> <span data-i18n="back">رجوع</span>
                     </button>
-
-                    <!-- Overlay المعلومات -->
                     <div class="gallery-overlay">
                         <div class="gallery-meta">
                             <span class="gallery-count" id="gallery-counter">
@@ -254,14 +228,8 @@
                             </button>
                         </div>
                     </div>
-
-                    <!-- Watermark -->
                     <div class="gallery-watermark">SHARKS</div>
-
-                    <!-- طبقة الحماية -->
                     <div class="gallery-protection-layer"></div>
-
-                    <!-- أزرار التنقل داخل الغلاف -->
                     <button class="gallery-nav gallery-nav-prev" onclick="event.stopPropagation(); galleryPrev()">
                         <i class="fa-solid fa-chevron-right"></i>
                     </button>
@@ -269,8 +237,6 @@
                         <i class="fa-solid fa-chevron-left"></i>
                     </button>
                 </div>
-
-                <!-- شريط الـ Thumbnails -->
                 <div class="gallery-thumbs" id="gallery-thumbs"></div>
             </div>
 
@@ -285,7 +251,6 @@
                     </div>
                 </div>
 
-                <!-- أزرار التواصل -->
                 <div class="contact-actions">
                     <button class="btn-secondary" onclick="requireLogin()"><i class="fa-solid fa-phone"></i> <span data-i18n="call">اتصال</span></button>
                     <a href="#" id="whatsapp-btn" target="_blank" class="btn-secondary btn-whatsapp">
@@ -301,7 +266,6 @@
                             <span id="details-review-count" style="color: var(--text-muted); font-size: 14px;"></span>
                         </div>
                         <div class="rating-criteria" id="rating-criteria"></div>
-
                         <div class="add-review-box">
                             <h3 data-i18n="rate_experience">قيم تجربتك</h3>
                             <p style="font-size: 12px; color: var(--text-muted);" data-i18n="login_to_rate">يجب تسجيل الدخول لتتمكن من التقييم.</p>
@@ -336,10 +300,9 @@
             </div>
         </section>
 
-        <!-- ================= الرسائل ================= -->
         <section id="view-messages" class="view-section hidden">
             <div class="section-header"><h2 class="section-title"><i class="fa-regular fa-envelope"></i> <span data-i18n="messages_title">الرسائل</span></h2></div>
-            <div class="messages-container">
+            <div class="messages-container" id="messages-container">
                 <div class="message-item unread">
                     <div class="message-icon"><i class="fa-solid fa-bullhorn"></i></div>
                     <div class="message-content">
@@ -359,7 +322,6 @@
             </div>
         </section>
 
-        <!-- ================= حاسبة السعرات ================= -->
         <section id="view-calories" class="view-section hidden">
             <div class="section-header"><h2 class="section-title" data-i18n="calories_title">حاسبة السعرات الحرارية</h2></div>
             <div class="calc-container">
@@ -405,7 +367,6 @@
             </div>
         </section>
 
-        <!-- ================= المفضلة ================= -->
         <section id="view-favorites" class="view-section hidden">
             <div class="section-header"><h2 class="section-title"><i class="fa-solid fa-heart" style="color: #ff4757;"></i> <span data-i18n="favorites_title">المفضلة</span></h2></div>
             <div class="gyms-grid" id="favorites-grid">
@@ -413,22 +374,20 @@
             </div>
         </section>
 
-        <!-- ================= أفضل 10 ================= -->
         <section id="view-top10" class="view-section hidden">
             <div class="section-header"><h2 class="section-title"><i class="fa-solid fa-trophy" style="color: var(--gold);"></i> <span data-i18n="top10_title">أفضل 10 جيمات</span></h2></div>
             <div class="list-container" id="top10-list"></div>
         </section>
 
-        <!-- ================= الإعدادات ================= -->
         <section id="view-settings" class="view-section hidden">
             <div class="section-header"><h2 class="section-title"><i class="fa-solid fa-gear"></i> <span data-i18n="settings_title">الإعدادات</span></h2></div>
             <div class="settings-container">
                 <div class="settings-group">
                     <h3 data-i18n="account_settings">الحساب</h3>
-                    <button class="settings-btn" onclick="showView('profile')"><i class="fa-solid fa-user"></i> <span data-i18n="my_profile">ملفي الشخصي</span></button>
+                    <button class="settings-btn" onclick="handleProfileClick()"><i class="fa-solid fa-user"></i> <span data-i18n="my_profile">ملفي الشخصي</span></button>
                     <button class="settings-btn"><i class="fa-solid fa-user-pen"></i> <span data-i18n="edit_profile">تعديل البيانات الشخصية</span></button>
                     <button class="settings-btn"><i class="fa-solid fa-bell"></i> <span data-i18n="notifications">تفضيلات الإشعارات</span></button>
-                    <button class="settings-btn"><i class="fa-solid fa-location-dot"></i> <span data-i18n="location_permission">إذن الموقع</span></button>
+                    <button class="settings-btn" onclick="requestUserLocation()"><i class="fa-solid fa-location-dot"></i> <span data-i18n="location_permission">إذن الموقع</span></button>
                 </div>
                 <div class="settings-group">
                     <h3 data-i18n="display_settings">العرض</h3>
@@ -452,7 +411,6 @@
             </div>
         </section>
 
-        <!-- ================= البروفايل ================= -->
         <section id="view-profile" class="view-section hidden">
             <div class="profile-hero">
                 <div class="profile-avatar-large" id="profile-avatar">U</div>
@@ -489,7 +447,6 @@
             </div>
         </section>
 
-        <!-- ================= حول ================= -->
         <section id="view-about" class="view-section hidden">
             <div class="section-header"><h2 class="section-title" data-i18n="about_title">حول SHARKS</h2></div>
             <div class="about-content">
@@ -503,7 +460,6 @@
             </div>
         </section>
 
-        <!-- ================= من نحن ================= -->
         <section id="view-who" class="view-section hidden">
             <div class="section-header"><h2 class="section-title" data-i18n="who_title">من نحن</h2></div>
             <div class="about-content">
@@ -518,9 +474,6 @@
 
     </main>
 
-    <!-- ========================================== -->
-    <!-- 4. مودال التقييم -->
-    <!-- ========================================== -->
     <div id="review-modal" class="modal-overlay hidden">
         <div class="modal-box">
             <h2 class="modal-title" data-i18n="rate_title">قيم تجربتك</h2>
@@ -531,7 +484,6 @@
                 <div class="rating-item"><span data-i18n="crit_staff">التعامل وخدمة العملاء</span><div class="stars" data-crit="staff">★★★★★</div></div>
                 <div class="rating-item"><span data-i18n="crit_organization">النظام والتنظيم</span><div class="stars" data-crit="organization">★★★★★</div></div>
                 <div class="rating-item"><span data-i18n="crit_price">السعر</span><div class="stars" data-crit="price">★★★★★</div></div>
-
                 <div class="photo-upload-group">
                     <label data-i18n="add_photos">أضف صور (اختياري)</label>
                     <div class="photo-upload-area" onclick="document.getElementById('review-photos').click()">
@@ -542,7 +494,6 @@
                     <input type="file" id="review-photos" accept="image/*" multiple style="display:none;">
                     <div id="photo-preview" class="photo-preview"></div>
                 </div>
-
                 <div class="modal-actions">
                     <button type="button" class="btn-secondary" onclick="closeReviewModal()" data-i18n="cancel">إلغاء</button>
                     <button type="submit" class="btn-primary" data-i18n="submit">إرسال التقييم</button>
@@ -551,9 +502,6 @@
         </div>
     </div>
 
-    <!-- ========================================== -->
-    <!-- 5. شريط المقارنة -->
-    <!-- ========================================== -->
     <div id="compare-bar" class="compare-bar hidden">
         <div class="compare-bar-info">
             <i class="fa-solid fa-scale-balanced"></i>
@@ -566,9 +514,6 @@
         </div>
     </div>
 
-    <!-- ========================================== -->
-    <!-- 6. مودال المقارنة -->
-    <!-- ========================================== -->
     <div id="compare-modal" class="modal-overlay hidden">
         <div class="modal-box compare-modal-box">
             <div class="compare-modal-header">
@@ -579,57 +524,29 @@
         </div>
     </div>
 
-    <!-- ========================================== -->
-    <!-- 7. Lightbox (المعاينة الكاملة) -->
-    <!-- ========================================== -->
     <div id="lightbox" class="lightbox hidden">
-        <!-- خلفية -->
         <div class="lightbox-backdrop" onclick="closeLightbox()"></div>
-
-        <!-- زر الإغلاق -->
         <button class="lightbox-close" onclick="closeLightbox()" title="إغلاق (Esc)">
             <i class="fa-solid fa-xmark"></i>
         </button>
-
-        <!-- العداد -->
         <div class="lightbox-counter" id="lightbox-counter">1 / 6</div>
-
-        <!-- زر Fullscreen -->
         <button class="lightbox-fullscreen" onclick="toggleFullscreen()" title="ملء الشاشة">
             <i class="fa-solid fa-expand"></i>
         </button>
-
-        <!-- زر Prev -->
         <button class="lightbox-nav lightbox-prev" onclick="lightboxPrev()" title="السابق (→)">
             <i class="fa-solid fa-chevron-right"></i>
         </button>
-
-        <!-- الصورة -->
         <div class="lightbox-image-wrap" id="lightbox-image-wrap">
             <img id="lightbox-image" src="" alt="" draggable="false" oncontextmenu="return false;">
             <div class="lightbox-watermark">© SHARKS</div>
             <div class="lightbox-protection"></div>
         </div>
-
-        <!-- زر Next -->
         <button class="lightbox-nav lightbox-next" onclick="lightboxNext()" title="التالي (←)">
             <i class="fa-solid fa-chevron-left"></i>
         </button>
-
-        <!-- Thumbnails -->
         <div class="lightbox-thumbs" id="lightbox-thumbs"></div>
     </div>
 
-    <!-- ========================================== -->
-    <!-- 8. FAB للخريطة -->
-    <!-- ========================================== -->
-    <button class="fab" onclick="showView('map')" title="عرض الخريطة">
-        <i class="fa-solid fa-map-location-dot"></i>
-    </button>
-
-    <!-- ========================================== -->
-    <!-- Scripts -->
-    <!-- ========================================== -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
