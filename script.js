@@ -28,6 +28,7 @@
     let currentGymData = null;
     let mapInstance = null;
     let mapMarkers = [];
+    let mapInitAttempts = 0;
     let compareList = [];
     let reviewPhotos = [];
     let reviewStars = { equipment: 0, cleanliness: 0, location: 0, staff: 0, organization: 0, price: 0 };
@@ -44,6 +45,47 @@
         return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
     };
 
+    function parseCoordinates(input) {
+        if (!input) return null;
+        const str = String(input).trim();
+        if (!str) return null;
+        const direct = str.match(/^(-?\d+\.?\d*)\s*[,;]\s*(-?\d+\.?\d*)$/);
+        if (direct) {
+            const lat = parseFloat(direct[1]), lng = parseFloat(direct[2]);
+            if (lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180) return { lat, lng };
+        }
+        const at = str.match(/@(-?\d+\.?\d*),(-?\d+\.?\d*)/);
+        if (at) {
+            const lat = parseFloat(at[1]), lng = parseFloat(at[2]);
+            if (lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180) return { lat, lng };
+        }
+        const q = str.match(/[?&](?:q|query|ll|center|destination)=(-?\d+\.?\d*),(-?\d+\.?\d*)/);
+        if (q) {
+            const lat = parseFloat(q[1]), lng = parseFloat(q[2]);
+            if (lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180) return { lat, lng };
+        }
+        return null;
+    }
+
+    function getGymCoordinates(gym) {
+        if (gym.lat && gym.lng && typeof gym.lat === 'number' && typeof gym.lng === 'number') {
+            return { lat: gym.lat, lng: gym.lng };
+        }
+        if (gym.location && typeof gym.location === 'string') {
+            const p = parseCoordinates(gym.location);
+            if (p) return p;
+        }
+        if (gym.googleMapsUrl) {
+            const p = parseCoordinates(gym.googleMapsUrl);
+            if (p) return p;
+        }
+        if (gym.mapUrl) {
+            const p = parseCoordinates(gym.mapUrl);
+            if (p) return p;
+        }
+        return null;
+    }
+
     const gyms = [
         {
             id: 'g1', name: 'جولدز جيم', nameEn: "Gold's Gym", area: 'cairo',
@@ -58,9 +100,7 @@
                 "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=1200&auto=format&fit=crop",
                 "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?q=80&w=1200&auto=format&fit=crop",
                 "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?q=80&w=1200&auto=format&fit=crop",
-                "https://images.unsplash.com/photo-1593079831268-3381b0db4a77?q=80&w=1200&auto=format&fit=crop",
-                "https://images.unsplash.com/photo-1540497077202-7c8a3999166f?q=80&w=1200&auto=format&fit=crop",
-                "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?q=80&w=1200&auto=format&fit=crop"
+                "https://images.unsplash.com/photo-1593079831268-3381b0db4a77?q=80&w=1200&auto=format&fit=crop"
             ]
         },
         {
@@ -75,8 +115,7 @@
             images: [
                 "https://images.unsplash.com/photo-1571902943202-507ec2618e8f?q=80&w=1200&auto=format&fit=crop",
                 "https://images.unsplash.com/photo-1540497077202-7c8a3999166f?q=80&w=1200&auto=format&fit=crop",
-                "https://images.unsplash.com/photo-1558611848-73f7eb4001a1?q=80&w=1200&auto=format&fit=crop",
-                "https://images.unsplash.com/photo-1591741535018-d042766c62eb?q=80&w=1200&auto=format&fit=crop"
+                "https://images.unsplash.com/photo-1558611848-73f7eb4001a1?q=80&w=1200&auto=format&fit=crop"
             ]
         },
         {
@@ -88,10 +127,7 @@
             services: ['gym', 'cardio'],
             hours: { sat: '8:00-22:00', sun: '8:00-22:00', mon: '8:00-22:00', tue: '8:00-22:00', wed: '8:00-22:00', thu: '8:00-22:00', fri: '10:00-18:00' },
             cover: "https://images.unsplash.com/photo-1540497077202-7c8a3999166f?q=80&w=1200&auto=format&fit=crop",
-            images: [
-                "https://images.unsplash.com/photo-1540497077202-7c8a3999166f?q=80&w=1200&auto=format&fit=crop",
-                "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?q=80&w=1200&auto=format&fit=crop"
-            ]
+            images: ["https://images.unsplash.com/photo-1540497077202-7c8a3999166f?q=80&w=1200&auto=format&fit=crop"]
         },
         {
             id: 'g4', name: 'جيم بلس', nameEn: 'Gym Plus', area: 'cairo',
@@ -218,7 +254,35 @@
             profile_updated: 'تم تحديث بياناتك بنجاح', profile_error: 'حدث خطأ أثناء الحفظ',
             username_length: 'اسم المستخدم يجب أن يكون 3-30 حرف',
             username_format: 'استخدم حروف إنجليزية وأرقام و _ فقط',
-            name_required: 'الاسم مطلوب', phone_invalid: 'رقم الهاتف غير صحيح'
+            name_required: 'الاسم مطلوب', phone_invalid: 'رقم الهاتف غير صحيح',
+            open_google_maps: 'فتح في Google Maps', open_osm: 'فتح في OpenStreetMap',
+            store_coming_soon: 'قريباً جداً',
+            store_hero_title: 'متجر SHARKS',
+            store_hero_sub: 'مكملات غذائية أصلية، ملابس رياضية، وأدوات تمرين — كل حاجة محتاجها في مكان واحد',
+            store_notice: 'المنتجات دي للمعاينة فقط دلوقتي. قريباً هتقدر تشتري مباشرة من المنصة',
+            store_cat_all: 'الكل', store_cat_supplements: 'مكملات غذائية',
+            store_cat_clothing: 'ملابس رياضية', store_cat_accessories: 'أدوات ومستلزمات',
+            store_badge_hot: 'الأكثر طلباً', store_badge_new: 'جديد', store_btn_soon: 'قريباً',
+            store_p1_name: 'ووي بروتين 2 كجم', store_p1_desc: 'بروتين مصل اللبن المعزول - 24 جرام بروتين لكل سكوب - نكهة شوكولاتة',
+            store_p2_name: 'كرياتين مونوهيدرات 300 جم', store_p2_desc: 'كرياتين نقي 100% - يزيد القوة والأداء الرياضي - بدون نكهة',
+            store_p3_name: 'BCAA 300 جم', store_p3_desc: 'أحماض أمينية متشعبة - يقلل هدم العضلات - نكهة تفاح أخضر',
+            store_p4_name: 'بري وورك أوت 300 جم', store_p4_desc: 'طاقة وتركيز قبل التمرين - كافيين وكرياتين - نكهة فراولة',
+            store_p5_name: 'تيشيرت SHARKS الرياضي', store_p5_desc: 'قطن عالي الجودة - تصميم شعار SHARKS - متوفر بألوان متعددة',
+            store_p6_name: 'حذاء رياضي للتمرين', store_p6_desc: 'خفيف ومريح - مثالي لرفع الأثقال والكارديو - نعل مانع للانزلاق',
+            store_p7_name: 'شيكر بوتل 700 مل', store_p7_desc: 'بلاستيك خالي من BPA - غطاء محكم - مع كرة خلط',
+            store_p8_name: 'قفازات تمرين احترافية', store_p8_desc: 'جلد طبيعي - بطانة إسفنجية - حماية من الكاليوس - مقاسات متعددة',
+            store_p9_name: 'أشرطة مقاومة (5 مستويات)', store_p9_desc: 'مجموعة 5 أشرطة بمستويات مقاومة مختلفة - مع حقيبة حمل',
+            store_p10_name: 'حزام رفع الأثقال', store_p10_desc: 'جلد طبيعي عريض - دعم للظهر السفلي - إبزيم معدني قوي',
+            store_p11_name: 'مالتي فيتامين (60 كبسولة)', store_p11_desc: 'فيتامينات ومعادن أساسية - لدعم الطاقة والمناعة - كبسولة يومياً',
+            store_notify_title: 'عايز تعرف أول ما المتجر يفتح؟',
+            store_notify_sub: 'سجل إيميلك ونبعتلك إشعار أول ما نطلق المتجر',
+            store_notify_placeholder: 'بريدك الإلكتروني', store_notify_btn: 'أبلغني',
+            store_faq_title: 'أسئلة عن المتجر',
+            store_faq_1_q: 'إمتى المتجر هيفتح؟', store_faq_1_a: 'شغالين على تجهيز المنتجات وآلية الدفع والشحن. متوقع الإطلاق قريباً — سجل إيميلك وهنبلغك أول ما نجهز.',
+            store_faq_2_q: 'المنتجات أصلية؟', store_faq_2_a: 'أيوه. بنتعامل مع موزعين معتمدين فقط. كل منتج هيبقى معاه فاتورة وضمان الأصالة.',
+            store_faq_3_q: 'إيه طرق الدفع المتاحة؟', store_faq_3_a: 'هنجهز الدفع عند الاستلام، فودافون كاش، انستاباي، والبطاقات البنكية. هتكون متاحة عند الإطلاق.',
+            store_faq_4_q: 'في شحن لكل المحافظات؟', store_faq_4_a: 'أيوه. هنشحن لكل محافظات مصر. الشحن مجاني للطلبات فوق 500 جنيه.',
+            store_notify_success: 'تم تسجيل اهتمامك! هنبعتلك أول ما المتجر يفتح'
         },
         en: {
             nav_home: 'Home', nav_map: 'Map', nav_calories: 'Calories', nav_favorites: 'Favorites',
@@ -307,7 +371,35 @@
             profile_updated: 'Profile updated successfully', profile_error: 'Error saving profile',
             username_length: 'Username must be 3-30 characters',
             username_format: 'Use English letters, numbers, and _ only',
-            name_required: 'Name is required', phone_invalid: 'Invalid phone number'
+            name_required: 'Name is required', phone_invalid: 'Invalid phone number',
+            open_google_maps: 'Open in Google Maps', open_osm: 'Open in OpenStreetMap',
+            store_coming_soon: 'Coming Soon',
+            store_hero_title: 'SHARKS Store',
+            store_hero_sub: 'Authentic supplements, sportswear, and training gear — everything you need in one place',
+            store_notice: 'Products are for preview only for now. Soon you will be able to buy directly from the platform',
+            store_cat_all: 'All', store_cat_supplements: 'Supplements',
+            store_cat_clothing: 'Sportswear', store_cat_accessories: 'Accessories',
+            store_badge_hot: 'Best Seller', store_badge_new: 'New', store_btn_soon: 'Soon',
+            store_p1_name: 'Whey Protein 2kg', store_p1_desc: 'Whey protein isolate - 24g protein per scoop - Chocolate flavor',
+            store_p2_name: 'Creatine Monohydrate 300g', store_p2_desc: '100% pure creatine - Boosts strength and performance - Unflavored',
+            store_p3_name: 'BCAA 300g', store_p3_desc: 'Branched-chain amino acids - Reduces muscle breakdown - Green apple flavor',
+            store_p4_name: 'Pre-Workout 300g', store_p4_desc: 'Energy and focus before training - Caffeine and creatine - Strawberry flavor',
+            store_p5_name: 'SHARKS Sports T-Shirt', store_p5_desc: 'High-quality cotton - SHARKS logo design - Available in multiple colors',
+            store_p6_name: 'Training Shoes', store_p6_desc: 'Lightweight and comfortable - Ideal for weightlifting and cardio - Anti-slip sole',
+            store_p7_name: 'Shaker Bottle 700ml', store_p7_desc: 'BPA-free plastic - Leak-proof lid - With mixing ball',
+            store_p8_name: 'Pro Training Gloves', store_p8_desc: 'Natural leather - Sponge padding - Callus protection - Multiple sizes',
+            store_p9_name: 'Resistance Bands Set (5 levels)', store_p9_desc: 'Set of 5 bands with different resistance levels - With carrying bag',
+            store_p10_name: 'Weight Lifting Belt', store_p10_desc: 'Wide natural leather - Lower back support - Strong metal buckle',
+            store_p11_name: 'Multivitamin (60 capsules)', store_p11_desc: 'Essential vitamins and minerals - Supports energy and immunity - One capsule daily',
+            store_notify_title: 'Want to know when the store opens?',
+            store_notify_sub: 'Sign up and we will notify you when we launch',
+            store_notify_placeholder: 'Your email', store_notify_btn: 'Notify Me',
+            store_faq_title: 'Store FAQs',
+            store_faq_1_q: 'When will the store open?', store_faq_1_a: 'We are working on preparing products and payment/shipping. Expected launch soon — sign up and we will let you know.',
+            store_faq_2_q: 'Are the products authentic?', store_faq_2_a: 'Yes. We deal only with authorized distributors. Every product comes with a receipt and authenticity guarantee.',
+            store_faq_3_q: 'What payment methods will be available?', store_faq_3_a: 'We will support Cash on Delivery, Vodafone Cash, InstaPay, and credit cards at launch.',
+            store_faq_4_q: 'Do you ship to all governorates?', store_faq_4_a: 'Yes. We will ship across all of Egypt. Free shipping on orders over 500 EGP.',
+            store_notify_success: 'Thanks! We will notify you when the store launches'
         }
     };
 
@@ -329,12 +421,11 @@
         if (!el) return;
         duration = duration || 1200;
         const startTime = performance.now();
-        const startVal = 0;
         function update(t) {
             const elapsed = t - startTime;
             const p = Math.min(elapsed / duration, 1);
             const eased = 1 - Math.pow(1 - p, 3);
-            el.textContent = Math.round(startVal + (target - startVal) * eased);
+            el.textContent = Math.round(target * eased);
             if (p < 1) requestAnimationFrame(update);
         }
         requestAnimationFrame(update);
@@ -395,7 +486,9 @@
 
         if (viewId === 'favorites') renderFavorites();
         if (viewId === 'top10') renderTop10();
-        if (viewId === 'map') setTimeout(initMap, 100);
+        if (viewId === 'map') {
+            requestAnimationFrame(() => requestAnimationFrame(() => initMap()));
+        }
         if (viewId === 'profile') loadProfile();
     };
 
@@ -638,46 +731,132 @@
 
     function initMap() {
         if (typeof L === 'undefined') return;
-        if (mapInstance) {
-            setTimeout(() => { mapInstance.invalidateSize(); updateMapMarkers(); }, 150);
-            return;
-        }
         const container = document.getElementById('gyms-map');
         if (!container) return;
-        mapInstance = L.map('gyms-map').setView([30.0444, 31.2357], 10);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© OpenStreetMap', maxZoom: 19
-        }).addTo(mapInstance);
-        updateMapMarkers();
+        if (mapInstance) {
+            refreshMapSize();
+            updateMapMarkers();
+            return;
+        }
+        if (container.offsetWidth === 0 || container.offsetHeight === 0) {
+            if (mapInitAttempts < 10) {
+                mapInitAttempts++;
+                setTimeout(initMap, 200);
+            }
+            return;
+        }
+        mapInitAttempts = 0;
+        try {
+            mapInstance = L.map('gyms-map', {
+                center: [30.0444, 31.2357],
+                zoom: 10,
+                zoomControl: true,
+                attributionControl: true
+            });
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; OpenStreetMap contributors',
+                maxZoom: 19,
+                minZoom: 3
+            }).addTo(mapInstance);
+            mapInstance.whenReady(() => {
+                updateMapMarkers();
+                refreshMapSize();
+            });
+            addLocateControl();
+            if (window.ResizeObserver) {
+                new ResizeObserver(() => { if (mapInstance) refreshMapSize(); }).observe(container);
+            }
+        } catch (err) {
+            console.error('Map init failed:', err);
+        }
+    }
+
+    function refreshMapSize() {
+        if (!mapInstance) return;
+        requestAnimationFrame(() => {
+            try { mapInstance.invalidateSize({ animate: false, pan: false }); } catch (e) {}
+        });
     }
 
     function updateMapMarkers() {
         if (!mapInstance) return;
-        mapMarkers.forEach(m => mapInstance.removeLayer(m));
+        mapMarkers.forEach(m => { try { mapInstance.removeLayer(m); } catch (e) {} });
         mapMarkers = [];
-        const filtered = getFilteredGyms();
-        filtered.forEach(gym => {
-            const marker = L.marker([gym.lat, gym.lng], {
-                icon: L.divIcon({
-                    className: 'custom-marker-wrapper',
-                    html: '<div class="custom-map-marker"></div>',
-                    iconSize: [30, 30], iconAnchor: [15, 30]
-                })
-            }).addTo(mapInstance);
-            const popupHTML = `
-                <div style="min-width:180px;">
-                    <b style="color:var(--primary-blue);">${currentLang === 'ar' ? gym.name : gym.nameEn}</b><br>
-                    <small>${currentLang === 'ar' ? gym.location : gym.locationEn}</small><br>
-                    <span style="color:#FFD700;font-weight:700;">⭐ ${gym.rating}</span> • ${gym.price}<br>
-                    <button onclick="window.openGymDetails('${gym.id}')" style="margin-top:8px;background:#0055FF;color:white;border:none;padding:6px 14px;border-radius:8px;cursor:pointer;font-family:Cairo;font-weight:600;">${tr('details')}</button>
-                </div>`;
-            marker.bindPopup(popupHTML);
-            mapMarkers.push(marker);
-        });
-        if (filtered.length > 0) {
-            const bounds = L.latLngBounds(filtered.map(g => [g.lat, g.lng]));
-            mapInstance.fitBounds(bounds, { padding: [50, 50], maxZoom: 13 });
+        const filtered = getFilteredGyms().filter(g => g.lat && g.lng && typeof g.lat === 'number' && typeof g.lng === 'number');
+        if (filtered.length === 0) {
+            mapInstance.setView([30.0444, 31.2357], 10);
+            return;
         }
+        filtered.forEach(gym => {
+            try {
+                const marker = L.marker([gym.lat, gym.lng], {
+                    icon: L.divIcon({
+                        className: 'custom-marker-wrapper',
+                        html: '<div class="custom-map-marker"></div>',
+                        iconSize: [30, 30],
+                        iconAnchor: [15, 30],
+                        popupAnchor: [0, -30]
+                    })
+                }).addTo(mapInstance);
+                marker.bindPopup(`
+                    <div style="min-width:220px;font-family:Cairo;">
+                        <b style="color:#0055FF;font-size:14px;">${currentLang === 'ar' ? gym.name : gym.nameEn}</b><br>
+                        <small style="color:#9CA3AF;">${currentLang === 'ar' ? gym.location : gym.locationEn}</small>
+                        <div style="margin-top:8px;display:flex;align-items:center;gap:8px;">
+                            <span style="color:#FFD700;font-weight:700;">⭐ ${gym.rating}</span>
+                            <span style="color:#9CA3AF;font-size:12px;">• ${gym.price}</span>
+                        </div>
+                        <div style="display:flex;gap:6px;margin-top:10px;">
+                            <button onclick="window.openGymDetails('${gym.id}')" style="flex:1;background:#0055FF;color:white;border:none;padding:7px 10px;border-radius:8px;cursor:pointer;font-family:Cairo;font-weight:600;font-size:12px;">${tr('details')}</button>
+                            <a href="https://www.google.com/maps?q=${gym.lat},${gym.lng}" target="_blank" rel="noopener" style="background:#2A2A2D;color:white;padding:7px 10px;border-radius:8px;text-decoration:none;font-family:Cairo;font-weight:600;font-size:12px;display:flex;align-items:center;"><i class="fa-solid fa-diamond-turn-right"></i></a>
+                        </div>
+                    </div>`);
+                mapMarkers.push(marker);
+            } catch (err) { console.warn('Marker failed:', gym.name); }
+        });
+        try {
+            const bounds = L.latLngBounds(filtered.map(g => [g.lat, g.lng]));
+            if (bounds.isValid()) {
+                mapInstance.fitBounds(bounds, { padding: [60, 60], maxZoom: 14, animate: true });
+            }
+        } catch (err) {}
+    }
+
+    function addLocateControl() {
+        if (!mapInstance) return;
+        const Ctrl = L.Control.extend({
+            options: { position: 'topleft' },
+            onAdd: function () {
+                const btn = L.DomUtil.create('button', 'map-locate-btn');
+                btn.innerHTML = '<i class="fa-solid fa-location-crosshairs"></i>';
+                btn.title = currentLang === 'ar' ? 'تحديد موقعي' : 'Locate me';
+                btn.style.cssText = 'width:34px;height:34px;background:white;border:2px solid rgba(0,0,0,0.2);border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#333;font-size:16px;';
+                L.DomEvent.disableClickPropagation(btn);
+                L.DomEvent.on(btn, 'click', (e) => {
+                    e.preventDefault();
+                    if (!navigator.geolocation) { showToast(tr('location_unsupported'), 'error'); return; }
+                    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+                    navigator.geolocation.getCurrentPosition(
+                        (pos) => {
+                            const { latitude, longitude } = pos.coords;
+                            userLocation = { lat: latitude, lng: longitude };
+                            L.circleMarker([latitude, longitude], { radius: 8, color: '#FFFFFF', fillColor: '#0055FF', fillOpacity: 1, weight: 3 }).addTo(mapInstance);
+                            mapInstance.setView([latitude, longitude], 13, { animate: true });
+                            renderFilteredGyms();
+                            showToast(tr('location_success'), 'success');
+                            btn.innerHTML = '<i class="fa-solid fa-location-crosshairs"></i>';
+                        },
+                        () => {
+                            showToast(tr('location_error'), 'error');
+                            btn.innerHTML = '<i class="fa-solid fa-location-crosshairs"></i>';
+                        },
+                        { timeout: 10000, maximumAge: 600000 }
+                    );
+                });
+                return btn;
+            }
+        });
+        mapInstance.addControl(new Ctrl());
     }
 
     window.openGymDetails = function (gymId) {
@@ -685,11 +864,9 @@
         if (!g) { showToast('Gym not found', 'error'); return; }
         currentGymId = gymId;
         currentGymData = g;
-
         galleryImages = g.images && g.images.length > 0 ? g.images : (g.cover ? [g.cover] : []);
         galleryIndex = 0;
         renderGallery();
-
         const vIcon = g.verified ? ' <i class="fa-solid fa-circle-check verified-icon"></i>' : '';
         document.getElementById('details-title').innerHTML = `${currentLang === 'ar' ? g.name : g.nameEn}${vIcon}`;
         document.getElementById('details-location').innerHTML = `<i class="fa-solid fa-location-dot"></i> ${currentLang === 'ar' ? g.location : g.locationEn}`;
@@ -699,13 +876,22 @@
             ? `${tr('verified')} <i class="fa-solid fa-circle-check" style="color:var(--primary-blue);"></i>`
             : tr('not_verified');
         document.getElementById('details-review-count').textContent = `(${g.reviews})`;
-
         const favBtn = document.getElementById('fav-btn');
         const isFav = getFavorites().includes(gymId);
         favBtn.innerHTML = `<i class="${isFav ? 'fa-solid' : 'fa-regular'} fa-heart" ${isFav ? 'style="color:#FF4757;"' : ''}></i>`;
-
         document.getElementById('whatsapp-btn').href = `https://wa.me/${g.whatsapp}?text=${encodeURIComponent(currentLang === 'ar' ? 'أهلاً، أنا جاي من SHARKS وعايز أعرف أسعار الاشتراك.' : 'Hi, I came from SHARKS and would like to know the subscription prices.')}`;
-
+        const coords = getGymCoordinates(g);
+        const gmapsBtn = document.getElementById('google-maps-btn');
+        const osmBtn = document.getElementById('osm-btn');
+        if (coords && gmapsBtn && osmBtn) {
+            gmapsBtn.href = `https://www.google.com/maps?q=${coords.lat},${coords.lng}`;
+            osmBtn.href = `https://www.openstreetmap.org/?mlat=${coords.lat}&mlon=${coords.lng}#map=17/${coords.lat}/${coords.lng}`;
+            gmapsBtn.style.display = '';
+            osmBtn.style.display = '';
+        } else {
+            if (gmapsBtn) gmapsBtn.style.display = 'none';
+            if (osmBtn) osmBtn.style.display = 'none';
+        }
         renderCriteria();
         renderHours(g);
         showView('details');
@@ -717,7 +903,6 @@
         const thumbsContainer = document.getElementById('gallery-thumbs');
         const counter = document.getElementById('gallery-counter-text');
         if (!mainImg || !thumbsContainer) return;
-
         if (galleryImages.length === 0) {
             mainImg.style.backgroundImage = '';
             mainImg.classList.add('no-image');
@@ -725,11 +910,9 @@
             if (counter) counter.textContent = '0 / 0';
             return;
         }
-
         mainImg.classList.remove('no-image');
         mainImg.style.backgroundImage = `url('${galleryImages[galleryIndex]}')`;
         if (counter) counter.textContent = `${galleryIndex + 1} / ${galleryImages.length}`;
-
         const maxThumbs = 6;
         const shown = galleryImages.slice(0, maxThumbs);
         thumbsContainer.innerHTML = shown.map((img, i) => `
@@ -937,39 +1120,31 @@
             const activity = parseFloat(document.getElementById('calc-activity').value) || 1.2;
             const goalEl = document.querySelector('input[name="calc-goal"]:checked');
             const goal = goalEl ? goalEl.value : 'lose';
-
             if (!age || !height || !weight) {
                 showToast(currentLang === 'ar' ? 'أدخل كل البيانات' : 'Fill all data', 'error');
                 return;
             }
-
             const bmr = (10 * weight) + (6.25 * height) - (5 * age) + (gender === 'male' ? 5 : -161);
             let tdee = bmr * activity;
             let targetCalories = tdee;
             if (goal === 'lose') targetCalories -= 500;
             if (goal === 'gain') targetCalories += 500;
-
             const proteinG = Math.round((targetCalories * 0.30) / 4);
             const carbsG = Math.round((targetCalories * 0.40) / 4);
             const fatsG = Math.round((targetCalories * 0.30) / 9);
-
             const heightM = height / 100;
             const bmi = weight / (heightM * heightM);
             const water = (weight * 0.035).toFixed(1);
-
             animateNumber(document.getElementById('result-calories'), Math.round(targetCalories));
             animateNumber(document.getElementById('result-bmr'), Math.round(bmr));
             animateNumber(document.getElementById('result-tdee'), Math.round(tdee));
             document.getElementById('result-bmi').textContent = bmi.toFixed(1);
             document.getElementById('result-water').textContent = water;
-
             const goalBadge = document.getElementById('goal-badge');
-            const badgeKey = 'goal_badge_' + goal;
-            goalBadge.textContent = tr(badgeKey);
+            goalBadge.textContent = tr('goal_badge_' + goal);
             goalBadge.style.color = goal === 'lose' ? '#FF4757' : (goal === 'gain' ? '#2ED573' : '#0055FF');
             goalBadge.style.background = goal === 'lose' ? 'rgba(255,71,87,0.15)' : (goal === 'gain' ? 'rgba(46,213,115,0.15)' : 'rgba(0,85,255,0.15)');
             goalBadge.style.borderColor = goal === 'lose' ? 'rgba(255,71,87,0.4)' : (goal === 'gain' ? 'rgba(46,213,115,0.4)' : 'rgba(0,85,255,0.4)');
-
             const marker = document.getElementById('bmi-marker');
             let markerPos = 0;
             if (bmi < 18.5) markerPos = (bmi / 18.5) * 25;
@@ -977,56 +1152,19 @@
             else if (bmi < 30) markerPos = 50 + ((bmi - 25) / 5) * 25;
             else markerPos = 75 + Math.min(((bmi - 30) / 10) * 25, 25);
             marker.style.left = markerPos + '%';
-
             const statusEl = document.getElementById('bmi-status-text');
             let statusText = '', statusColor = '', statusBg = '';
-            if (bmi < 18.5) {
-                statusText = tr('bmi_status_under');
-                statusColor = '#4A9EFF';
-                statusBg = 'rgba(74,158,255,0.1)';
-            } else if (bmi < 25) {
-                statusText = tr('bmi_status_normal');
-                statusColor = '#2ED573';
-                statusBg = 'rgba(46,213,115,0.1)';
-            } else if (bmi < 30) {
-                statusText = tr('bmi_status_over');
-                statusColor = '#FFA502';
-                statusBg = 'rgba(255,165,2,0.1)';
-            } else {
-                statusText = tr('bmi_status_obese');
-                statusColor = '#FF4757';
-                statusBg = 'rgba(255,71,87,0.1)';
-            }
+            if (bmi < 18.5) { statusText = tr('bmi_status_under'); statusColor = '#4A9EFF'; statusBg = 'rgba(74,158,255,0.1)'; }
+            else if (bmi < 25) { statusText = tr('bmi_status_normal'); statusColor = '#2ED573'; statusBg = 'rgba(46,213,115,0.1)'; }
+            else if (bmi < 30) { statusText = tr('bmi_status_over'); statusColor = '#FFA502'; statusBg = 'rgba(255,165,2,0.1)'; }
+            else { statusText = tr('bmi_status_obese'); statusColor = '#FF4757'; statusBg = 'rgba(255,71,87,0.1)'; }
             statusEl.textContent = statusText;
             statusEl.style.color = statusColor;
             statusEl.style.background = statusBg;
-
             document.getElementById('macros-result').innerHTML = `
-                <div class="macro-item">
-                    <div class="macro-color" style="background:#FF4757;"></div>
-                    <div class="macro-info">
-                        <div class="macro-name">${tr('macros_protein')}</div>
-                        <div class="macro-value" style="color:#FF4757;">${proteinG}g</div>
-                    </div>
-                    <div class="macro-percent">30%</div>
-                </div>
-                <div class="macro-item">
-                    <div class="macro-color" style="background:#FFA502;"></div>
-                    <div class="macro-info">
-                        <div class="macro-name">${tr('macros_carbs')}</div>
-                        <div class="macro-value" style="color:#FFA502;">${carbsG}g</div>
-                    </div>
-                    <div class="macro-percent">40%</div>
-                </div>
-                <div class="macro-item">
-                    <div class="macro-color" style="background:#2ED573;"></div>
-                    <div class="macro-info">
-                        <div class="macro-name">${tr('macros_fats')}</div>
-                        <div class="macro-value" style="color:#2ED573;">${fatsG}g</div>
-                    </div>
-                    <div class="macro-percent">30%</div>
-                </div>`;
-
+                <div class="macro-item"><div class="macro-color" style="background:#FF4757;"></div><div class="macro-info"><div class="macro-name">${tr('macros_protein')}</div><div class="macro-value" style="color:#FF4757;">${proteinG}g</div></div><div class="macro-percent">30%</div></div>
+                <div class="macro-item"><div class="macro-color" style="background:#FFA502;"></div><div class="macro-info"><div class="macro-name">${tr('macros_carbs')}</div><div class="macro-value" style="color:#FFA502;">${carbsG}g</div></div><div class="macro-percent">40%</div></div>
+                <div class="macro-item"><div class="macro-color" style="background:#2ED573;"></div><div class="macro-info"><div class="macro-name">${tr('macros_fats')}</div><div class="macro-value" style="color:#2ED573;">${fatsG}g</div></div><div class="macro-percent">30%</div></div>`;
             document.getElementById('calorie-result').classList.remove('hidden');
             setTimeout(() => {
                 document.getElementById('calorie-result').scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -1121,18 +1259,30 @@
             </div>`).join('');
     }
 
+    window.filterStoreCategory = function (cat, btn) {
+        document.querySelectorAll('.store-cat-btn').forEach(b => b.classList.remove('active'));
+        if (btn) btn.classList.add('active');
+        document.querySelectorAll('.store-card').forEach(card => {
+            const cardCat = card.getAttribute('data-category');
+            if (cat === 'all' || cardCat === cat) {
+                card.style.display = '';
+                card.style.animation = 'cardEnter 0.4s ease-out';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    };
+
     async function loadProfile() {
         if (!currentUser) { showView('login'); return; }
         document.getElementById('profile-name').textContent = currentUser.name || 'User';
         document.getElementById('profile-username').textContent = '@' + (currentUser.username || 'user');
         document.getElementById('profile-avatar').textContent = (currentUser.name || 'U').charAt(0).toUpperCase();
-
         const badges = [];
         const joined = currentUser.createdAt?.toDate?.() || new Date();
         const daysSinceJoin = Math.floor((Date.now() - joined.getTime()) / (1000 * 60 * 60 * 24));
         if (daysSinceJoin < 30) badges.push({ text: tr('badge_new'), type: '' });
         else badges.push({ text: tr('badge_active'), type: 'success' });
-
         let userReviews = [];
         try {
             if (db) {
@@ -1147,19 +1297,15 @@
                 });
             }
         } catch (e) { console.warn(e); }
-
         if (userReviews.length >= 10) badges.push({ text: tr('badge_expert'), type: 'gold' });
         if (userReviews.length >= 1) badges.push({ text: tr('badge_reviewer'), type: '' });
         if (currentUser.email) badges.push({ text: tr('badge_verified'), type: 'success' });
-
         document.getElementById('profile-badges').innerHTML = badges.map(b =>
             `<span class="profile-badge ${b.type}">${b.text}</span>`
         ).join('');
-
         document.getElementById('stat-reviews').textContent = userReviews.length;
         document.getElementById('stat-favorites').textContent = getFavorites().length;
         document.getElementById('stat-joined').textContent = joined.toLocaleDateString(currentLang === 'ar' ? 'ar-EG' : 'en-US', { year: 'numeric', month: 'short' });
-
         const reviewsList = document.getElementById('profile-reviews-list');
         if (userReviews.length === 0) {
             reviewsList.innerHTML = `<p style="color:var(--text-muted);">${tr('no_reviews_yet')}</p>`;
@@ -1189,7 +1335,7 @@
     }
 
     async function checkUsernameAvailability(username) {
-        if (!db) return { available: null };
+        if (!db) return { available: true, fallback: true };
         try {
             const doc = await db.collection('usernames').doc(username.toLowerCase()).get();
             if (!doc.exists) return { available: true };
@@ -1197,7 +1343,8 @@
             if (currentUser && data.uid === currentUser.uid) return { available: true, isCurrent: true };
             return { available: false };
         } catch (e) {
-            return { available: true };
+            console.warn('Username check failed:', e);
+            return { available: null, error: e.message };
         }
     }
 
@@ -1205,10 +1352,8 @@
         const statusEl = document.getElementById('username-status');
         const hintEl = document.getElementById('username-hint');
         if (!statusEl || !hintEl) return;
-
         statusEl.className = 'username-status';
         hintEl.className = 'input-hint';
-
         if (status === 'checking') {
             statusEl.classList.add('checking');
             statusEl.innerHTML = '';
@@ -1240,13 +1385,11 @@
         input.addEventListener('input', function () {
             const val = this.value.trim().toLowerCase();
             if (usernameCheckTimeout) clearTimeout(usernameCheckTimeout);
-
             if (!val) {
                 updateUsernameStatusUI('default');
                 lastUsernameCheck = { username: '', available: null };
                 return;
             }
-
             const validation = validateUsername(val);
             if (!validation.valid) {
                 const msg = validation.reason === 'length' ? tr('username_length') : tr('username_format');
@@ -1254,16 +1397,13 @@
                 lastUsernameCheck = { username: val, available: false };
                 return;
             }
-
             if (currentUser && val === (currentUser.username || '').toLowerCase()) {
                 updateUsernameStatusUI('available');
                 lastUsernameCheck = { username: val, available: true, isCurrent: true };
                 return;
             }
-
             updateUsernameStatusUI('checking');
             lastUsernameCheck = { username: val, available: null };
-
             usernameCheckTimeout = setTimeout(async () => {
                 const result = await checkUsernameAvailability(val);
                 if (lastUsernameCheck.username === val && lastUsernameCheck.available === null) {
@@ -1301,97 +1441,79 @@
     async function saveProfileChanges(e) {
         e.preventDefault();
         if (!currentUser) { showToast(tr('must_login'), 'error'); return; }
-
         const newName = document.getElementById('edit-name').value.trim();
         const newUsername = document.getElementById('edit-username').value.trim().toLowerCase();
         const newPhone = document.getElementById('edit-phone').value.trim();
         const newGov = document.getElementById('edit-gov').value;
         const newCity = document.getElementById('edit-city').value.trim();
-
-        if (!newName || newName.length < 3) {
-            showToast(tr('name_required'), 'error');
-            return;
-        }
-        if (!newPhone || !/^[0-9+]+$/.test(newPhone) || newPhone.length < 10) {
-            showToast(tr('phone_invalid'), 'error');
-            return;
-        }
-
+        if (!newName || newName.length < 3) { showToast(tr('name_required'), 'error'); return; }
+        if (!newPhone || !/^[0-9+]+$/.test(newPhone) || newPhone.length < 10) { showToast(tr('phone_invalid'), 'error'); return; }
         const validation = validateUsername(newUsername);
         if (!validation.valid) {
             showToast(validation.reason === 'length' ? tr('username_length') : tr('username_format'), 'error');
             return;
         }
-
-        if (!lastUsernameCheck.available && lastUsernameCheck.username === newUsername) {
-            showToast(tr('username_taken'), 'error');
-            return;
-        }
-
         const submitBtn = document.querySelector('#edit-profile-form button[type="submit"]');
         submitBtn.innerHTML = '<span class="spinner"></span>';
         submitBtn.disabled = true;
-
         try {
             const oldUsername = (currentUser.username || '').toLowerCase();
             const usernameChanged = newUsername !== oldUsername;
-
             if (usernameChanged) {
                 const availability = await checkUsernameAvailability(newUsername);
+                if (availability.available === null) {
+                    showToast(currentLang === 'ar' ? 'فشل التحقق من اسم المستخدم، حاول تاني' : 'Failed to verify username, try again', 'error');
+                    return;
+                }
                 if (availability.available === false) {
                     showToast(tr('username_taken'), 'error');
                     return;
                 }
-
-                if (db) {
-                    const batch = db.batch();
-
-                    if (oldUsername) {
-                        batch.delete(db.collection('usernames').doc(oldUsername));
+                if (oldUsername) {
+                    try {
+                        await db.collection('usernames').doc(oldUsername).delete();
+                    } catch (delErr) {
+                        console.warn('Old username delete failed (skipping):', delErr.code);
                     }
-                    batch.set(db.collection('usernames').doc(newUsername), {
+                }
+                try {
+                    await db.collection('usernames').doc(newUsername).set({
                         uid: currentUser.uid,
                         createdAt: firebase.firestore.FieldValue.serverTimestamp()
                     });
-
-                    const userRef = db.collection('users').doc(currentUser.uid);
-                    batch.update(userRef, {
-                        name: newName,
-                        username: newUsername,
-                        phone: newPhone,
-                        gov: newGov,
-                        city: newCity,
-                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                    });
-
-                    await batch.commit();
-                }
-            } else {
-                if (db) {
-                    await db.collection('users').doc(currentUser.uid).update({
-                        name: newName,
-                        phone: newPhone,
-                        gov: newGov,
-                        city: newCity,
-                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                    });
+                } catch (setErr) {
+                    console.error('New username set failed:', setErr);
+                    if (setErr.code === 'permission-denied') {
+                        showToast(currentLang === 'ar' ? 'اسم المستخدم اتحجز في نفس اللحظة، جرب اسم تاني' : 'Username was taken just now, try another', 'error');
+                    } else {
+                        showToast(tr('username_taken'), 'error');
+                    }
+                    return;
                 }
             }
-
-            currentUser.name = newName;
-            currentUser.username = newUsername;
-            currentUser.phone = newPhone;
-            currentUser.gov = newGov;
-            currentUser.city = newCity;
-
+            const updateData = {
+                name: newName,
+                username: newUsername,
+                phone: newPhone,
+                gov: newGov,
+                city: newCity,
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            };
+            await db.collection('users').doc(currentUser.uid).update(updateData);
+            Object.assign(currentUser, {
+                name: newName, username: newUsername, phone: newPhone, gov: newGov, city: newCity
+            });
             updateProfileUI();
             showToast(usernameChanged ? tr('username_saved') : tr('profile_updated'), 'success');
             closeEditProfile();
-
             if (!document.getElementById('view-profile').classList.contains('hidden')) loadProfile();
         } catch (err) {
-            console.error(err);
-            showToast(tr('profile_error') + ': ' + (err.message || ''), 'error');
+            console.error('Save profile error:', err);
+            let errMsg = tr('profile_error');
+            if (err.code === 'permission-denied') errMsg = currentLang === 'ar' ? 'ليس لديك صلاحية لتعديل هذه البيانات' : 'You do not have permission';
+            else if (err.code === 'unavailable') errMsg = currentLang === 'ar' ? 'تحقق من اتصالك بالإنترنت' : 'Check your internet connection';
+            else if (err.message) errMsg += ': ' + err.message;
+            showToast(errMsg, 'error');
         } finally {
             submitBtn.innerHTML = tr('save');
             submitBtn.disabled = false;
@@ -1482,7 +1604,8 @@
             if (w > h && w > maxDim) { h = h * maxDim / w; w = maxDim; }
             else if (h > maxDim) { w = w * maxDim / h; h = maxDim; }
             const canvas = document.createElement('canvas');
-            canvas.width = w; canvas.height = h;
+            canvas.width = w;
+            canvas.height = h;
             canvas.getContext('2d').drawImage(img, 0, 0, w, h);
             cb(canvas.toDataURL('image/jpeg', quality));
         };
@@ -1597,26 +1720,19 @@
             form.addEventListener('submit', async function (e) {
                 e.preventDefault();
                 if (!auth || !auth.currentUser) { showToast('Not authenticated', 'error'); return; }
-
                 const newName = document.getElementById('reg-name').value.trim();
                 const newUsername = document.getElementById('reg-username').value.trim().toLowerCase();
                 const newPhone = document.getElementById('reg-phone').value.trim();
                 const newGov = document.getElementById('reg-gov').value;
                 const newCity = document.getElementById('reg-city').value.trim();
-
                 const validation = validateUsername(newUsername);
                 if (!validation.valid) {
                     showToast(validation.reason === 'length' ? tr('username_length') : tr('username_format'), 'error');
                     return;
                 }
-
                 try {
                     const usernameDoc = await db.collection('usernames').doc(newUsername).get();
-                    if (usernameDoc.exists) {
-                        showToast(tr('username_taken'), 'error');
-                        return;
-                    }
-
+                    if (usernameDoc.exists) { showToast(tr('username_taken'), 'error'); return; }
                     const newUser = {
                         name: newName,
                         username: newUsername,
@@ -1627,7 +1743,6 @@
                         favorites: [],
                         createdAt: firebase.firestore.FieldValue.serverTimestamp()
                     };
-
                     const batch = db.batch();
                     batch.set(db.collection('users').doc(auth.currentUser.uid), newUser);
                     batch.set(db.collection('usernames').doc(newUsername), {
@@ -1635,7 +1750,6 @@
                         createdAt: firebase.firestore.FieldValue.serverTimestamp()
                     });
                     await batch.commit();
-
                     currentUser = { uid: auth.currentUser.uid, ...newUser };
                     updateProfileUI();
                     showToast(tr('save_profile'), 'success');
@@ -1869,10 +1983,21 @@
                 snap.forEach(doc => loaded.push({ id: doc.id, ...doc.data() }));
                 if (loaded.length > 0) {
                     for (let i = 0; i < loaded.length; i++) {
-                        if (!loaded[i].cover && loaded[i].images && loaded[i].images.length > 0) loaded[i].cover = loaded[i].images[0];
+                        const gym = loaded[i];
+                        if (!gym.cover && gym.images && gym.images.length > 0) gym.cover = gym.images[0];
+                        const coords = getGymCoordinates(gym);
+                        if (coords) {
+                            gym.lat = coords.lat;
+                            gym.lng = coords.lng;
+                        } else {
+                            console.warn(`Gym "${gym.name}" has no valid coordinates`);
+                            gym.lat = 30.0444;
+                            gym.lng = 31.2357;
+                        }
                     }
                     gyms.length = 0;
                     gyms.push(...loaded);
+                    console.log(`Loaded ${gyms.length} gyms from Firestore`);
                 }
             }
         } catch (e) { console.warn('Firestore load failed, using mock:', e); }
