@@ -724,7 +724,7 @@
                     <h3 data-i18n="store_notify_title">عايز تعرف أول ما المتجر يفتح؟</h3>
                     <p data-i18n="store_notify_sub">سجل إيميلك ونبعتلك إشعار أول ما نطلق المتجر</p>
                 </div>
-                <form class="store-notify-form" id="store-notify-form" onsubmit="event.preventDefault(); showToast(currentLang === 'ar' ? 'تم تسجيل اهتمامك! هنبعتلك أول ما المتجر يفتح' : 'Thanks! We will notify you when the store launches', 'success'); this.reset();">
+                <form class="store-notify-form" id="store-notify-form" onsubmit="event.preventDefault(); showToast(tr('store_notify_success'), 'success'); this.reset();">
                     <input type="email" placeholder="your@email.com" data-i18n-placeholder="store_notify_placeholder" required>
                     <button type="submit" class="btn-primary">
                         <i class="fa-solid fa-paper-plane"></i>
@@ -828,6 +828,7 @@
                 <h1 data-i18n="about_hero_title">دليلك الكامل للمنصة</h1>
                 <p data-i18n="about_hero_sub">كل حاجة محتاج تعرفها عن SHARKS في صفحة واحدة</p>
             </div>
+
             <div class="about-what">
                 <h2 data-i18n="about_what_title">SHARKS إيه بالظبط؟</h2>
                 <div class="about-what-grid">
@@ -853,6 +854,7 @@
                     </div>
                 </div>
             </div>
+
             <div class="about-how">
                 <h2 data-i18n="about_how_title">إزاي تستخدم المنصة؟ 4 خطوات</h2>
                 <div class="about-steps">
@@ -886,6 +888,7 @@
                     </div>
                 </div>
             </div>
+
             <div class="about-rating-system">
                 <h2 data-i18n="about_rating_title">نظام التقييم — إيه اللي بيميز SHARKS</h2>
                 <p class="about-rating-intro" data-i18n="about_rating_intro">مش بنقيس الجيم بنجمة أو اتنين. بنقيسه على 6 معايير، كل واحد ليه وزنه:</p>
@@ -899,6 +902,7 @@
                 </div>
                 <p class="about-rating-note" data-i18n="about_rating_note">كل معيار له وزن متساوي. التقييم النهائي = متوسط الـ 6 معايير.</p>
             </div>
+
             <div class="about-monthly">
                 <div class="about-monthly-card">
                     <div class="about-monthly-icon"><i class="fa-solid fa-crown"></i></div>
@@ -908,6 +912,7 @@
                     <p data-i18n="about_monthly_p3">كل مستخدم ليه تقييم واحد لكل جيم كل شهر. لو غيّر رأيه، يعدّل تقييمه، مش يضيف جديد.</p>
                 </div>
             </div>
+
             <div class="about-faq">
                 <h2 data-i18n="about_faq_title">أسئلة بتتكرر كتير</h2>
                 <div class="faq-list">
@@ -937,6 +942,7 @@
                     </details>
                 </div>
             </div>
+
             <div class="about-footer">
                 <div class="about-footer-links">
                     <a href="#" onclick="showView('who')" data-i18n="about_footer_who">من نحن</a>
@@ -954,18 +960,20 @@
                     <p data-i18n="who_hero_sub">SHARKS مش مجرد موقع، ده الحل اللي كنا بندور عليه ومش لاقيينه</p>
                 </div>
             </div>
+
             <div class="who-story">
                 <div class="who-story-text">
                     <h2 data-i18n="who_story_title">الحكاية بدأت من سؤال بسيط</h2>
                     <p data-i18n="who_story_p1">"فين أقرب جيم كويس جنبي؟"</p>
                     <p data-i18n="who_story_p2">سؤال بيرتبك كل واحد بيبدأ رحلته الرياضية. بتفتح Google Maps، بتلاقي أسماء بس. بتسأل أصحابك، بتدور في Groups. وفي الآخر بتروح تدور بنفسك، لأن مفيش حد بيدلك بجد.</p>
-                    <p data-i18n="who_story_p3">فقلنا: <strong>ليه لأ؟</strong></p>
+                    <p data-i18n="who_story_p3">فقلنا: ليه لأ؟</p>
                 </div>
                 <div class="who-story-highlight">
                     <div class="who-highlight-icon"><i class="fa-solid fa-lightbulb"></i></div>
                     <div class="who-highlight-text" data-i18n="who_story_highlight">منصة واحدة. أسعار حقيقية. تقييمات بجد. ومعلومات متأكدين منها.</div>
                 </div>
             </div>
+
             <div class="who-mission-vision">
                 <div class="who-card">
                     <div class="who-card-icon"><i class="fa-solid fa-eye"></i></div>
@@ -983,6 +991,7 @@
                     <p data-i18n="who_values_text">الشفافية قبل كل حاجة. لو جيم وحش، هنقول. لو غالي على الفاضي، هتوضح. الثقة مش هتتبني بالإعلانات، هتتبني بإنك متكدبش.</p>
                 </div>
             </div>
+
             <div class="who-numbers">
                 <div class="who-number-card">
                     <div class="who-number" data-i18n="who_num_gyms">100+</div>
@@ -997,6 +1006,7 @@
                     <div class="who-number-label" data-i18n="who_num_monthly_label">زيارة شهرية للمنصة</div>
                 </div>
             </div>
+
             <div class="who-different">
                 <h2 data-i18n="who_diff_title">إيه اللي بيفرقنا عن أي حد تاني؟</h2>
                 <div class="who-diff-grid">
@@ -1030,6 +1040,7 @@
                     </div>
                 </div>
             </div>
+
             <div class="who-cta">
                 <h2 data-i18n="who_cta_title">جاهز تبدأ؟</h2>
                 <p data-i18n="who_cta_text">اختار جيمك، قيّم تجربتك، وخلّي الناس التانية تعرف الصح.</p>
@@ -1042,6 +1053,7 @@
                     </button>
                 </div>
             </div>
+
             <div class="who-contact">
                 <div class="who-contact-card">
                     <i class="fa-solid fa-envelope"></i>
@@ -1164,7 +1176,7 @@
         <button class="lightbox-fullscreen" onclick="toggleFullscreen()" title="ملء الشاشة">
             <i class="fa-solid fa-expand"></i>
         </button>
-        <button class="lightbox-nav lightbox-prev" onclick="lightboxPrev()" title="السابق (→)">
+        <button class="lightbox-nav lightbox-prev" onclick="lightboxPrev()" title="السابق">
             <i class="fa-solid fa-chevron-right"></i>
         </button>
         <div class="lightbox-image-wrap" id="lightbox-image-wrap">
@@ -1172,7 +1184,7 @@
             <div class="lightbox-watermark">© SHARKS</div>
             <div class="lightbox-protection"></div>
         </div>
-        <button class="lightbox-nav lightbox-next" onclick="lightboxNext()" title="التالي (←)">
+        <button class="lightbox-nav lightbox-next" onclick="lightboxNext()" title="التالي">
             <i class="fa-solid fa-chevron-left"></i>
         </button>
         <div class="lightbox-thumbs" id="lightbox-thumbs"></div>
