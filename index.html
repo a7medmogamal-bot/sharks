@@ -37,9 +37,9 @@
             <li><a href="#" class="nav-item" data-view="calories" onclick="showView('calories')"><i class="fa-solid fa-fire"></i> <span data-i18n="nav_calories">السعرات الحرارية</span></a></li>
             <li><a href="#" class="nav-item" data-view="favorites" onclick="showView('favorites')"><i class="fa-solid fa-heart"></i> <span data-i18n="nav_favorites">المفضلة</span></a></li>
             <li><a href="#" class="nav-item" data-view="top10" onclick="showView('top10')"><i class="fa-solid fa-trophy"></i> <span data-i18n="nav_top10">أفضل 10 جيمات</span></a></li>
+            <li><a href="#" class="nav-item" data-view="store" onclick="showView('store')"><i class="fa-solid fa-store"></i> <span data-i18n="nav_store">المتجر</span></a></li>
             <li><a href="#" class="nav-item" data-view="messages" onclick="showView('messages')"><i class="fa-regular fa-envelope"></i> <span data-i18n="nav_messages">الرسائل</span></a></li>
             <li><a href="#" class="nav-item disabled"><i class="fa-solid fa-robot"></i> <span data-i18n="nav_ai">SHARKS AI</span> <i class="fa-solid fa-lock lock-icon"></i></a></li>
-            <li><a href="#" class="nav-item disabled"><i class="fa-solid fa-store"></i> <span data-i18n="nav_store">المتجر</span> <i class="fa-solid fa-lock lock-icon"></i></a></li>
             <li><a href="#" class="nav-item disabled"><i class="fa-solid fa-dumbbell"></i> <span data-i18n="nav_coaches">المدربون</span> <i class="fa-solid fa-lock lock-icon"></i></a></li>
             <li style="margin-top: 20px;"><a href="#" class="nav-item" data-view="about" onclick="showView('about')"><i class="fa-solid fa-circle-info"></i> <span data-i18n="nav_about">حول</span></a></li>
             <li><a href="#" class="nav-item" data-view="who" onclick="showView('who')"><i class="fa-solid fa-users"></i> <span data-i18n="nav_who">من نحن</span></a></li>
@@ -246,6 +246,14 @@
                         <i class="fa-brands fa-whatsapp"></i> <span data-i18n="whatsapp">واتساب</span>
                     </a>
                     <button class="btn-secondary" onclick="requireLogin()"><i class="fa-solid fa-map-location-dot"></i> <span data-i18n="map">الموقع</span></button>
+                </div>
+                <div class="map-actions">
+                    <a id="google-maps-btn" href="#" target="_blank" rel="noopener" class="btn-secondary" style="border-color:#4285F4;color:#4285F4;">
+                        <i class="fa-solid fa-map-location-dot"></i> <span data-i18n="open_google_maps">فتح في Google Maps</span>
+                    </a>
+                    <a id="osm-btn" href="#" target="_blank" rel="noopener" class="btn-secondary" style="border-color:#7EBC6F;color:#7EBC6F;">
+                        <i class="fa-solid fa-map"></i> <span data-i18n="open_osm">فتح في OpenStreetMap</span>
+                    </a>
                 </div>
                 <div class="details-grid">
                     <div class="reviews-section">
@@ -464,6 +472,290 @@
             <div class="list-container" id="top10-list"></div>
         </section>
 
+        <section id="view-store" class="view-section hidden">
+            <div class="store-hero">
+                <div class="store-hero-badge">
+                    <i class="fa-solid fa-hourglass-half"></i>
+                    <span data-i18n="store_coming_soon">قريباً جداً</span>
+                </div>
+                <h1 data-i18n="store_hero_title">متجر SHARKS</h1>
+                <p data-i18n="store_hero_sub">مكملات غذائية أصلية، ملابس رياضية، وأدوات تمرين — كل حاجة محتاجها في مكان واحد</p>
+                <div class="store-hero-notice">
+                    <i class="fa-solid fa-circle-info"></i>
+                    <span data-i18n="store_notice">المنتجات دي للمعاينة فقط دلوقتي. قريباً هتقدر تشتري مباشرة من المنصة</span>
+                </div>
+            </div>
+
+            <div class="store-categories">
+                <button class="store-cat-btn active" data-cat="all" onclick="filterStoreCategory('all', this)">
+                    <i class="fa-solid fa-border-all"></i>
+                    <span data-i18n="store_cat_all">الكل</span>
+                </button>
+                <button class="store-cat-btn" data-cat="supplements" onclick="filterStoreCategory('supplements', this)">
+                    <i class="fa-solid fa-pills"></i>
+                    <span data-i18n="store_cat_supplements">مكملات غذائية</span>
+                </button>
+                <button class="store-cat-btn" data-cat="clothing" onclick="filterStoreCategory('clothing', this)">
+                    <i class="fa-solid fa-shirt"></i>
+                    <span data-i18n="store_cat_clothing">ملابس رياضية</span>
+                </button>
+                <button class="store-cat-btn" data-cat="accessories" onclick="filterStoreCategory('accessories', this)">
+                    <i class="fa-solid fa-dumbbell"></i>
+                    <span data-i18n="store_cat_accessories">أدوات ومستلزمات</span>
+                </button>
+            </div>
+
+            <div class="store-grid" id="store-grid">
+                <div class="store-card" data-category="supplements">
+                    <div class="store-card-img" style="background-image:url('https://images.unsplash.com/photo-1593095948071-474c5cc2989d?q=80&w=600&auto=format&fit=crop');">
+                        <span class="store-card-badge hot"><i class="fa-solid fa-fire"></i> <span data-i18n="store_badge_hot">الأكثر طلباً</span></span>
+                    </div>
+                    <div class="store-card-body">
+                        <span class="store-card-cat" data-i18n="store_cat_supplements">مكملات غذائية</span>
+                        <h3 class="store-card-title" data-i18n="store_p1_name">ووي بروتين 2 كجم</h3>
+                        <p class="store-card-desc" data-i18n="store_p1_desc">بروتين مصل اللبن المعزول - 24 جرام بروتين لكل سكوب - نكهة شوكولاتة</p>
+                        <div class="store-card-footer">
+                            <div class="store-card-price">
+                                <span class="store-price-current">2,500 <small>ج.م</small></span>
+                                <span class="store-price-old">3,200 <small>ج.م</small></span>
+                            </div>
+                            <button class="store-btn-disabled" disabled>
+                                <i class="fa-solid fa-lock"></i>
+                                <span data-i18n="store_btn_soon">قريباً</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="store-card" data-category="supplements">
+                    <div class="store-card-img" style="background-image:url('https://images.unsplash.com/photo-1579722821273-0f6c7d44362f?q=80&w=600&auto=format&fit=crop');">
+                        <span class="store-card-badge new"><i class="fa-solid fa-sparkles"></i> <span data-i18n="store_badge_new">جديد</span></span>
+                    </div>
+                    <div class="store-card-body">
+                        <span class="store-card-cat" data-i18n="store_cat_supplements">مكملات غذائية</span>
+                        <h3 class="store-card-title" data-i18n="store_p2_name">كرياتين مونوهيدرات 300 جم</h3>
+                        <p class="store-card-desc" data-i18n="store_p2_desc">كرياتين نقي 100% - يزيد القوة والأداء الرياضي - بدون نكهة</p>
+                        <div class="store-card-footer">
+                            <div class="store-card-price">
+                                <span class="store-price-current">600 <small>ج.م</small></span>
+                            </div>
+                            <button class="store-btn-disabled" disabled>
+                                <i class="fa-solid fa-lock"></i>
+                                <span data-i18n="store_btn_soon">قريباً</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="store-card" data-category="supplements">
+                    <div class="store-card-img" style="background-image:url('https://images.unsplash.com/photo-1610725664285-7c57e6eeac3f?q=80&w=600&auto=format&fit=crop');"></div>
+                    <div class="store-card-body">
+                        <span class="store-card-cat" data-i18n="store_cat_supplements">مكملات غذائية</span>
+                        <h3 class="store-card-title" data-i18n="store_p3_name">BCAA 300 جم</h3>
+                        <p class="store-card-desc" data-i18n="store_p3_desc">أحماض أمينية متشعبة - يقلل هدم العضلات - نكهة تفاح أخضر</p>
+                        <div class="store-card-footer">
+                            <div class="store-card-price">
+                                <span class="store-price-current">800 <small>ج.م</small></span>
+                            </div>
+                            <button class="store-btn-disabled" disabled>
+                                <i class="fa-solid fa-lock"></i>
+                                <span data-i18n="store_btn_soon">قريباً</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="store-card" data-category="supplements">
+                    <div class="store-card-img" style="background-image:url('https://images.unsplash.com/photo-1594737625785-a6cbdabd333c?q=80&w=600&auto=format&fit=crop');"></div>
+                    <div class="store-card-body">
+                        <span class="store-card-cat" data-i18n="store_cat_supplements">مكملات غذائية</span>
+                        <h3 class="store-card-title" data-i18n="store_p4_name">بري وورك أوت 300 جم</h3>
+                        <p class="store-card-desc" data-i18n="store_p4_desc">طاقة وتركيز قبل التمرين - كافيين وكرياتين - نكهة فراولة</p>
+                        <div class="store-card-footer">
+                            <div class="store-card-price">
+                                <span class="store-price-current">950 <small>ج.م</small></span>
+                            </div>
+                            <button class="store-btn-disabled" disabled>
+                                <i class="fa-solid fa-lock"></i>
+                                <span data-i18n="store_btn_soon">قريباً</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="store-card" data-category="clothing">
+                    <div class="store-card-img" style="background-image:url('https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=600&auto=format&fit=crop');"></div>
+                    <div class="store-card-body">
+                        <span class="store-card-cat" data-i18n="store_cat_clothing">ملابس رياضية</span>
+                        <h3 class="store-card-title" data-i18n="store_p5_name">تيشيرت SHARKS الرياضي</h3>
+                        <p class="store-card-desc" data-i18n="store_p5_desc">قطن عالي الجودة - تصميم شعار SHARKS - متوفر بألوان متعددة</p>
+                        <div class="store-card-footer">
+                            <div class="store-card-price">
+                                <span class="store-price-current">350 <small>ج.م</small></span>
+                            </div>
+                            <button class="store-btn-disabled" disabled>
+                                <i class="fa-solid fa-lock"></i>
+                                <span data-i18n="store_btn_soon">قريباً</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="store-card" data-category="clothing">
+                    <div class="store-card-img" style="background-image:url('https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?q=80&w=600&auto=format&fit=crop');">
+                        <span class="store-card-badge hot"><i class="fa-solid fa-fire"></i> <span data-i18n="store_badge_hot">الأكثر طلباً</span></span>
+                    </div>
+                    <div class="store-card-body">
+                        <span class="store-card-cat" data-i18n="store_cat_clothing">ملابس رياضية</span>
+                        <h3 class="store-card-title" data-i18n="store_p6_name">حذاء رياضي للتمرين</h3>
+                        <p class="store-card-desc" data-i18n="store_p6_desc">خفيف ومريح - مثالي لرفع الأثقال والكارديو - نعل مانع للانزلاق</p>
+                        <div class="store-card-footer">
+                            <div class="store-card-price">
+                                <span class="store-price-current">1,200 <small>ج.م</small></span>
+                                <span class="store-price-old">1,500 <small>ج.م</small></span>
+                            </div>
+                            <button class="store-btn-disabled" disabled>
+                                <i class="fa-solid fa-lock"></i>
+                                <span data-i18n="store_btn_soon">قريباً</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="store-card" data-category="accessories">
+                    <div class="store-card-img" style="background-image:url('https://images.unsplash.com/photo-1598289431512-b97b0917affc?q=80&w=600&auto=format&fit=crop');"></div>
+                    <div class="store-card-body">
+                        <span class="store-card-cat" data-i18n="store_cat_accessories">أدوات ومستلزمات</span>
+                        <h3 class="store-card-title" data-i18n="store_p7_name">شيكر بوتل 700 مل</h3>
+                        <p class="store-card-desc" data-i18n="store_p7_desc">بلاستيك خالي من BPA - غطاء محكم - مع كرة خلط</p>
+                        <div class="store-card-footer">
+                            <div class="store-card-price">
+                                <span class="store-price-current">150 <small>ج.م</small></span>
+                            </div>
+                            <button class="store-btn-disabled" disabled>
+                                <i class="fa-solid fa-lock"></i>
+                                <span data-i18n="store_btn_soon">قريباً</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="store-card" data-category="accessories">
+                    <div class="store-card-img" style="background-image:url('https://images.unsplash.com/photo-1517344884509-a0c97ec11bcc?q=80&w=600&auto=format&fit=crop');"></div>
+                    <div class="store-card-body">
+                        <span class="store-card-cat" data-i18n="store_cat_accessories">أدوات ومستلزمات</span>
+                        <h3 class="store-card-title" data-i18n="store_p8_name">قفازات تمرين احترافية</h3>
+                        <p class="store-card-desc" data-i18n="store_p8_desc">جلد طبيعي - بطانة إسفنجية - حماية من الكاليوس - مقاسات متعددة</p>
+                        <div class="store-card-footer">
+                            <div class="store-card-price">
+                                <span class="store-price-current">250 <small>ج.م</small></span>
+                            </div>
+                            <button class="store-btn-disabled" disabled>
+                                <i class="fa-solid fa-lock"></i>
+                                <span data-i18n="store_btn_soon">قريباً</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="store-card" data-category="accessories">
+                    <div class="store-card-img" style="background-image:url('https://images.unsplash.com/photo-1517649763962-0c623066013b?q=80&w=600&auto=format&fit=crop');"></div>
+                    <div class="store-card-body">
+                        <span class="store-card-cat" data-i18n="store_cat_accessories">أدوات ومستلزمات</span>
+                        <h3 class="store-card-title" data-i18n="store_p9_name">أشرطة مقاومة (5 مستويات)</h3>
+                        <p class="store-card-desc" data-i18n="store_p9_desc">مجموعة 5 أشرطة بمستويات مقاومة مختلفة - مع حقيبة حمل</p>
+                        <div class="store-card-footer">
+                            <div class="store-card-price">
+                                <span class="store-price-current">400 <small>ج.م</small></span>
+                            </div>
+                            <button class="store-btn-disabled" disabled>
+                                <i class="fa-solid fa-lock"></i>
+                                <span data-i18n="store_btn_soon">قريباً</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="store-card" data-category="accessories">
+                    <div class="store-card-img" style="background-image:url('https://images.unsplash.com/photo-1620188467120-5042ed1eb5da?q=80&w=600&auto=format&fit=crop');">
+                        <span class="store-card-badge new"><i class="fa-solid fa-sparkles"></i> <span data-i18n="store_badge_new">جديد</span></span>
+                    </div>
+                    <div class="store-card-body">
+                        <span class="store-card-cat" data-i18n="store_cat_accessories">أدوات ومستلزمات</span>
+                        <h3 class="store-card-title" data-i18n="store_p10_name">حزام رفع الأثقال</h3>
+                        <p class="store-card-desc" data-i18n="store_p10_desc">جلد طبيعي عريض - دعم للظهر السفلي - إبزيم معدني قوي</p>
+                        <div class="store-card-footer">
+                            <div class="store-card-price">
+                                <span class="store-price-current">700 <small>ج.م</small></span>
+                                <span class="store-price-old">900 <small>ج.م</small></span>
+                            </div>
+                            <button class="store-btn-disabled" disabled>
+                                <i class="fa-solid fa-lock"></i>
+                                <span data-i18n="store_btn_soon">قريباً</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="store-card" data-category="supplements">
+                    <div class="store-card-img" style="background-image:url('https://images.unsplash.com/photo-1550572017-edd951aa8f72?q=80&w=600&auto=format&fit=crop');"></div>
+                    <div class="store-card-body">
+                        <span class="store-card-cat" data-i18n="store_cat_supplements">مكملات غذائية</span>
+                        <h3 class="store-card-title" data-i18n="store_p11_name">مالتي فيتامين (60 كبسولة)</h3>
+                        <p class="store-card-desc" data-i18n="store_p11_desc">فيتامينات ومعادن أساسية - لدعم الطاقة والمناعة - كبسولة يومياً</p>
+                        <div class="store-card-footer">
+                            <div class="store-card-price">
+                                <span class="store-price-current">450 <small>ج.م</small></span>
+                            </div>
+                            <button class="store-btn-disabled" disabled>
+                                <i class="fa-solid fa-lock"></i>
+                                <span data-i18n="store_btn_soon">قريباً</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="store-notify">
+                <div class="store-notify-icon">
+                    <i class="fa-solid fa-bell"></i>
+                </div>
+                <div class="store-notify-content">
+                    <h3 data-i18n="store_notify_title">عايز تعرف أول ما المتجر يفتح؟</h3>
+                    <p data-i18n="store_notify_sub">سجل إيميلك ونبعتلك إشعار أول ما نطلق المتجر</p>
+                </div>
+                <form class="store-notify-form" id="store-notify-form" onsubmit="event.preventDefault(); showToast(currentLang === 'ar' ? 'تم تسجيل اهتمامك! هنبعتلك أول ما المتجر يفتح' : 'Thanks! We will notify you when the store launches', 'success'); this.reset();">
+                    <input type="email" placeholder="your@email.com" data-i18n-placeholder="store_notify_placeholder" required>
+                    <button type="submit" class="btn-primary">
+                        <i class="fa-solid fa-paper-plane"></i>
+                        <span data-i18n="store_notify_btn">أبلغني</span>
+                    </button>
+                </form>
+            </div>
+
+            <div class="store-faq">
+                <h2 data-i18n="store_faq_title">أسئلة عن المتجر</h2>
+                <div class="faq-list">
+                    <details class="faq-item">
+                        <summary data-i18n="store_faq_1_q">إمتى المتجر هيفتح؟</summary>
+                        <p data-i18n="store_faq_1_a">شغالين على تجهيز المنتجات وآلية الدفع والشحن. متوقع الإطلاق قريباً — سجل إيميلك وهنبلغك أول ما نجهز.</p>
+                    </details>
+                    <details class="faq-item">
+                        <summary data-i18n="store_faq_2_q">المنتجات أصلية؟</summary>
+                        <p data-i18n="store_faq_2_a">أيوه. بنتعامل مع موزعين معتمدين فقط. كل منتج هيبقى معاه فاتورة وضمان الأصالة.</p>
+                    </details>
+                    <details class="faq-item">
+                        <summary data-i18n="store_faq_3_q">إيه طرق الدفع المتاحة؟</summary>
+                        <p data-i18n="store_faq_3_a">هنجهز الدفع عند الاستلام، فودافون كاش، انستاباي، والبطاقات البنكية. هتكون متاحة عند الإطلاق.</p>
+                    </details>
+                    <details class="faq-item">
+                        <summary data-i18n="store_faq_4_q">في شحن لكل المحافظات؟</summary>
+                        <p data-i18n="store_faq_4_a">أيوه. هنشحن لكل محافظات مصر. الشحن مجاني للطلبات فوق 500 جنيه.</p>
+                    </details>
+                </div>
+            </div>
+        </section>
+
         <section id="view-settings" class="view-section hidden">
             <div class="section-header"><h2 class="section-title"><i class="fa-solid fa-gear"></i> <span data-i18n="settings_title">الإعدادات</span></h2></div>
             <div class="settings-container">
@@ -532,11 +824,10 @@
 
         <section id="view-about" class="view-section hidden">
             <div class="about-hero">
-                <div class="about-hero-badge" data-i18n="about_badge">📖 حول SHARKS</div>
+                <div class="about-hero-badge" data-i18n="about_badge">حول SHARKS</div>
                 <h1 data-i18n="about_hero_title">دليلك الكامل للمنصة</h1>
                 <p data-i18n="about_hero_sub">كل حاجة محتاج تعرفها عن SHARKS في صفحة واحدة</p>
             </div>
-
             <div class="about-what">
                 <h2 data-i18n="about_what_title">SHARKS إيه بالظبط؟</h2>
                 <div class="about-what-grid">
@@ -562,7 +853,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="about-how">
                 <h2 data-i18n="about_how_title">إزاي تستخدم المنصة؟ 4 خطوات</h2>
                 <div class="about-steps">
@@ -596,7 +886,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="about-rating-system">
                 <h2 data-i18n="about_rating_title">نظام التقييم — إيه اللي بيميز SHARKS</h2>
                 <p class="about-rating-intro" data-i18n="about_rating_intro">مش بنقيس الجيم بنجمة أو اتنين. بنقيسه على 6 معايير، كل واحد ليه وزنه:</p>
@@ -610,7 +899,6 @@
                 </div>
                 <p class="about-rating-note" data-i18n="about_rating_note">كل معيار له وزن متساوي. التقييم النهائي = متوسط الـ 6 معايير.</p>
             </div>
-
             <div class="about-monthly">
                 <div class="about-monthly-card">
                     <div class="about-monthly-icon"><i class="fa-solid fa-crown"></i></div>
@@ -620,7 +908,6 @@
                     <p data-i18n="about_monthly_p3">كل مستخدم ليه تقييم واحد لكل جيم كل شهر. لو غيّر رأيه، يعدّل تقييمه، مش يضيف جديد.</p>
                 </div>
             </div>
-
             <div class="about-faq">
                 <h2 data-i18n="about_faq_title">أسئلة بتتكرر كتير</h2>
                 <div class="faq-list">
@@ -650,7 +937,6 @@
                     </details>
                 </div>
             </div>
-
             <div class="about-footer">
                 <div class="about-footer-links">
                     <a href="#" onclick="showView('who')" data-i18n="about_footer_who">من نحن</a>
@@ -663,12 +949,11 @@
         <section id="view-who" class="view-section hidden">
             <div class="who-hero">
                 <div class="who-hero-content">
-                    <span class="who-hero-badge" data-i18n="who_badge">🏢 من نحن</span>
+                    <span class="who-hero-badge" data-i18n="who_badge">من نحن</span>
                     <h1 data-i18n="who_hero_title">اتعبنا من التدوير.. فبنينا الحل</h1>
                     <p data-i18n="who_hero_sub">SHARKS مش مجرد موقع، ده الحل اللي كنا بندور عليه ومش لاقيينه</p>
                 </div>
             </div>
-
             <div class="who-story">
                 <div class="who-story-text">
                     <h2 data-i18n="who_story_title">الحكاية بدأت من سؤال بسيط</h2>
@@ -681,7 +966,6 @@
                     <div class="who-highlight-text" data-i18n="who_story_highlight">منصة واحدة. أسعار حقيقية. تقييمات بجد. ومعلومات متأكدين منها.</div>
                 </div>
             </div>
-
             <div class="who-mission-vision">
                 <div class="who-card">
                     <div class="who-card-icon"><i class="fa-solid fa-eye"></i></div>
@@ -699,7 +983,6 @@
                     <p data-i18n="who_values_text">الشفافية قبل كل حاجة. لو جيم وحش، هنقول. لو غالي على الفاضي، هتوضح. الثقة مش هتتبني بالإعلانات، هتتبني بإنك متكدبش.</p>
                 </div>
             </div>
-
             <div class="who-numbers">
                 <div class="who-number-card">
                     <div class="who-number" data-i18n="who_num_gyms">100+</div>
@@ -714,7 +997,6 @@
                     <div class="who-number-label" data-i18n="who_num_monthly_label">زيارة شهرية للمنصة</div>
                 </div>
             </div>
-
             <div class="who-different">
                 <h2 data-i18n="who_diff_title">إيه اللي بيفرقنا عن أي حد تاني؟</h2>
                 <div class="who-diff-grid">
@@ -748,7 +1030,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="who-cta">
                 <h2 data-i18n="who_cta_title">جاهز تبدأ؟</h2>
                 <p data-i18n="who_cta_text">اختار جيمك، قيّم تجربتك، وخلّي الناس التانية تعرف الصح.</p>
@@ -761,7 +1042,6 @@
                     </button>
                 </div>
             </div>
-
             <div class="who-contact">
                 <div class="who-contact-card">
                     <i class="fa-solid fa-envelope"></i>
