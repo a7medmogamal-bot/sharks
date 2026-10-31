@@ -1,1200 +1,903 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SHARKS - منصة اكتشاف الجيمات</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SHARKS AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<style>
+:root{--bg-main:#0A0A0A;--bg-sidebar:#121212;--bg-card:#1A1A1C;--bg-elevated:#202024;--primary-blue:#0055FF;--primary-hover:#0044CC;--text-main:#FFFFFF;--text-muted:#9CA3AF;--border-color:#2A2A2D;--gold:#FFD700;--danger:#FF4757;--success:#2ED573;--ease-spring:cubic-bezier(0.34,1.56,0.64,1);--ease-smooth:cubic-bezier(0.4,0,0.2,1);--ease-out-expo:cubic-bezier(0.16,1,0.3,1)}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Cairo',sans-serif}
+html,body{height:100%;overflow:hidden}
+body{background:var(--bg-main);color:var(--text-main);display:grid;grid-template-columns:1fr 340px;font-size:15px}
+a{text-decoration:none;color:inherit}
+button{font-family:'Cairo',sans-serif;cursor:pointer;border:none;background:none;color:inherit}
+.hidden{display:none!important}
+.main-chat{display:flex;flex-direction:column;height:100vh;overflow:hidden;position:relative}
+.chat-header{flex-shrink:0;display:flex;align-items:center;gap:15px;padding:16px 24px;background:rgba(10,10,10,0.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--border-color);z-index:10}
+.btn-header{width:40px;height:40px;border-radius:12px;background:var(--bg-card);border:1px solid var(--border-color);display:flex;align-items:center;justify-content:center;color:var(--text-main);transition:all 0.25s var(--ease-smooth);font-size:15px}
+.btn-header:hover{border-color:var(--primary-blue);color:var(--primary-blue);transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,85,255,0.2)}
+.btn-header:active{transform:scale(0.95)}
+.header-brand{display:flex;align-items:center;gap:12px;flex:1;min-width:0}
+.header-logo{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,#0055FF,#0077FF);display:flex;align-items:center;justify-content:center;font-size:18px;color:white;box-shadow:0 4px 16px rgba(0,85,255,0.4);flex-shrink:0;position:relative;animation:pulseGlow 3s ease-in-out infinite}
+.header-brand-text{display:flex;flex-direction:column;min-width:0}
+.header-brand-text h1{font-size:16px;font-weight:800;letter-spacing:-0.01em;display:flex;align-items:center;gap:6px}
+.header-brand-text p{font-size:11px;color:var(--text-muted);display:flex;align-items:center;gap:5px}
+.online-dot{width:7px;height:7px;border-radius:50%;background:var(--success);box-shadow:0 0 8px var(--success);animation:dotPulse 2s ease-in-out infinite;display:inline-block}
+.questions-chip{display:flex;align-items:center;gap:8px;padding:8px 14px;background:rgba(0,85,255,0.1);border:1px solid rgba(0,85,255,0.3);border-radius:20px;font-size:13px;font-weight:700;color:var(--primary-blue);transition:all 0.3s var(--ease-smooth);white-space:nowrap}
+.questions-chip i{font-size:12px}
+.questions-chip.warning{background:rgba(255,165,2,0.1);border-color:rgba(255,165,2,0.3);color:#FFA502}
+.questions-chip.danger{background:rgba(255,71,87,0.1);border-color:rgba(255,71,87,0.3);color:var(--danger)}
+.chat-messages{flex:1;overflow-y:auto;padding:25px 20px;display:flex;flex-direction:column;gap:20px;scroll-behavior:smooth;position:relative}
+.chat-messages::-webkit-scrollbar{width:8px}
+.chat-messages::-webkit-scrollbar-track{background:transparent}
+.chat-messages::-webkit-scrollbar-thumb{background:var(--border-color);border-radius:4px}
+.chat-messages::-webkit-scrollbar-thumb:hover{background:var(--primary-blue)}
+.welcome-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 20px;gap:20px;min-height:100%}
+.welcome-hero{width:100px;height:100px;border-radius:28px;background:linear-gradient(135deg,#0055FF,#0077FF);display:flex;align-items:center;justify-content:center;font-size:44px;color:white;box-shadow:0 15px 40px rgba(0,85,255,0.4);animation:floatY 3s ease-in-out infinite;position:relative}
+.welcome-hero::after{content:'';position:absolute;inset:-8px;border-radius:32px;background:linear-gradient(135deg,#0055FF,#0077FF);opacity:0.3;filter:blur(15px);z-index:-1;animation:pulseGlow 3s ease-in-out infinite}
+.welcome-screen h2{font-size:26px;font-weight:900;letter-spacing:-0.02em;background:linear-gradient(135deg,#FFFFFF,#9CA3AF);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.welcome-screen>p{color:var(--text-muted);font-size:14px;max-width:480px;line-height:1.7}
+.suggestions{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;width:100%;max-width:700px;margin-top:15px}
+.suggestion-card{background:var(--bg-card);border:1px solid var(--border-color);border-radius:14px;padding:14px 18px;text-align:right;cursor:pointer;transition:all 0.3s var(--ease-spring);font-size:13px;font-weight:600;color:var(--text-main);display:flex;align-items:center;gap:10px;animation:slideUp 0.5s var(--ease-out-expo) backwards}
+.suggestion-card:nth-child(1){animation-delay:0.1s}
+.suggestion-card:nth-child(2){animation-delay:0.15s}
+.suggestion-card:nth-child(3){animation-delay:0.2s}
+.suggestion-card:nth-child(4){animation-delay:0.25s}
+.suggestion-card:nth-child(5){animation-delay:0.3s}
+.suggestion-card:hover{border-color:var(--primary-blue);background:rgba(0,85,255,0.05);transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,85,255,0.2)}
+.suggestion-card i{color:var(--primary-blue);font-size:14px;flex-shrink:0}
+.message{display:flex;gap:12px;max-width:85%;animation:messageEnter 0.4s var(--ease-out-expo) backwards}
+.message.user{align-self:flex-end;flex-direction:row-reverse}
+.message.model{align-self:flex-start}
+.message-avatar{width:36px;height:36px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;box-shadow:0 4px 12px rgba(0,0,0,0.3)}
+.message.user .message-avatar{background:linear-gradient(135deg,#0055FF,#0077FF);color:white}
+.message.model .message-avatar{background:var(--bg-elevated);color:var(--primary-blue);border:1px solid var(--border-color)}
+.message-body{display:flex;flex-direction:column;gap:4px;min-width:0;flex:1}
+.message-content{padding:14px 18px;border-radius:18px;font-size:14px;line-height:1.75;word-wrap:break-word;overflow-wrap:break-word;position:relative}
+.message.user .message-content{background:linear-gradient(135deg,#0055FF,#0077FF);color:white;border-bottom-right-radius:6px;box-shadow:0 6px 20px rgba(0,85,255,0.3)}
+.message.model .message-content{background:var(--bg-card);border:1px solid var(--border-color);color:var(--text-main);border-bottom-left-radius:6px}
+.message-content p{margin-bottom:8px}
+.message-content p:last-child{margin-bottom:0}
+.message-content ul,.message-content ol{margin:8px 0;padding-right:22px;padding-left:22px}
+.message-content li{margin:4px 0}
+.message-content h1,.message-content h2,.message-content h3{margin:12px 0 8px;font-weight:800;letter-spacing:-0.01em}
+.message-content h1{font-size:18px}
+.message-content h2{font-size:16px}
+.message-content h3{font-size:15px}
+.message-content code{background:rgba(0,0,0,0.4);padding:2px 6px;border-radius:5px;font-size:0.9em;font-family:monospace;color:#FFA502}
+.message.user .message-content code{background:rgba(0,0,0,0.25);color:#FFD700}
+.message-content pre{background:rgba(0,0,0,0.5);padding:12px 14px;border-radius:10px;overflow-x:auto;margin:10px 0;border:1px solid var(--border-color)}
+.message-content pre code{background:none;padding:0;color:#2ED573;font-size:13px;line-height:1.5}
+.message-content strong{font-weight:800;color:var(--primary-blue)}
+.message.user .message-content strong{color:#FFD700}
+.message-content a{color:var(--primary-blue);text-decoration:underline}
+.message.user .message-content a{color:#FFD700}
+.message-content blockquote{border-right:3px solid var(--primary-blue);padding-right:12px;margin:8px 0;color:var(--text-muted);font-style:italic}
+.message-time{font-size:10px;color:var(--text-muted);padding:0 6px;opacity:0.7}
+.message.user .message-time{text-align:left}
+.message.model .message-time{text-align:right}
+.typing-indicator{display:flex;gap:12px;align-self:flex-start;animation:messageEnter 0.4s var(--ease-out-expo)}
+.typing-bubble{background:var(--bg-card);border:1px solid var(--border-color);padding:16px 20px;border-radius:18px;border-bottom-left-radius:6px;display:flex;gap:5px;align-items:center}
+.typing-dot{width:8px;height:8px;border-radius:50%;background:var(--primary-blue);animation:typingBounce 1.4s ease-in-out infinite;opacity:0.5}
+.typing-dot:nth-child(2){animation-delay:0.15s}
+.typing-dot:nth-child(3){animation-delay:0.3s}
+.chat-input-area{flex-shrink:0;padding:15px 20px 20px;background:linear-gradient(180deg,transparent,rgba(10,10,10,0.95) 20%);border-top:1px solid var(--border-color);position:relative;z-index:5}
+.input-wrapper{max-width:900px;margin:0 auto;background:var(--bg-card);border:1px solid var(--border-color);border-radius:20px;padding:8px 8px 8px 16px;display:flex;align-items:flex-end;gap:10px;transition:all 0.3s var(--ease-smooth);position:relative}
+.input-wrapper:focus-within{border-color:var(--primary-blue);box-shadow:0 0 0 4px rgba(0,85,255,0.15),0 8px 32px rgba(0,85,255,0.2)}
+.input-wrapper textarea{flex:1;background:transparent;border:none;outline:none;color:var(--text-main);font-family:'Cairo',sans-serif;font-size:14px;line-height:1.5;resize:none;max-height:150px;padding:10px 0;font-weight:500}
+.input-wrapper textarea::placeholder{color:var(--text-muted)}
+.btn-send{width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,#0055FF,#0077FF);color:white;display:flex;align-items:center;justify-content:center;transition:all 0.3s var(--ease-spring);flex-shrink:0;font-size:16px;box-shadow:0 4px 16px rgba(0,85,255,0.4)}
+.btn-send:hover{transform:translateY(-2px) scale(1.05);box-shadow:0 8px 24px rgba(0,85,255,0.6)}
+.btn-send:active{transform:scale(0.95)}
+.btn-send:disabled{opacity:0.4;cursor:not-allowed;transform:none;box-shadow:none}
+.btn-send:disabled:hover{transform:none;box-shadow:none}
+.input-meta{max-width:900px;margin:10px auto 0;display:flex;justify-content:space-between;align-items:center;padding:0 6px;font-size:11px;color:var(--text-muted);gap:10px;flex-wrap:wrap}
+.input-meta span{display:flex;align-items:center;gap:5px;font-weight:600}
+.input-meta i{font-size:10px}
+.reset-timer{color:var(--primary-blue);font-family:'Cairo',sans-serif;font-variant-numeric:tabular-nums;letter-spacing:0.5px}
+.sidebar{background:var(--bg-sidebar);border-right:1px solid var(--border-color);padding:22px 20px;overflow-y:auto;display:flex;flex-direction:column;gap:20px;height:100vh}
+.sidebar::-webkit-scrollbar{width:6px}
+.sidebar::-webkit-scrollbar-thumb{background:var(--border-color);border-radius:3px}
+.sidebar-logo{display:flex;align-items:center;justify-content:center;padding:10px 0 20px;border-bottom:1px solid var(--border-color)}
+.sidebar-logo img{max-width:130px;height:auto;object-fit:contain;filter:drop-shadow(0 4px 12px rgba(0,85,255,0.3))}
+.sidebar-section{display:flex;flex-direction:column;gap:8px}
+.sidebar-label{font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;padding:0 4px}
+.profile-card{background:var(--bg-card);border:1px solid var(--border-color);border-radius:16px;padding:16px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:all 0.3s var(--ease-smooth);position:relative;overflow:hidden}
+.profile-card::before{content:'';position:absolute;top:-50%;right:-30%;width:200px;height:200px;background:radial-gradient(circle,rgba(0,85,255,0.15),transparent 70%);pointer-events:none}
+.profile-card:hover{border-color:var(--primary-blue);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,85,255,0.15)}
+.profile-avatar{width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,#0055FF,#0077FF);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:white;flex-shrink:0;box-shadow:0 4px 12px rgba(0,85,255,0.4);position:relative;z-index:1}
+.profile-info{flex:1;min-width:0;position:relative;z-index:1}
+.profile-info h4{font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:2px}
+.profile-info p{font-size:11px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.profile-edit-icon{width:28px;height:28px;border-radius:10px;background:rgba(0,85,255,0.15);color:var(--primary-blue);display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;position:relative;z-index:1}
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.stat-mini{background:var(--bg-card);border:1px solid var(--border-color);border-radius:12px;padding:12px;text-align:center;transition:all 0.25s var(--ease-smooth)}
+.stat-mini:hover{border-color:var(--primary-blue);transform:translateY(-2px)}
+.stat-mini-value{font-size:20px;font-weight:900;color:var(--primary-blue);line-height:1;margin-bottom:4px;font-variant-numeric:tabular-nums}
+.stat-mini-value.warn{color:#FFA502}
+.stat-mini-value.danger{color:var(--danger)}
+.stat-mini-label{font-size:10px;color:var(--text-muted);font-weight:600}
+.action-btn{display:flex;align-items:center;gap:12px;width:100%;padding:12px 16px;background:var(--bg-card);border:1px solid var(--border-color);border-radius:12px;color:var(--text-main);font-size:13px;font-weight:600;transition:all 0.25s var(--ease-smooth);text-align:right;position:relative;overflow:hidden}
+.action-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(0,85,255,0.1));transform:translateX(-100%);transition:transform 0.3s}
+.action-btn:hover{border-color:var(--primary-blue);color:var(--primary-blue);transform:translateY(-1px)}
+.action-btn:hover::before{transform:translateX(0)}
+.action-btn i{width:20px;text-align:center;font-size:14px;flex-shrink:0;position:relative;z-index:1}
+.action-btn span{position:relative;z-index:1}
+.action-btn.danger{color:var(--danger)}
+.action-btn.danger:hover{border-color:var(--danger);color:var(--danger)}
+.action-btn.danger::before{background:linear-gradient(90deg,transparent,rgba(255,71,87,0.1))}
+.sidebar-footer{margin-top:auto;padding-top:15px;border-top:1px solid var(--border-color);text-align:center}
+.sidebar-footer p{font-size:10px;color:var(--text-muted);line-height:1.5}
+.sidebar-footer strong{color:var(--primary-blue);font-weight:700}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;z-index:5000;padding:20px;animation:fadeIn 0.25s ease}
+.modal-box{background:var(--bg-card);border:1px solid var(--border-color);border-radius:22px;padding:26px;max-width:480px;width:100%;max-height:90vh;overflow-y:auto;animation:modalEnter 0.35s var(--ease-spring)}
+.modal-box::-webkit-scrollbar{width:6px}
+.modal-box::-webkit-scrollbar-thumb{background:var(--border-color);border-radius:3px}
+.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;padding-bottom:16px;border-bottom:1px solid var(--border-color)}
+.modal-header-left{display:flex;align-items:center;gap:12px}
+.modal-icon{width:44px;height:44px;border-radius:13px;background:linear-gradient(135deg,#0055FF,#0077FF);display:flex;align-items:center;justify-content:center;color:white;font-size:18px;box-shadow:0 4px 16px rgba(0,85,255,0.4)}
+.modal-header h2{font-size:18px;font-weight:800;letter-spacing:-0.01em}
+.modal-header p{font-size:12px;color:var(--text-muted);margin-top:2px}
+.modal-close{width:36px;height:36px;border-radius:11px;background:var(--bg-main);border:1px solid var(--border-color);display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-size:14px;transition:all 0.25s var(--ease-smooth)}
+.modal-close:hover{color:var(--danger);border-color:var(--danger);transform:rotate(90deg)}
+.form-group{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.form-group label{font-size:12px;font-weight:700;color:var(--text-muted);display:flex;align-items:center;gap:6px}
+.form-group label i{color:var(--primary-blue);font-size:11px;width:14px}
+.form-group input,.form-group select{background:var(--bg-main);border:1px solid var(--border-color);padding:11px 13px;border-radius:11px;color:var(--text-main);font-family:'Cairo',sans-serif;font-size:14px;font-weight:600;outline:none;transition:all 0.25s var(--ease-smooth);width:100%}
+.form-group input:focus,.form-group select:focus{border-color:var(--primary-blue);box-shadow:0 0 0 4px rgba(0,85,255,0.15)}
+.form-group select{cursor:pointer}
+.modal-actions{display:flex;gap:10px;margin-top:20px;padding-top:18px;border-top:1px solid var(--border-color)}
+.btn-primary{flex:1;padding:12px 20px;background:linear-gradient(135deg,#0055FF,#0077FF);color:white;border-radius:12px;font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center;gap:8px;transition:all 0.3s var(--ease-smooth);position:relative;overflow:hidden}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,85,255,0.5)}
+.btn-primary:active{transform:translateY(0) scale(0.98)}
+.btn-secondary{flex:1;padding:12px 20px;background:transparent;color:var(--text-main);border:1px solid var(--border-color);border-radius:12px;font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center;gap:8px;transition:all 0.25s var(--ease-smooth)}
+.btn-secondary:hover{border-color:var(--primary-blue);color:var(--primary-blue);background:rgba(0,85,255,0.05)}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);padding:13px 22px;border-radius:14px;color:white;font-weight:700;font-size:13px;display:flex;align-items:center;gap:10px;z-index:10000;box-shadow:0 12px 32px rgba(0,0,0,0.6);animation:toastIn 0.4s var(--ease-spring);max-width:90vw}
+.toast i{font-size:16px;flex-shrink:0}
+.toast.success{background:linear-gradient(135deg,#1a8a4a,#2ED573)}
+.toast.error{background:linear-gradient(135deg,#c73648,#FF4757)}
+.toast.info{background:linear-gradient(135deg,#0044CC,#0055FF)}
+.toast.removing{animation:toastOut 0.3s var(--ease-smooth) forwards}
+.spinner{width:16px;height:16px;border:2px solid rgba(255,255,255,0.3);border-top-color:white;border-radius:50%;animation:spin 0.7s linear infinite;display:inline-block}
+.scroll-bottom-btn{position:absolute;bottom:120px;left:50%;transform:translateX(-50%);width:40px;height:40px;border-radius:50%;background:var(--bg-elevated);border:1px solid var(--border-color);color:var(--primary-blue);display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 6px 20px rgba(0,0,0,0.4);opacity:0;pointer-events:none;transition:all 0.3s var(--ease-smooth);z-index:20}
+.scroll-bottom-btn.visible{opacity:1;pointer-events:auto}
+.scroll-bottom-btn:hover{background:var(--primary-blue);color:white;transform:translateX(-50%) scale(1.1)}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes dotPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(1.2)}}
+@keyframes pulseGlow{0%,100%{box-shadow:0 4px 16px rgba(0,85,255,0.4)}50%{box-shadow:0 4px 24px rgba(0,85,255,0.8)}}
+@keyframes floatY{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes typingBounce{0%,60%,100%{transform:translateY(0);opacity:0.5}30%{transform:translateY(-8px);opacity:1}}
+@keyframes messageEnter{from{opacity:0;transform:translateY(20px) scale(0.95)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes modalEnter{from{opacity:0;transform:scale(0.9) translateY(20px)}to{opacity:1;transform:scale(1) translateY(0)}}
+@keyframes toastIn{from{opacity:0;transform:translate(-50%,20px)}to{opacity:1;transform:translate(-50%,0)}}
+@keyframes toastOut{from{opacity:1;transform:translate(-50%,0)}to{opacity:0;transform:translate(-50%,20px)}}
+@media (max-width:900px){
+body{grid-template-columns:1fr}
+.sidebar{position:fixed;right:0;top:0;width:340px;max-width:85vw;z-index:1000;transform:translateX(100%);transition:transform 0.35s var(--ease-smooth);box-shadow:-10px 0 30px rgba(0,0,0,0.5)}
+.sidebar.open{transform:translateX(0)}
+.chat-header{padding:12px 15px;gap:10px}
+.header-brand-text h1{font-size:14px}
+.header-brand-text p{font-size:10px}
+.questions-chip{padding:6px 10px;font-size:11px}
+.questions-chip .chip-label{display:none}
+.btn-header{width:36px;height:36px;font-size:14px}
+.chat-messages{padding:18px 12px;gap:16px}
+.message{max-width:95%}
+.message-content{font-size:13px;padding:12px 15px}
+.welcome-screen h2{font-size:22px}
+.welcome-screen>p{font-size:13px}
+.welcome-hero{width:80px;height:80px;font-size:36px}
+.suggestions{grid-template-columns:1fr}
+.suggestion-card{padding:12px 15px;font-size:12px}
+.chat-input-area{padding:12px 12px 16px}
+.input-wrapper{padding:6px 6px 6px 12px;border-radius:16px}
+.input-wrapper textarea{font-size:13px;padding:8px 0}
+.btn-send{width:40px;height:40px;border-radius:12px;font-size:14px}
+.input-meta{font-size:10px;gap:8px;padding:0 4px}
+.modal-box{padding:20px;border-radius:18px}
+.form-row{grid-template-columns:1fr}
+}
+@media (max-width:480px){
+.questions-chip{font-size:10px;padding:5px 8px}
+.header-brand-text p{display:none}
+.message-content{font-size:12.5px;line-height:1.65}
+}
+@media (prefers-reduced-motion:reduce){
+*,*::before,*::after{animation-duration:0.01ms!important;animation-iteration-count:1!important;transition-duration:0.01ms!important}
+}
+</style>
 </head>
 <body>
 
-    <div id="offline-banner" class="offline-banner hidden">
-        <i class="fa-solid fa-wifi"></i>
-        <span data-i18n="offline_msg">أنت غير متصل بالإنترنت</span>
+<main class="main-chat">
+  <header class="chat-header">
+    <button class="btn-header" id="menu-toggle-btn" aria-label="القائمة"><i class="fa-solid fa-bars"></i></button>
+    <a href="index.html" class="btn-header" aria-label="رجوع"><i class="fa-solid fa-arrow-right"></i></a>
+    <div class="header-brand">
+      <div class="header-logo"><i class="fa-solid fa-robot"></i></div>
+      <div class="header-brand-text">
+        <h1>SHARKS AI</h1>
+        <p><span class="online-dot"></span>متصل الآن</p>
+      </div>
     </div>
-
-    <div id="error-boundary" class="error-boundary hidden">
-        <div class="error-box">
-            <i class="fa-solid fa-triangle-exclamation" style="font-size: 48px; color: var(--danger);"></i>
-            <h3 data-i18n="error_title">حدث خطأ ما</h3>
-            <p id="error-message" style="color: var(--text-muted); margin: 10px 0;">تعذر تحميل البيانات</p>
-            <button class="btn-primary" onclick="location.reload()">
-                <i class="fa-solid fa-rotate-right"></i> <span data-i18n="retry">إعادة المحاولة</span>
-            </button>
-        </div>
+    <div class="questions-chip" id="questions-chip">
+      <i class="fa-solid fa-comment-dots"></i>
+      <span id="questions-chip-text">5 / 5</span>
+      <span class="chip-label">سؤال متبقي</span>
     </div>
+    <button class="btn-header" id="open-settings-btn" aria-label="الإعدادات"><i class="fa-solid fa-gear"></i></button>
+  </header>
 
-    <aside class="sidebar" id="sidebar">
-        <div class="logo-container">
-            <img src="https://i.ibb.co/btRfr3Z/Whats-App-Image-2026-10-29-at-8-20-02-PM-removebg-preview.png" alt="SHARKS Logo" class="logo-img">
-        </div>
-        <ul class="nav-menu">
-            <li><a href="#" class="nav-item active" data-view="home" onclick="showView('home')"><i class="fa-solid fa-house"></i> <span data-i18n="nav_home">الرئيسية</span></a></li>
-            <li><a href="#" class="nav-item" data-view="map" onclick="showView('map')"><i class="fa-solid fa-map-location-dot"></i> <span data-i18n="nav_map">الخريطة</span></a></li>
-            <li><a href="#" class="nav-item" data-view="calories" onclick="showView('calories')"><i class="fa-solid fa-fire"></i> <span data-i18n="nav_calories">السعرات الحرارية</span></a></li>
-            <li><a href="#" class="nav-item" data-view="favorites" onclick="showView('favorites')"><i class="fa-solid fa-heart"></i> <span data-i18n="nav_favorites">المفضلة</span></a></li>
-            <li><a href="#" class="nav-item" data-view="top10" onclick="showView('top10')"><i class="fa-solid fa-trophy"></i> <span data-i18n="nav_top10">أفضل 10 جيمات</span></a></li>
-            <li><a href="#" class="nav-item" data-view="store" onclick="showView('store')"><i class="fa-solid fa-store"></i> <span data-i18n="nav_store">المتجر</span></a></li>
-            <li><a href="#" class="nav-item" data-view="messages" onclick="showView('messages')"><i class="fa-regular fa-envelope"></i> <span data-i18n="nav_messages">الرسائل</span></a></li>
-            <li><a href="#" class="nav-item disabled"><i class="fa-solid fa-robot"></i> <span data-i18n="nav_ai">SHARKS AI</span> <i class="fa-solid fa-lock lock-icon"></i></a></li>
-            <li><a href="#" class="nav-item disabled"><i class="fa-solid fa-dumbbell"></i> <span data-i18n="nav_coaches">المدربون</span> <i class="fa-solid fa-lock lock-icon"></i></a></li>
-            <li style="margin-top: 20px;"><a href="#" class="nav-item" data-view="about" onclick="showView('about')"><i class="fa-solid fa-circle-info"></i> <span data-i18n="nav_about">حول</span></a></li>
-            <li><a href="#" class="nav-item" data-view="who" onclick="showView('who')"><i class="fa-solid fa-users"></i> <span data-i18n="nav_who">من نحن</span></a></li>
-            <li><a href="#" class="nav-item" data-view="settings" onclick="showView('settings')"><i class="fa-solid fa-gear"></i> <span data-i18n="nav_settings">الإعدادات</span></a></li>
-        </ul>
-        <div class="user-profile" id="sidebar-profile" onclick="handleProfileClick()">
-            <div class="user-avatar" id="sidebar-avatar">U</div>
-            <div class="user-info">
-                <div id="sidebar-username" style="font-size: 14px; font-weight: 700;" data-i18n="login">تسجيل الدخول</div>
-                <div id="sidebar-userstatus" style="font-size: 12px; color: var(--text-muted);" data-i18n="click_here">اضغط هنا</div>
-            </div>
-        </div>
-    </aside>
-
-    <aside class="filter-panel" id="filter-panel">
-        <div class="filter-header">
-            <h3><i class="fa-solid fa-sliders"></i> <span data-i18n="filters">الفلاتر</span></h3>
-            <div class="filter-header-actions">
-                <button class="btn-text" onclick="clearFilters()"><span data-i18n="clear_all">مسح الكل</span></button>
-                <button class="btn-icon" onclick="toggleFilters()"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-        </div>
-        <div class="filter-body">
-            <div class="filter-group">
-                <label class="filter-label"><i class="fa-solid fa-location-dot"></i> <span data-i18n="filter_area">المنطقة</span></label>
-                <select id="filter-area" class="filter-select">
-                    <option value="" data-i18n="all_areas">كل المناطق</option>
-                    <option value="cairo" data-i18n="cairo">القاهرة</option>
-                    <option value="giza" data-i18n="giza">الجيزة</option>
-                    <option value="alex" data-i18n="alex">الإسكندرية</option>
-                </select>
-            </div>
-            <div class="filter-group">
-                <label class="filter-label"><i class="fa-solid fa-money-bill"></i> <span data-i18n="filter_price">نطاق السعر (جنيه)</span></label>
-                <div class="range-display">
-                    <span id="price-min-display">0</span>
-                    <span> - </span>
-                    <span id="price-max-display">1000</span>
-                </div>
-                <div class="range-slider-container">
-                    <input type="range" id="filter-price-min" min="0" max="1000" step="50" value="0">
-                    <input type="range" id="filter-price-max" min="0" max="1000" step="50" value="1000">
-                </div>
-            </div>
-            <div class="filter-group">
-                <label class="filter-label"><i class="fa-solid fa-star"></i> <span data-i18n="filter_rating">التقييم</span></label>
-                <label class="filter-checkbox">
-                    <input type="checkbox" class="filter-rating" value="4">
-                    <span>⭐ 4+ <span data-i18n="stars">نجوم</span></span>
-                </label>
-                <label class="filter-checkbox">
-                    <input type="checkbox" class="filter-rating" value="3">
-                    <span>⭐ 3+ <span data-i18n="stars">نجوم</span></span>
-                </label>
-            </div>
-            <div class="filter-group">
-                <label class="filter-label"><i class="fa-solid fa-dumbbell"></i> <span data-i18n="filter_services">الخدمات</span></label>
-                <label class="filter-checkbox"><input type="checkbox" class="filter-service" value="gym"><span data-i18n="service_gym">صالة حديد</span></label>
-                <label class="filter-checkbox"><input type="checkbox" class="filter-service" value="cardio"><span data-i18n="service_cardio">كارديو</span></label>
-                <label class="filter-checkbox"><input type="checkbox" class="filter-service" value="boxing"><span data-i18n="service_boxing">ملاكمة</span></label>
-                <label class="filter-checkbox"><input type="checkbox" class="filter-service" value="yoga"><span data-i18n="service_yoga">يوغا</span></label>
-                <label class="filter-checkbox"><input type="checkbox" class="filter-service" value="pool"><span data-i18n="service_pool">مسبح</span></label>
-                <label class="filter-checkbox"><input type="checkbox" class="filter-service" value="sauna"><span data-i18n="service_sauna">ساونا</span></label>
-            </div>
-            <div class="filter-group">
-                <label class="filter-label"><i class="fa-solid fa-sliders"></i> <span data-i18n="filter_extra">خيارات إضافية</span></label>
-                <label class="filter-checkbox">
-                    <input type="checkbox" id="filter-women-hours">
-                    <span><i class="fa-solid fa-female" style="color:#FF6FB5;"></i> <span data-i18n="filter_women">مواعيد سيدات</span></span>
-                </label>
-                <label class="filter-checkbox">
-                    <input type="checkbox" id="filter-verified">
-                    <span><i class="fa-solid fa-circle-check" style="color:var(--primary-blue);"></i> <span data-i18n="filter_verified">موثّق فقط</span></span>
-                </label>
-            </div>
-            <button class="btn-primary w-100" onclick="applyFilters()"><span data-i18n="apply_filters">تطبيق الفلاتر</span></button>
-        </div>
-    </aside>
-    <div class="filter-overlay" id="filter-overlay" onclick="toggleFilters()"></div>
-
-    <main class="main-content">
-
-        <header class="top-header">
-            <button class="btn-icon mobile-menu-btn" id="mobile-menu-btn"><i class="fa-solid fa-bars"></i></button>
-            <button class="btn-icon filter-toggle-btn" id="filter-toggle-btn" onclick="toggleFilters()"><i class="fa-solid fa-sliders"></i></button>
-            <div class="search-bar">
-                <i class="fa-solid fa-magnifying-glass" style="color: var(--text-muted);"></i>
-                <input type="text" id="global-search" placeholder="ابحث عن جيم، منطقة، أو ميزة..." data-i18n-placeholder="search_placeholder">
-            </div>
-            <div class="top-actions">
-                <button class="btn-icon" onclick="requestUserLocation()" title="تحديد موقعي"><i class="fa-solid fa-location-crosshairs"></i></button>
-                <button class="btn-lang" onclick="toggleLanguage()" id="lang-btn">EN</button>
-                <button class="btn-icon" onclick="openMessages()" style="position:relative;">
-                    <i class="fa-regular fa-bell"></i>
-                    <span class="bell-badge hidden" id="bell-badge"></span>
-                </button>
-            </div>
-        </header>
-
-        <section id="view-home" class="view-section">
-            <div id="top3-section">
-                <div class="section-header">
-                    <h2 class="section-title"><i class="fa-solid fa-crown"></i> <span data-i18n="top3_title">أفضل 3 جيمات هذا الشهر</span></h2>
-                </div>
-                <div class="podium-container" id="podium-container"></div>
-            </div>
-            <div class="section-header">
-                <h2 class="section-title"><i class="fa-solid fa-map-location-dot"></i> <span data-i18n="nearby_title">الجيمات الأقرب إليك</span></h2>
-                <a href="#" class="view-all" data-i18n="view_all">عرض الكل</a>
-            </div>
-            <div class="gyms-grid" id="nearby-gyms-grid"></div>
-            <div class="section-header">
-                <h2 class="section-title"><i class="fa-solid fa-dumbbell"></i> <span data-i18n="all_gyms_title">كل الجيمات</span></h2>
-                <span id="results-count" style="color: var(--text-muted); font-size: 14px;"></span>
-            </div>
-            <div class="gyms-grid" id="all-gyms-grid"></div>
-        </section>
-
-        <section id="view-map" class="view-section hidden">
-            <div class="section-header">
-                <h2 class="section-title"><i class="fa-solid fa-map-location-dot"></i> <span data-i18n="map_title">خريطة الجيمات</span></h2>
-                <button class="btn-secondary" onclick="showView('home')"><i class="fa-solid fa-list"></i> <span data-i18n="view_list">عرض القائمة</span></button>
-            </div>
-            <div id="gyms-map"></div>
-        </section>
-
-        <section id="view-login" class="view-section hidden">
-            <div class="auth-container">
-                <div id="login-section" class="auth-box">
-                    <div class="logo-container text-center">
-                        <img src="https://i.ibb.co/btRfr3Z/Whats-App-Image-2026-10-29-at-8-20-02-PM-removebg-preview.png" alt="SHARKS" class="logo-img">
-                    </div>
-                    <h2 class="auth-title" data-i18n="login_title">مرحباً بك في SHARKS</h2>
-                    <p class="auth-subtitle" data-i18n="login_subtitle">اكتشف أفضل الجيمات في مصر، قيم تجربتك، وتابع أهدافك.</p>
-                    <button id="google-login-btn" class="btn-google">
-                        <i class="fa-brands fa-google"></i> <span data-i18n="login_google">تسجيل الدخول باستخدام Google</span>
-                    </button>
-                </div>
-                <div id="profile-section" class="auth-box hidden">
-                    <h2 class="auth-title" data-i18n="profile_title">استكمال الملف الشخصي</h2>
-                    <p class="auth-subtitle" data-i18n="profile_subtitle">محتاجين شوية بيانات عشان نكمل معاك.</p>
-                    <form id="profile-form">
-                        <div class="input-group"><label data-i18n="full_name">الاسم الرباعي</label><input type="text" id="reg-name" required></div>
-                        <div class="input-group"><label data-i18n="username">اسم المستخدم</label><input type="text" id="reg-username" required></div>
-                        <div class="input-group"><label data-i18n="phone">رقم الهاتف</label><input type="tel" id="reg-phone" required></div>
-                        <div class="input-group"><label data-i18n="governorate">المحافظة</label>
-                            <select id="reg-gov" required>
-                                <option value="cairo" data-i18n="cairo">القاهرة</option>
-                                <option value="giza" data-i18n="giza">الجيزة</option>
-                                <option value="alex" data-i18n="alex">الإسكندرية</option>
-                            </select>
-                        </div>
-                        <div class="input-group"><label data-i18n="city">المركز / المنطقة</label><input type="text" id="reg-city" required></div>
-                        <div class="input-group"><label data-i18n="email">البريد الإلكتروني</label><input type="email" id="reg-email" disabled></div>
-                        <button type="submit" class="btn-primary w-100" data-i18n="save_continue">حفظ ومتابعة</button>
-                    </form>
-                </div>
-            </div>
-        </section>
-
-        <section id="view-details" class="view-section hidden">
-            <div class="gym-gallery" id="gym-gallery">
-                <div class="gallery-main" id="gallery-main" onclick="openLightbox(0)">
-                    <div class="gallery-main-img" id="gallery-main-img"></div>
-                    <button class="btn-back" onclick="event.stopPropagation(); showView('home')">
-                        <i class="fa-solid fa-arrow-right"></i> <span data-i18n="back">رجوع</span>
-                    </button>
-                    <div class="gallery-overlay">
-                        <div class="gallery-meta">
-                            <span class="gallery-count" id="gallery-counter">
-                                <i class="fa-solid fa-images"></i> <span id="gallery-counter-text">1 / 6</span>
-                            </span>
-                            <button class="gallery-preview-btn" onclick="event.stopPropagation(); openLightbox(0)" title="معاينة">
-                                <i class="fa-solid fa-expand"></i>
-                                <span data-i18n="preview">معاينة</span>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="gallery-watermark">SHARKS</div>
-                    <div class="gallery-protection-layer"></div>
-                    <button class="gallery-nav gallery-nav-prev" onclick="event.stopPropagation(); galleryPrev()">
-                        <i class="fa-solid fa-chevron-right"></i>
-                    </button>
-                    <button class="gallery-nav gallery-nav-next" onclick="event.stopPropagation(); galleryNext()">
-                        <i class="fa-solid fa-chevron-left"></i>
-                    </button>
-                </div>
-                <div class="gallery-thumbs" id="gallery-thumbs"></div>
-            </div>
-
-            <div class="details-container">
-                <div class="details-header">
-                    <div>
-                        <h1 class="gym-title" id="details-title">اسم الجيم</h1>
-                        <p class="gym-location" id="details-location"><i class="fa-solid fa-location-dot"></i></p>
-                    </div>
-                    <div class="details-actions">
-                        <button class="btn-icon" id="fav-btn" onclick="toggleFavorite()"><i class="fa-regular fa-heart"></i></button>
-                    </div>
-                </div>
-                <div class="contact-actions">
-                    <button class="btn-secondary" onclick="requireLogin()"><i class="fa-solid fa-phone"></i> <span data-i18n="call">اتصال</span></button>
-                    <a href="#" id="whatsapp-btn" target="_blank" class="btn-secondary btn-whatsapp">
-                        <i class="fa-brands fa-whatsapp"></i> <span data-i18n="whatsapp">واتساب</span>
-                    </a>
-                    <button class="btn-secondary" onclick="requireLogin()"><i class="fa-solid fa-map-location-dot"></i> <span data-i18n="map">الموقع</span></button>
-                </div>
-                <div class="map-actions">
-                    <a id="google-maps-btn" href="#" target="_blank" rel="noopener" class="btn-secondary" style="border-color:#4285F4;color:#4285F4;">
-                        <i class="fa-solid fa-map-location-dot"></i> <span data-i18n="open_google_maps">فتح في Google Maps</span>
-                    </a>
-                    <a id="osm-btn" href="#" target="_blank" rel="noopener" class="btn-secondary" style="border-color:#7EBC6F;color:#7EBC6F;">
-                        <i class="fa-solid fa-map"></i> <span data-i18n="open_osm">فتح في OpenStreetMap</span>
-                    </a>
-                </div>
-                <div class="details-grid">
-                    <div class="reviews-section">
-                        <div class="section-header">
-                            <h2 class="section-title" data-i18n="reviews_title">التقييمات</h2>
-                            <span id="details-review-count" style="color: var(--text-muted); font-size: 14px;"></span>
-                        </div>
-                        <div class="rating-criteria" id="rating-criteria"></div>
-                        <div class="add-review-box">
-                            <h3 data-i18n="rate_experience">قيم تجربتك</h3>
-                            <p style="font-size: 12px; color: var(--text-muted);" data-i18n="login_to_rate">يجب تسجيل الدخول لتتمكن من التقييم.</p>
-                            <button class="btn-primary" onclick="openReviewModal()"><span data-i18n="add_review">أضف تقييمك</span></button>
-                        </div>
-                    </div>
-                    <div class="info-sidebar">
-                        <div class="info-card">
-                            <h3><i class="fa-solid fa-clock"></i> <span data-i18n="working_hours">مواعيد العمل</span></h3>
-                            <table class="hours-table">
-                                <tr><td data-i18n="day_sat">السبت</td><td>6:00 ص - 12:00 م</td></tr>
-                                <tr><td data-i18n="day_sun">الأحد</td><td>6:00 ص - 12:00 م</td></tr>
-                                <tr><td data-i18n="day_mon">الإثنين</td><td>6:00 ص - 12:00 م</td></tr>
-                                <tr><td data-i18n="day_tue">الثلاثاء</td><td>6:00 ص - 12:00 م</td></tr>
-                                <tr><td data-i18n="day_wed">الأربعاء</td><td>6:00 ص - 12:00 م</td></tr>
-                                <tr><td data-i18n="day_thu">الخميس</td><td>6:00 ص - 12:00 م</td></tr>
-                                <tr><td data-i18n="day_fri">الجمعة</td><td>10:00 ص - 8:00 م</td></tr>
-                            </table>
-                            <div id="women-hours-container"></div>
-                        </div>
-                        <div class="info-card">
-                            <h3 data-i18n="extra_info">معلومات إضافية</h3>
-                            <p><strong data-i18n="price">الأسعار:</strong> <span id="details-price">-</span></p>
-                            <p><strong data-i18n="last_update">آخر تحديث:</strong> <span id="details-update">-</span></p>
-                            <p><strong data-i18n="status">الحالة:</strong> <span id="details-verified">-</span></p>
-                            <button class="btn-text"><i class="fa-solid fa-flag"></i> <span data-i18n="report">الإبلاغ عن بيانات خاطئة</span></button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="view-messages" class="view-section hidden">
-            <div class="section-header"><h2 class="section-title"><i class="fa-regular fa-envelope"></i> <span data-i18n="messages_title">الرسائل</span></h2></div>
-            <div class="messages-container" id="messages-container">
-                <div class="message-item unread">
-                    <div class="message-icon"><i class="fa-solid fa-bullhorn"></i></div>
-                    <div class="message-content">
-                        <h4 data-i18n="msg_welcome_title">أهلاً بك في SHARKS</h4>
-                        <p data-i18n="msg_welcome_body">شكراً لانضمامك إلينا.</p>
-                        <span class="message-time" data-i18n="msg_time_2h">منذ ساعتين</span>
-                    </div>
-                </div>
-                <div class="message-item">
-                    <div class="message-icon"><i class="fa-solid fa-trophy"></i></div>
-                    <div class="message-content">
-                        <h4 data-i18n="msg_winner_title">إعلان الفائزين الشهريين</h4>
-                        <p data-i18n="msg_winner_body">تم إعلان أفضل 3 جيمات لهذا الشهر.</p>
-                        <span class="message-time" data-i18n="msg_time_1d">منذ يوم</span>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="view-calories" class="view-section hidden">
-            <div class="section-header">
-                <h2 class="section-title"><i class="fa-solid fa-fire" style="color: #FF6B35;"></i> <span data-i18n="calories_title">حاسبة السعرات الحرارية</span></h2>
-            </div>
-            <div class="calc-wrapper">
-                <div class="calc-inputs-card">
-                    <div class="calc-card-header">
-                        <div class="calc-header-icon"><i class="fa-solid fa-user-circle"></i></div>
-                        <div>
-                            <h3 data-i18n="your_data">بياناتك</h3>
-                            <p data-i18n="your_data_sub">أدخل بياناتك لنتائج دقيقة</p>
-                        </div>
-                    </div>
-                    <form id="calorie-form">
-                        <div class="calc-input-grid">
-                            <div class="calc-input-group">
-                                <label><i class="fa-solid fa-cake-candles"></i> <span data-i18n="age">العمر</span></label>
-                                <input type="number" id="calc-age" min="10" max="100" placeholder="25" required>
-                                <small data-i18n="age_unit">سنة</small>
-                            </div>
-                            <div class="calc-input-group">
-                                <label><i class="fa-solid fa-venus-mars"></i> <span data-i18n="gender">الجنس</span></label>
-                                <select id="calc-gender">
-                                    <option value="male" data-i18n="male">ذكر</option>
-                                    <option value="female" data-i18n="female">أنثى</option>
-                                </select>
-                            </div>
-                            <div class="calc-input-group">
-                                <label><i class="fa-solid fa-ruler-vertical"></i> <span data-i18n="height">الطول</span></label>
-                                <input type="number" id="calc-height" min="100" max="250" placeholder="175" required>
-                                <small data-i18n="height_unit">سم</small>
-                            </div>
-                            <div class="calc-input-group">
-                                <label><i class="fa-solid fa-weight-scale"></i> <span data-i18n="weight">الوزن</span></label>
-                                <input type="number" id="calc-weight" min="30" max="300" placeholder="75" required>
-                                <small data-i18n="weight_unit">كجم</small>
-                            </div>
-                        </div>
-                        <div class="calc-input-group full">
-                            <label><i class="fa-solid fa-bolt"></i> <span data-i18n="activity">مستوى النشاط</span></label>
-                            <select id="calc-activity">
-                                <option value="1.2" data-i18n="sedentary">قليل الحركة (لا رياضة)</option>
-                                <option value="1.375" data-i18n="light">نشاط خفيف (1-3 أيام)</option>
-                                <option value="1.55" data-i18n="moderate">نشاط متوسط (3-5 أيام)</option>
-                                <option value="1.725" data-i18n="active">نشاط عالي (6-7 أيام)</option>
-                                <option value="1.9" data-i18n="very_active">نشاط شديد (رياضي محترف)</option>
-                            </select>
-                        </div>
-                        <div class="calc-input-group full">
-                            <label><i class="fa-solid fa-bullseye"></i> <span data-i18n="goal">الهدف</span></label>
-                            <div class="goal-options">
-                                <label class="goal-option">
-                                    <input type="radio" name="calc-goal" value="lose" checked>
-                                    <span><i class="fa-solid fa-arrow-trend-down"></i> <span data-i18n="lose">خفض الدهون</span></span>
-                                </label>
-                                <label class="goal-option">
-                                    <input type="radio" name="calc-goal" value="maintain">
-                                    <span><i class="fa-solid fa-equals"></i> <span data-i18n="maintain">المحافظة</span></span>
-                                </label>
-                                <label class="goal-option">
-                                    <input type="radio" name="calc-goal" value="gain">
-                                    <span><i class="fa-solid fa-arrow-trend-up"></i> <span data-i18n="gain">بناء العضلات</span></span>
-                                </label>
-                            </div>
-                        </div>
-                        <button type="submit" class="btn-primary w-100 calc-submit-btn">
-                            <i class="fa-solid fa-calculator"></i>
-                            <span data-i18n="calculate">احسب</span>
-                        </button>
-                    </form>
-                </div>
-                <div id="calorie-result" class="calc-results-card hidden">
-                    <div class="calc-card-header">
-                        <div class="calc-header-icon"><i class="fa-solid fa-chart-line"></i></div>
-                        <div>
-                            <h3 data-i18n="your_results">نتائجك</h3>
-                            <p data-i18n="your_results_sub">بناءً على بياناتك</p>
-                        </div>
-                    </div>
-                    <div class="main-calorie-card">
-                        <div class="main-calorie-label" data-i18n="daily_calories">السعرات اليومية المستهدفة</div>
-                        <div class="calorie-value">
-                            <span id="result-calories">0</span>
-                            <small data-i18n="calories_unit">سعرة</small>
-                        </div>
-                        <div class="calorie-goal-badge" id="goal-badge"></div>
-                    </div>
-                    <div class="calc-stats-grid">
-                        <div class="calc-stat">
-                            <div class="calc-stat-icon bmr"><i class="fa-solid fa-heart-pulse"></i></div>
-                            <div class="calc-stat-value"><span id="result-bmr">0</span> <small data-i18n="calories_unit">سعرة</small></div>
-                            <div class="calc-stat-label" data-i18n="bmr">معدل الأيض الأساسي</div>
-                            <div class="calc-stat-desc" data-i18n="bmr_desc">السعرات التي يحرقها جسمك في الراحة</div>
-                        </div>
-                        <div class="calc-stat">
-                            <div class="calc-stat-icon tdee"><i class="fa-solid fa-fire-flame-curved"></i></div>
-                            <div class="calc-stat-value"><span id="result-tdee">0</span> <small data-i18n="calories_unit">سعرة</small></div>
-                            <div class="calc-stat-label" data-i18n="tdee">الحرق اليومي الكلي</div>
-                            <div class="calc-stat-desc" data-i18n="tdee_desc">السعرات التي يحرقها جسمك مع نشاطك</div>
-                        </div>
-                    </div>
-                    <div class="bmi-section">
-                        <div class="bmi-header">
-                            <div class="bmi-title">
-                                <i class="fa-solid fa-weight-scale"></i>
-                                <span data-i18n="bmi">مؤشر كتلة الجسم</span>
-                            </div>
-                            <div class="bmi-value"><span id="result-bmi">0</span></div>
-                        </div>
-                        <div class="bmi-meter">
-                            <div class="bmi-bar">
-                                <div class="bmi-segment seg-under"></div>
-                                <div class="bmi-segment seg-normal"></div>
-                                <div class="bmi-segment seg-over"></div>
-                                <div class="bmi-segment seg-obese"></div>
-                                <div class="bmi-marker" id="bmi-marker"></div>
-                            </div>
-                            <div class="bmi-labels">
-                                <span data-i18n="bmi_under">نقص</span>
-                                <span data-i18n="bmi_normal">طبيعي</span>
-                                <span data-i18n="bmi_over">زيادة</span>
-                                <span data-i18n="bmi_obese">سمنة</span>
-                            </div>
-                        </div>
-                        <div class="bmi-status-text" id="bmi-status-text"></div>
-                    </div>
-                    <div class="macros-section">
-                        <div class="macros-header">
-                            <i class="fa-solid fa-chart-pie"></i>
-                            <h4 data-i18n="macros_title">توزيع الماكروز اليومي</h4>
-                        </div>
-                        <div id="macros-result"></div>
-                    </div>
-                    <div class="water-section">
-                        <div class="water-icon"><i class="fa-solid fa-droplet"></i></div>
-                        <div class="water-info">
-                            <div class="water-title" data-i18n="water_intake">المياه الموصى بها</div>
-                            <div class="water-value"><span id="result-water">0</span> <small data-i18n="liters">لتر يومياً</small></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="view-favorites" class="view-section hidden">
-            <div class="section-header"><h2 class="section-title"><i class="fa-solid fa-heart" style="color: #ff4757;"></i> <span data-i18n="favorites_title">المفضلة</span></h2></div>
-            <div class="gyms-grid" id="favorites-grid">
-                <p style="color: var(--text-muted);" data-i18n="no_favorites">لا توجد جيمات في المفضلة حالياً.</p>
-            </div>
-        </section>
-
-        <section id="view-top10" class="view-section hidden">
-            <div class="section-header"><h2 class="section-title"><i class="fa-solid fa-trophy" style="color: var(--gold);"></i> <span data-i18n="top10_title">أفضل 10 جيمات</span></h2></div>
-            <div class="list-container" id="top10-list"></div>
-        </section>
-
-        <section id="view-store" class="view-section hidden">
-            <div class="store-hero">
-                <div class="store-hero-badge">
-                    <i class="fa-solid fa-hourglass-half"></i>
-                    <span data-i18n="store_coming_soon">قريباً جداً</span>
-                </div>
-                <h1 data-i18n="store_hero_title">متجر SHARKS</h1>
-                <p data-i18n="store_hero_sub">مكملات غذائية أصلية، ملابس رياضية، وأدوات تمرين — كل حاجة محتاجها في مكان واحد</p>
-                <div class="store-hero-notice">
-                    <i class="fa-solid fa-circle-info"></i>
-                    <span data-i18n="store_notice">المنتجات دي للمعاينة فقط دلوقتي. قريباً هتقدر تشتري مباشرة من المنصة</span>
-                </div>
-            </div>
-
-            <div class="store-categories">
-                <button class="store-cat-btn active" data-cat="all" onclick="filterStoreCategory('all', this)">
-                    <i class="fa-solid fa-border-all"></i>
-                    <span data-i18n="store_cat_all">الكل</span>
-                </button>
-                <button class="store-cat-btn" data-cat="supplements" onclick="filterStoreCategory('supplements', this)">
-                    <i class="fa-solid fa-pills"></i>
-                    <span data-i18n="store_cat_supplements">مكملات غذائية</span>
-                </button>
-                <button class="store-cat-btn" data-cat="clothing" onclick="filterStoreCategory('clothing', this)">
-                    <i class="fa-solid fa-shirt"></i>
-                    <span data-i18n="store_cat_clothing">ملابس رياضية</span>
-                </button>
-                <button class="store-cat-btn" data-cat="accessories" onclick="filterStoreCategory('accessories', this)">
-                    <i class="fa-solid fa-dumbbell"></i>
-                    <span data-i18n="store_cat_accessories">أدوات ومستلزمات</span>
-                </button>
-            </div>
-
-            <div class="store-grid" id="store-grid">
-                <div class="store-card" data-category="supplements">
-                    <div class="store-card-img" style="background-image:url('https://images.unsplash.com/photo-1593095948071-474c5cc2989d?q=80&w=600&auto=format&fit=crop');">
-                        <span class="store-card-badge hot"><i class="fa-solid fa-fire"></i> <span data-i18n="store_badge_hot">الأكثر طلباً</span></span>
-                    </div>
-                    <div class="store-card-body">
-                        <span class="store-card-cat" data-i18n="store_cat_supplements">مكملات غذائية</span>
-                        <h3 class="store-card-title" data-i18n="store_p1_name">ووي بروتين 2 كجم</h3>
-                        <p class="store-card-desc" data-i18n="store_p1_desc">بروتين مصل اللبن المعزول - 24 جرام بروتين لكل سكوب - نكهة شوكولاتة</p>
-                        <div class="store-card-footer">
-                            <div class="store-card-price">
-                                <span class="store-price-current">2,500 <small>ج.م</small></span>
-                                <span class="store-price-old">3,200 <small>ج.م</small></span>
-                            </div>
-                            <button class="store-btn-disabled" disabled>
-                                <i class="fa-solid fa-lock"></i>
-                                <span data-i18n="store_btn_soon">قريباً</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="store-card" data-category="supplements">
-                    <div class="store-card-img" style="background-image:url('https://images.unsplash.com/photo-1579722821273-0f6c7d44362f?q=80&w=600&auto=format&fit=crop');">
-                        <span class="store-card-badge new"><i class="fa-solid fa-sparkles"></i> <span data-i18n="store_badge_new">جديد</span></span>
-                    </div>
-                    <div class="store-card-body">
-                        <span class="store-card-cat" data-i18n="store_cat_supplements">مكملات غذائية</span>
-                        <h3 class="store-card-title" data-i18n="store_p2_name">كرياتين مونوهيدرات 300 جم</h3>
-                        <p class="store-card-desc" data-i18n="store_p2_desc">كرياتين نقي 100% - يزيد القوة والأداء الرياضي - بدون نكهة</p>
-                        <div class="store-card-footer">
-                            <div class="store-card-price">
-                                <span class="store-price-current">600 <small>ج.م</small></span>
-                            </div>
-                            <button class="store-btn-disabled" disabled>
-                                <i class="fa-solid fa-lock"></i>
-                                <span data-i18n="store_btn_soon">قريباً</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="store-card" data-category="supplements">
-                    <div class="store-card-img" style="background-image:url('https://images.unsplash.com/photo-1610725664285-7c57e6eeac3f?q=80&w=600&auto=format&fit=crop');"></div>
-                    <div class="store-card-body">
-                        <span class="store-card-cat" data-i18n="store_cat_supplements">مكملات غذائية</span>
-                        <h3 class="store-card-title" data-i18n="store_p3_name">BCAA 300 جم</h3>
-                        <p class="store-card-desc" data-i18n="store_p3_desc">أحماض أمينية متشعبة - يقلل هدم العضلات - نكهة تفاح أخضر</p>
-                        <div class="store-card-footer">
-                            <div class="store-card-price">
-                                <span class="store-price-current">800 <small>ج.م</small></span>
-                            </div>
-                            <button class="store-btn-disabled" disabled>
-                                <i class="fa-solid fa-lock"></i>
-                                <span data-i18n="store_btn_soon">قريباً</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="store-card" data-category="supplements">
-                    <div class="store-card-img" style="background-image:url('https://images.unsplash.com/photo-1594737625785-a6cbdabd333c?q=80&w=600&auto=format&fit=crop');"></div>
-                    <div class="store-card-body">
-                        <span class="store-card-cat" data-i18n="store_cat_supplements">مكملات غذائية</span>
-                        <h3 class="store-card-title" data-i18n="store_p4_name">بري وورك أوت 300 جم</h3>
-                        <p class="store-card-desc" data-i18n="store_p4_desc">طاقة وتركيز قبل التمرين - كافيين وكرياتين - نكهة فراولة</p>
-                        <div class="store-card-footer">
-                            <div class="store-card-price">
-                                <span class="store-price-current">950 <small>ج.م</small></span>
-                            </div>
-                            <button class="store-btn-disabled" disabled>
-                                <i class="fa-solid fa-lock"></i>
-                                <span data-i18n="store_btn_soon">قريباً</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="store-card" data-category="clothing">
-                    <div class="store-card-img" style="background-image:url('https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=600&auto=format&fit=crop');"></div>
-                    <div class="store-card-body">
-                        <span class="store-card-cat" data-i18n="store_cat_clothing">ملابس رياضية</span>
-                        <h3 class="store-card-title" data-i18n="store_p5_name">تيشيرت SHARKS الرياضي</h3>
-                        <p class="store-card-desc" data-i18n="store_p5_desc">قطن عالي الجودة - تصميم شعار SHARKS - متوفر بألوان متعددة</p>
-                        <div class="store-card-footer">
-                            <div class="store-card-price">
-                                <span class="store-price-current">350 <small>ج.م</small></span>
-                            </div>
-                            <button class="store-btn-disabled" disabled>
-                                <i class="fa-solid fa-lock"></i>
-                                <span data-i18n="store_btn_soon">قريباً</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="store-card" data-category="clothing">
-                    <div class="store-card-img" style="background-image:url('https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?q=80&w=600&auto=format&fit=crop');">
-                        <span class="store-card-badge hot"><i class="fa-solid fa-fire"></i> <span data-i18n="store_badge_hot">الأكثر طلباً</span></span>
-                    </div>
-                    <div class="store-card-body">
-                        <span class="store-card-cat" data-i18n="store_cat_clothing">ملابس رياضية</span>
-                        <h3 class="store-card-title" data-i18n="store_p6_name">حذاء رياضي للتمرين</h3>
-                        <p class="store-card-desc" data-i18n="store_p6_desc">خفيف ومريح - مثالي لرفع الأثقال والكارديو - نعل مانع للانزلاق</p>
-                        <div class="store-card-footer">
-                            <div class="store-card-price">
-                                <span class="store-price-current">1,200 <small>ج.م</small></span>
-                                <span class="store-price-old">1,500 <small>ج.م</small></span>
-                            </div>
-                            <button class="store-btn-disabled" disabled>
-                                <i class="fa-solid fa-lock"></i>
-                                <span data-i18n="store_btn_soon">قريباً</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="store-card" data-category="accessories">
-                    <div class="store-card-img" style="background-image:url('https://images.unsplash.com/photo-1598289431512-b97b0917affc?q=80&w=600&auto=format&fit=crop');"></div>
-                    <div class="store-card-body">
-                        <span class="store-card-cat" data-i18n="store_cat_accessories">أدوات ومستلزمات</span>
-                        <h3 class="store-card-title" data-i18n="store_p7_name">شيكر بوتل 700 مل</h3>
-                        <p class="store-card-desc" data-i18n="store_p7_desc">بلاستيك خالي من BPA - غطاء محكم - مع كرة خلط</p>
-                        <div class="store-card-footer">
-                            <div class="store-card-price">
-                                <span class="store-price-current">150 <small>ج.م</small></span>
-                            </div>
-                            <button class="store-btn-disabled" disabled>
-                                <i class="fa-solid fa-lock"></i>
-                                <span data-i18n="store_btn_soon">قريباً</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="store-card" data-category="accessories">
-                    <div class="store-card-img" style="background-image:url('https://images.unsplash.com/photo-1517344884509-a0c97ec11bcc?q=80&w=600&auto=format&fit=crop');"></div>
-                    <div class="store-card-body">
-                        <span class="store-card-cat" data-i18n="store_cat_accessories">أدوات ومستلزمات</span>
-                        <h3 class="store-card-title" data-i18n="store_p8_name">قفازات تمرين احترافية</h3>
-                        <p class="store-card-desc" data-i18n="store_p8_desc">جلد طبيعي - بطانة إسفنجية - حماية من الكاليوس - مقاسات متعددة</p>
-                        <div class="store-card-footer">
-                            <div class="store-card-price">
-                                <span class="store-price-current">250 <small>ج.م</small></span>
-                            </div>
-                            <button class="store-btn-disabled" disabled>
-                                <i class="fa-solid fa-lock"></i>
-                                <span data-i18n="store_btn_soon">قريباً</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="store-card" data-category="accessories">
-                    <div class="store-card-img" style="background-image:url('https://images.unsplash.com/photo-1517649763962-0c623066013b?q=80&w=600&auto=format&fit=crop');"></div>
-                    <div class="store-card-body">
-                        <span class="store-card-cat" data-i18n="store_cat_accessories">أدوات ومستلزمات</span>
-                        <h3 class="store-card-title" data-i18n="store_p9_name">أشرطة مقاومة (5 مستويات)</h3>
-                        <p class="store-card-desc" data-i18n="store_p9_desc">مجموعة 5 أشرطة بمستويات مقاومة مختلفة - مع حقيبة حمل</p>
-                        <div class="store-card-footer">
-                            <div class="store-card-price">
-                                <span class="store-price-current">400 <small>ج.م</small></span>
-                            </div>
-                            <button class="store-btn-disabled" disabled>
-                                <i class="fa-solid fa-lock"></i>
-                                <span data-i18n="store_btn_soon">قريباً</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="store-card" data-category="accessories">
-                    <div class="store-card-img" style="background-image:url('https://images.unsplash.com/photo-1620188467120-5042ed1eb5da?q=80&w=600&auto=format&fit=crop');">
-                        <span class="store-card-badge new"><i class="fa-solid fa-sparkles"></i> <span data-i18n="store_badge_new">جديد</span></span>
-                    </div>
-                    <div class="store-card-body">
-                        <span class="store-card-cat" data-i18n="store_cat_accessories">أدوات ومستلزمات</span>
-                        <h3 class="store-card-title" data-i18n="store_p10_name">حزام رفع الأثقال</h3>
-                        <p class="store-card-desc" data-i18n="store_p10_desc">جلد طبيعي عريض - دعم للظهر السفلي - إبزيم معدني قوي</p>
-                        <div class="store-card-footer">
-                            <div class="store-card-price">
-                                <span class="store-price-current">700 <small>ج.م</small></span>
-                                <span class="store-price-old">900 <small>ج.م</small></span>
-                            </div>
-                            <button class="store-btn-disabled" disabled>
-                                <i class="fa-solid fa-lock"></i>
-                                <span data-i18n="store_btn_soon">قريباً</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="store-card" data-category="supplements">
-                    <div class="store-card-img" style="background-image:url('https://images.unsplash.com/photo-1550572017-edd951aa8f72?q=80&w=600&auto=format&fit=crop');"></div>
-                    <div class="store-card-body">
-                        <span class="store-card-cat" data-i18n="store_cat_supplements">مكملات غذائية</span>
-                        <h3 class="store-card-title" data-i18n="store_p11_name">مالتي فيتامين (60 كبسولة)</h3>
-                        <p class="store-card-desc" data-i18n="store_p11_desc">فيتامينات ومعادن أساسية - لدعم الطاقة والمناعة - كبسولة يومياً</p>
-                        <div class="store-card-footer">
-                            <div class="store-card-price">
-                                <span class="store-price-current">450 <small>ج.م</small></span>
-                            </div>
-                            <button class="store-btn-disabled" disabled>
-                                <i class="fa-solid fa-lock"></i>
-                                <span data-i18n="store_btn_soon">قريباً</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="store-notify">
-                <div class="store-notify-icon">
-                    <i class="fa-solid fa-bell"></i>
-                </div>
-                <div class="store-notify-content">
-                    <h3 data-i18n="store_notify_title">عايز تعرف أول ما المتجر يفتح؟</h3>
-                    <p data-i18n="store_notify_sub">سجل إيميلك ونبعتلك إشعار أول ما نطلق المتجر</p>
-                </div>
-                <form class="store-notify-form" id="store-notify-form" onsubmit="event.preventDefault(); showToast(tr('store_notify_success'), 'success'); this.reset();">
-                    <input type="email" placeholder="your@email.com" data-i18n-placeholder="store_notify_placeholder" required>
-                    <button type="submit" class="btn-primary">
-                        <i class="fa-solid fa-paper-plane"></i>
-                        <span data-i18n="store_notify_btn">أبلغني</span>
-                    </button>
-                </form>
-            </div>
-
-            <div class="store-faq">
-                <h2 data-i18n="store_faq_title">أسئلة عن المتجر</h2>
-                <div class="faq-list">
-                    <details class="faq-item">
-                        <summary data-i18n="store_faq_1_q">إمتى المتجر هيفتح؟</summary>
-                        <p data-i18n="store_faq_1_a">شغالين على تجهيز المنتجات وآلية الدفع والشحن. متوقع الإطلاق قريباً — سجل إيميلك وهنبلغك أول ما نجهز.</p>
-                    </details>
-                    <details class="faq-item">
-                        <summary data-i18n="store_faq_2_q">المنتجات أصلية؟</summary>
-                        <p data-i18n="store_faq_2_a">أيوه. بنتعامل مع موزعين معتمدين فقط. كل منتج هيبقى معاه فاتورة وضمان الأصالة.</p>
-                    </details>
-                    <details class="faq-item">
-                        <summary data-i18n="store_faq_3_q">إيه طرق الدفع المتاحة؟</summary>
-                        <p data-i18n="store_faq_3_a">هنجهز الدفع عند الاستلام، فودافون كاش، انستاباي، والبطاقات البنكية. هتكون متاحة عند الإطلاق.</p>
-                    </details>
-                    <details class="faq-item">
-                        <summary data-i18n="store_faq_4_q">في شحن لكل المحافظات؟</summary>
-                        <p data-i18n="store_faq_4_a">أيوه. هنشحن لكل محافظات مصر. الشحن مجاني للطلبات فوق 500 جنيه.</p>
-                    </details>
-                </div>
-            </div>
-        </section>
-
-        <section id="view-settings" class="view-section hidden">
-            <div class="section-header"><h2 class="section-title"><i class="fa-solid fa-gear"></i> <span data-i18n="settings_title">الإعدادات</span></h2></div>
-            <div class="settings-container">
-                <div class="settings-group">
-                    <h3 data-i18n="account_settings">الحساب</h3>
-                    <button class="settings-btn" onclick="handleProfileClick()"><i class="fa-solid fa-user"></i> <span data-i18n="my_profile">ملفي الشخصي</span></button>
-                    <button class="settings-btn" onclick="openEditProfile()"><i class="fa-solid fa-user-pen"></i> <span data-i18n="edit_profile">تعديل البيانات الشخصية</span></button>
-                    <button class="settings-btn" onclick="requestUserLocation()"><i class="fa-solid fa-location-dot"></i> <span data-i18n="location_permission">إذن الموقع</span></button>
-                </div>
-                <div class="settings-group">
-                    <h3 data-i18n="display_settings">العرض</h3>
-                    <div class="settings-toggle-row">
-                        <span data-i18n="show_top3">إظهار قسم أفضل 3 جيمات</span>
-                        <label class="switch">
-                            <input type="checkbox" id="toggle-top3" checked onchange="toggleTop3Visibility(this)">
-                            <span class="slider round"></span>
-                        </label>
-                    </div>
-                </div>
-                <div class="settings-group">
-                    <h3 data-i18n="about_platform">عن المنصة</h3>
-                    <button class="settings-btn" onclick="showView('about')"><i class="fa-solid fa-circle-info"></i> <span data-i18n="nav_about">حول</span></button>
-                    <button class="settings-btn" onclick="showView('who')"><i class="fa-solid fa-users"></i> <span data-i18n="nav_who">من نحن</span></button>
-                </div>
-                <div class="settings-group">
-                    <button class="settings-btn text-danger" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> <span data-i18n="logout">تسجيل الخروج</span></button>
-                    <p style="text-align: center; color: var(--text-muted); margin-top: 15px; font-size: 12px;">v1.0.0</p>
-                </div>
-            </div>
-        </section>
-
-        <section id="view-profile" class="view-section hidden">
-            <div class="profile-hero">
-                <div class="profile-avatar-large" id="profile-avatar">U</div>
-                <div class="profile-info">
-                    <h1 id="profile-name" data-i18n="profile_loading">جاري التحميل...</h1>
-                    <p id="profile-username" style="color: var(--text-muted); font-size: 14px;"></p>
-                    <div class="profile-badges" id="profile-badges"></div>
-                </div>
-                <div style="display:flex;gap:10px;">
-                    <button class="btn-secondary" onclick="openEditProfile()"><i class="fa-solid fa-user-pen"></i> <span data-i18n="edit_profile">تعديل</span></button>
-                    <button class="btn-secondary" onclick="showView('settings')"><i class="fa-solid fa-gear"></i></button>
-                </div>
-            </div>
-            <div class="profile-stats">
-                <div class="stat-card">
-                    <h3 id="stat-reviews">0</h3>
-                    <p data-i18n="profile_reviews">تقييمات</p>
-                </div>
-                <div class="stat-card">
-                    <h3 id="stat-favorites">0</h3>
-                    <p data-i18n="profile_favorites">مفضلة</p>
-                </div>
-                <div class="stat-card">
-                    <h3 id="stat-joined">-</h3>
-                    <p data-i18n="profile_joined">عضو منذ</p>
-                </div>
-            </div>
-            <div class="section-header">
-                <h2 class="section-title"><i class="fa-solid fa-star"></i> <span data-i18n="my_reviews">تقييماتي</span></h2>
-            </div>
-            <div id="profile-reviews-list" class="reviews-list">
-                <p style="color: var(--text-muted);" data-i18n="no_reviews_yet">لم تقم بأي تقييم بعد.</p>
-            </div>
-        </section>
-
-        <section id="view-about" class="view-section hidden">
-            <div class="about-hero">
-                <div class="about-hero-badge" data-i18n="about_badge">حول SHARKS</div>
-                <h1 data-i18n="about_hero_title">دليلك الكامل للمنصة</h1>
-                <p data-i18n="about_hero_sub">كل حاجة محتاج تعرفها عن SHARKS في صفحة واحدة</p>
-            </div>
-
-            <div class="about-what">
-                <h2 data-i18n="about_what_title">SHARKS إيه بالظبط؟</h2>
-                <div class="about-what-grid">
-                    <div class="about-what-card">
-                        <div class="about-what-icon"><i class="fa-solid fa-magnifying-glass-location"></i></div>
-                        <h4 data-i18n="about_what_1_title">اكتشف</h4>
-                        <p data-i18n="about_what_1_text">ابحث عن جيمات في منطقتك، شوف الصور، اعرف الأسعار، وقارن بينهم.</p>
-                    </div>
-                    <div class="about-what-card">
-                        <div class="about-what-icon"><i class="fa-solid fa-star-half-stroke"></i></div>
-                        <h4 data-i18n="about_what_2_title">قيّم</h4>
-                        <p data-i18n="about_what_2_text">شارك تجربتك في 6 معايير. تقييمك بيساعد غيرك يختار صح.</p>
-                    </div>
-                    <div class="about-what-card">
-                        <div class="about-what-icon"><i class="fa-solid fa-fire-flame-curved"></i></div>
-                        <h4 data-i18n="about_what_3_title">احسب</h4>
-                        <p data-i18n="about_what_3_text">حاسبة سعرات ذكية تحسب احتياجك اليومي وماكروز ومياه.</p>
-                    </div>
-                    <div class="about-what-card">
-                        <div class="about-what-icon"><i class="fa-solid fa-heart"></i></div>
-                        <h4 data-i18n="about_what_4_title">احفظ</h4>
-                        <p data-i18n="about_what_4_text">احفظ جيماتك المفضلة، ارجع لها في أي وقت، وشاركها مع أصحابك.</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="about-how">
-                <h2 data-i18n="about_how_title">إزاي تستخدم المنصة؟ 4 خطوات</h2>
-                <div class="about-steps">
-                    <div class="about-step">
-                        <div class="about-step-num">1</div>
-                        <div class="about-step-content">
-                            <h4 data-i18n="about_step_1_title">دوّر على جيمك</h4>
-                            <p data-i18n="about_step_1_text">من الرئيسية، اختار منطقتك أو استخدم البحث. هتلاقي جيمات قريبة منك بمسافات حقيقية.</p>
-                        </div>
-                    </div>
-                    <div class="about-step">
-                        <div class="about-step-num">2</div>
-                        <div class="about-step-content">
-                            <h4 data-i18n="about_step_2_title">شوف التفاصيل</h4>
-                            <p data-i18n="about_step_2_text">دوس على أي جيم. هتلاقي صور، أسعار، مواعيد، ومواعيد السيدات لو موجودة. اتصل بيهم أو كلمهم على واتساب.</p>
-                        </div>
-                    </div>
-                    <div class="about-step">
-                        <div class="about-step-num">3</div>
-                        <div class="about-step-content">
-                            <h4 data-i18n="about_step_3_title">قارن وقيّم</h4>
-                            <p data-i18n="about_step_3_text">عايز تقارن بين 2-3 جيمات؟ استخدم زرار المقارنة. دخلت جيم؟ قيّمه من 6 معايير.</p>
-                        </div>
-                    </div>
-                    <div class="about-step">
-                        <div class="about-step-num">4</div>
-                        <div class="about-step-content">
-                            <h4 data-i18n="about_step_4_title">حقق هدفك</h4>
-                            <p data-i18n="about_step_4_text">استخدم حاسبة السعرات، اعرف احتياجك اليومي، وابدأ رحلتك وانت فاهم جسمك محتاج إيه.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="about-rating-system">
-                <h2 data-i18n="about_rating_title">نظام التقييم — إيه اللي بيميز SHARKS</h2>
-                <p class="about-rating-intro" data-i18n="about_rating_intro">مش بنقيس الجيم بنجمة أو اتنين. بنقيسه على 6 معايير، كل واحد ليه وزنه:</p>
-                <div class="about-rating-grid">
-                    <div class="about-rating-item"><i class="fa-solid fa-dumbbell"></i><span data-i18n="crit_equipment">الأجهزة والمعدات</span></div>
-                    <div class="about-rating-item"><i class="fa-solid fa-broom"></i><span data-i18n="crit_cleanliness">النظافة</span></div>
-                    <div class="about-rating-item"><i class="fa-solid fa-location-dot"></i><span data-i18n="crit_location">المكان والموقع</span></div>
-                    <div class="about-rating-item"><i class="fa-solid fa-headset"></i><span data-i18n="crit_staff">التعامل وخدمة العملاء</span></div>
-                    <div class="about-rating-item"><i class="fa-solid fa-list-check"></i><span data-i18n="crit_organization">النظام والتنظيم</span></div>
-                    <div class="about-rating-item"><i class="fa-solid fa-money-bill"></i><span data-i18n="crit_price">السعر</span></div>
-                </div>
-                <p class="about-rating-note" data-i18n="about_rating_note">كل معيار له وزن متساوي. التقييم النهائي = متوسط الـ 6 معايير.</p>
-            </div>
-
-            <div class="about-monthly">
-                <div class="about-monthly-card">
-                    <div class="about-monthly-icon"><i class="fa-solid fa-crown"></i></div>
-                    <h3 data-i18n="about_monthly_title">نظام الدورة الشهرية</h3>
-                    <p data-i18n="about_monthly_p1">كل بداية شهر، بنفتح صفحة جديدة. التقييمات القديمة بتتحفظ في الأرشيف، والتقييمات الجديدة بتحدد الفايزين.</p>
-                    <p data-i18n="about_monthly_p2">أفضل 3 جيمات بيظهروا على الصفحة الرئيسية لمدة 10 أيام. بعد كده، الإبراز بيتشال، ونستعد للشهر الجاي.</p>
-                    <p data-i18n="about_monthly_p3">كل مستخدم ليه تقييم واحد لكل جيم كل شهر. لو غيّر رأيه، يعدّل تقييمه، مش يضيف جديد.</p>
-                </div>
-            </div>
-
-            <div class="about-faq">
-                <h2 data-i18n="about_faq_title">أسئلة بتتكرر كتير</h2>
-                <div class="faq-list">
-                    <details class="faq-item">
-                        <summary data-i18n="faq_1_q">هل لازم أسجل عشان أستخدم المنصة؟</summary>
-                        <p data-i18n="faq_1_a">لأ. تقدر تتصفح كل حاجة كزائر. بس لو عايز تقيّم، تحفظ مفضلة، أو تتواصل مع الجيم، لازم تسجل دخول بـ Google.</p>
-                    </details>
-                    <details class="faq-item">
-                        <summary data-i18n="faq_2_q">إزاي الجيمات بتتضاف على المنصة؟</summary>
-                        <p data-i18n="faq_2_a">فريق SHARKS هو اللي بيضيف الجيمات، مش بتتضاف تلقائياً. بنتعاقد مع الجيم، بنصوره، بنتأكد من أسعاره، وبعدها بننشره.</p>
-                    </details>
-                    <details class="faq-item">
-                        <summary data-i18n="faq_3_q">إيه معنى "موثّق"؟</summary>
-                        <p data-i18n="faq_3_a">يعني إن فريقنا زار الجيم وتأكد من بياناته. مش معناه إن الجيم ده أحسن من غيره. التوثيق منفصل عن التقييم.</p>
-                    </details>
-                    <details class="faq-item">
-                        <summary data-i18n="faq_4_q">هل التقييمات حقيقية؟</summary>
-                        <p data-i18n="faq_4_a">بنعمل أقصى جهدنا نمنع التلاعب. كل تقييم مرتبط بحساب Google، فيه نظام لمكافحة التكرار، وفريقنا بمراجع البلاغات. مش هنقول 100%، بس بنعمل كل حاجة نقدر عليها.</p>
-                    </details>
-                    <details class="faq-item">
-                        <summary data-i18n="faq_5_q">إزاي أضيف جيمي على المنصة؟</summary>
-                        <p data-i18n="faq_5_a">كلمنا على partners@sharks.com. فريقنا هيتواصل معاك، يتفق على التفاصيل، ويضيف جيمك.</p>
-                    </details>
-                    <details class="faq-item">
-                        <summary data-i18n="faq_6_q">إيه البيانات اللي بتتجمع عني؟</summary>
-                        <p data-i18n="faq_6_a">الاسم، اسم المستخدم، رقم الهاتف، المحافظة، والمركز. بنستخدمهم عشان نقدر نعرضلك جيمات قريبة منك. مفيش مشاركة مع أطراف تالتة.</p>
-                    </details>
-                </div>
-            </div>
-
-            <div class="about-footer">
-                <div class="about-footer-links">
-                    <a href="#" onclick="showView('who')" data-i18n="about_footer_who">من نحن</a>
-                    <a href="mailto:partners@sharks.com" data-i18n="about_footer_contact">تواصل معنا</a>
-                </div>
-                <p class="about-version" data-i18n="about_version">الإصدار 1.0.0 — آخر تحديث: أكتوبر 2026</p>
-            </div>
-        </section>
-
-        <section id="view-who" class="view-section hidden">
-            <div class="who-hero">
-                <div class="who-hero-content">
-                    <span class="who-hero-badge" data-i18n="who_badge">من نحن</span>
-                    <h1 data-i18n="who_hero_title">اتعبنا من التدوير.. فبنينا الحل</h1>
-                    <p data-i18n="who_hero_sub">SHARKS مش مجرد موقع، ده الحل اللي كنا بندور عليه ومش لاقيينه</p>
-                </div>
-            </div>
-
-            <div class="who-story">
-                <div class="who-story-text">
-                    <h2 data-i18n="who_story_title">الحكاية بدأت من سؤال بسيط</h2>
-                    <p data-i18n="who_story_p1">"فين أقرب جيم كويس جنبي؟"</p>
-                    <p data-i18n="who_story_p2">سؤال بيرتبك كل واحد بيبدأ رحلته الرياضية. بتفتح Google Maps، بتلاقي أسماء بس. بتسأل أصحابك، بتدور في Groups. وفي الآخر بتروح تدور بنفسك، لأن مفيش حد بيدلك بجد.</p>
-                    <p data-i18n="who_story_p3">فقلنا: ليه لأ؟</p>
-                </div>
-                <div class="who-story-highlight">
-                    <div class="who-highlight-icon"><i class="fa-solid fa-lightbulb"></i></div>
-                    <div class="who-highlight-text" data-i18n="who_story_highlight">منصة واحدة. أسعار حقيقية. تقييمات بجد. ومعلومات متأكدين منها.</div>
-                </div>
-            </div>
-
-            <div class="who-mission-vision">
-                <div class="who-card">
-                    <div class="who-card-icon"><i class="fa-solid fa-eye"></i></div>
-                    <h3 data-i18n="who_vision_title">رؤيتنا</h3>
-                    <p data-i18n="who_vision_text">إننا نبقى البوابة الأولى لأي حد في مصر بيدور على جيم. متبقاش المنصة "الكويسة"، نبقى المنصة "الوحيدة اللي إنت بتفتحها".</p>
-                </div>
-                <div class="who-card">
-                    <div class="who-card-icon"><i class="fa-solid fa-rocket"></i></div>
-                    <h3 data-i18n="who_mission_title">مهمتنا</h3>
-                    <p data-i18n="who_mission_text">نوفر بيانات حقيقية عن كل جيم في مصر. أسعار مكتوبة بوضوح. صور بدون فلاتر. تقييمات من ناس دخلت ومارست فعلاً.</p>
-                </div>
-                <div class="who-card">
-                    <div class="who-card-icon"><i class="fa-solid fa-shield-halved"></i></div>
-                    <h3 data-i18n="who_values_title">قيمنا</h3>
-                    <p data-i18n="who_values_text">الشفافية قبل كل حاجة. لو جيم وحش، هنقول. لو غالي على الفاضي، هتوضح. الثقة مش هتتبني بالإعلانات، هتتبني بإنك متكدبش.</p>
-                </div>
-            </div>
-
-            <div class="who-numbers">
-                <div class="who-number-card">
-                    <div class="who-number" data-i18n="who_num_gyms">100+</div>
-                    <div class="who-number-label" data-i18n="who_num_gyms_label">جيم في القاهرة والجيزة والإسكندرية</div>
-                </div>
-                <div class="who-number-card">
-                    <div class="who-number" data-i18n="who_num_reviews">5,000+</div>
-                    <div class="who-number-label" data-i18n="who_num_reviews_label">تقييم من مستخدمين حقيقيين</div>
-                </div>
-                <div class="who-number-card">
-                    <div class="who-number" data-i18n="who_num_monthly">10,000+</div>
-                    <div class="who-number-label" data-i18n="who_num_monthly_label">زيارة شهرية للمنصة</div>
-                </div>
-            </div>
-
-            <div class="who-different">
-                <h2 data-i18n="who_diff_title">إيه اللي بيفرقنا عن أي حد تاني؟</h2>
-                <div class="who-diff-grid">
-                    <div class="who-diff-item">
-                        <div class="who-diff-check"><i class="fa-solid fa-check"></i></div>
-                        <div>
-                            <h4 data-i18n="who_diff_1_title">الجيمات متعاقد عليها</h4>
-                            <p data-i18n="who_diff_1_text">مش بنجيب أسماء من Google. كل جيم على المنصة، فريقنا راح بنفسه، صوره، عرف أسعاره، وتكلم معاهم.</p>
-                        </div>
-                    </div>
-                    <div class="who-diff-item">
-                        <div class="who-diff-check"><i class="fa-solid fa-check"></i></div>
-                        <div>
-                            <h4 data-i18n="who_diff_2_title">تقييم على 6 معايير</h4>
-                            <p data-i18n="who_diff_2_text">مش "5 نجوم" وخلاص. بنقيس الأجهزة، النظافة، المكان، التعامل، التنظيم، والسعر. عشان تعرف الجيم ده يناسبك ولا لأ.</p>
-                        </div>
-                    </div>
-                    <div class="who-diff-item">
-                        <div class="who-diff-check"><i class="fa-solid fa-check"></i></div>
-                        <div>
-                            <h4 data-i18n="who_diff_3_title">نظام شهري عادل</h4>
-                            <p data-i18n="who_diff_3_text">كل شهر بنعمل دورة جديدة. أفضل 3 جيمات بتظهر على الرئيسية. مفيش حد بيقدر يشتري مكانه، التقييمات هي اللي بتحكم.</p>
-                        </div>
-                    </div>
-                    <div class="who-diff-item">
-                        <div class="who-diff-check"><i class="fa-solid fa-check"></i></div>
-                        <div>
-                            <h4 data-i18n="who_diff_4_title">بنسمعك</h4>
-                            <p data-i18n="who_diff_4_text">شفت معلومة غلط؟ في زرار بلاغ. عندك اقتراح؟ في وسيلة تواصل. إحنا مش شركة كبيرة، إحنا ناس زيك.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="who-cta">
-                <h2 data-i18n="who_cta_title">جاهز تبدأ؟</h2>
-                <p data-i18n="who_cta_text">اختار جيمك، قيّم تجربتك، وخلّي الناس التانية تعرف الصح.</p>
-                <div class="who-cta-buttons">
-                    <button class="btn-primary" onclick="showView('home')">
-                        <i class="fa-solid fa-dumbbell"></i> <span data-i18n="who_cta_browse">تصفح الجيمات</span>
-                    </button>
-                    <button class="btn-secondary" onclick="showView('about')">
-                        <i class="fa-solid fa-circle-info"></i> <span data-i18n="who_cta_how">اعرف إزاي بنشتغل</span>
-                    </button>
-                </div>
-            </div>
-
-            <div class="who-contact">
-                <div class="who-contact-card">
-                    <i class="fa-solid fa-envelope"></i>
-                    <h4 data-i18n="who_contact_title">تواصل معنا</h4>
-                    <p data-i18n="who_contact_text">للشراكات، الاستفسارات، أو أي حاجة في دماغك</p>
-                    <a href="mailto:partners@sharks.com" class="who-contact-email">partners@sharks.com</a>
-                </div>
-            </div>
-        </section>
-
-    </main>
-
-    <div id="review-modal" class="modal-overlay hidden">
-        <div class="modal-box">
-            <h2 class="modal-title" data-i18n="rate_title">قيم تجربتك</h2>
-            <form id="review-form">
-                <div class="rating-item"><span data-i18n="crit_equipment">الأجهزة والمعدات</span><div class="stars" data-crit="equipment">★★★★★</div></div>
-                <div class="rating-item"><span data-i18n="crit_cleanliness">النظافة</span><div class="stars" data-crit="cleanliness">★★★★★</div></div>
-                <div class="rating-item"><span data-i18n="crit_location">المكان والموقع</span><div class="stars" data-crit="location">★★★★★</div></div>
-                <div class="rating-item"><span data-i18n="crit_staff">التعامل وخدمة العملاء</span><div class="stars" data-crit="staff">★★★★★</div></div>
-                <div class="rating-item"><span data-i18n="crit_organization">النظام والتنظيم</span><div class="stars" data-crit="organization">★★★★★</div></div>
-                <div class="rating-item"><span data-i18n="crit_price">السعر</span><div class="stars" data-crit="price">★★★★★</div></div>
-                <div class="photo-upload-group">
-                    <label data-i18n="add_photos">أضف صور (اختياري)</label>
-                    <div class="photo-upload-area" onclick="document.getElementById('review-photos').click()">
-                        <i class="fa-solid fa-cloud-arrow-up"></i>
-                        <span data-i18n="photo_hint">اضغط لرفع صور من جهازك</span>
-                        <small data-i18n="photo_limit">بحد أقصى 3 صور</small>
-                    </div>
-                    <input type="file" id="review-photos" accept="image/*" multiple style="display:none;">
-                    <div id="photo-preview" class="photo-preview"></div>
-                </div>
-                <div class="modal-actions">
-                    <button type="button" class="btn-secondary" onclick="closeReviewModal()" data-i18n="cancel">إلغاء</button>
-                    <button type="submit" class="btn-primary" data-i18n="submit">إرسال التقييم</button>
-                </div>
-            </form>
-        </div>
+  <div class="chat-messages" id="chat-messages">
+    <div class="welcome-screen" id="welcome-screen">
+      <div class="welcome-hero"><i class="fa-solid fa-robot"></i></div>
+      <h2>أهلاً بك في SHARKS AI</h2>
+      <p>مساعدك الشخصي في كل ما يخص اللياقة البدنية والتغذية والتمارين. اسألني أي حاجة عن التمرين أو الأكل أو حتى اختيار الجيم المناسب.</p>
+      <div class="suggestions" id="suggestions-container"></div>
     </div>
+  </div>
 
-    <div id="edit-profile-modal" class="modal-overlay hidden">
-        <div class="modal-box">
-            <div class="modal-header">
-                <div style="display:flex;align-items:center;gap:12px;">
-                    <div style="width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#0055FF,#0077FF);display:flex;align-items:center;justify-content:center;color:white;font-size:18px;">
-                        <i class="fa-solid fa-user-pen"></i>
-                    </div>
-                    <div>
-                        <h2 style="font-size:18px;" data-i18n="edit_profile_title">تعديل الملف الشخصي</h2>
-                        <p style="font-size:12px;color:var(--text-muted);" data-i18n="edit_profile_sub">حدّث بياناتك في أي وقت</p>
-                    </div>
-                </div>
-                <button class="btn-icon" onclick="closeEditProfile()"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            <form id="edit-profile-form" style="margin-top:20px;">
-                <div class="input-group">
-                    <label data-i18n="full_name">الاسم الرباعي</label>
-                    <input type="text" id="edit-name" required>
-                </div>
-                <div class="input-group">
-                    <label data-i18n="username">اسم المستخدم</label>
-                    <div class="username-input-wrapper">
-                        <input type="text" id="edit-username" required>
-                        <span class="username-status" id="username-status"></span>
-                    </div>
-                    <small class="input-hint" id="username-hint" data-i18n="username_hint">3-30 حرف، إنجليزي وأرقام و_</small>
-                </div>
-                <div class="input-group">
-                    <label data-i18n="phone">رقم الهاتف</label>
-                    <input type="tel" id="edit-phone" required>
-                </div>
-                <div class="input-group">
-                    <label data-i18n="governorate">المحافظة</label>
-                    <select id="edit-gov" required>
-                        <option value="cairo" data-i18n="cairo">القاهرة</option>
-                        <option value="giza" data-i18n="giza">الجيزة</option>
-                        <option value="alex" data-i18n="alex">الإسكندرية</option>
-                    </select>
-                </div>
-                <div class="input-group">
-                    <label data-i18n="city">المركز / المنطقة</label>
-                    <input type="text" id="edit-city" required>
-                </div>
-                <div class="modal-actions">
-                    <button type="button" class="btn-secondary" onclick="closeEditProfile()" data-i18n="cancel">إلغاء</button>
-                    <button type="submit" class="btn-primary" data-i18n="save">حفظ التغييرات</button>
-                </div>
-            </form>
-        </div>
+  <button class="scroll-bottom-btn" id="scroll-bottom-btn" aria-label="التمرير للأسفل">
+    <i class="fa-solid fa-arrow-down"></i>
+  </button>
+
+  <div class="chat-input-area">
+    <div class="input-wrapper">
+      <textarea id="message-input" placeholder="اكتب سؤالك هنا..." rows="1" maxlength="2000"></textarea>
+      <button class="btn-send" id="send-btn" aria-label="إرسال">
+        <i class="fa-solid fa-paper-plane"></i>
+      </button>
     </div>
-
-    <div id="compare-bar" class="compare-bar hidden">
-        <div class="compare-bar-info">
-            <i class="fa-solid fa-scale-balanced"></i>
-            <span><span id="compare-count">0</span> <span data-i18n="compare_selected">جيم مختار</span></span>
-        </div>
-        <div id="compare-slots" class="compare-slots"></div>
-        <div class="compare-bar-actions">
-            <button class="btn-primary" onclick="openCompareModal()"><span data-i18n="compare_now">قارن الآن</span></button>
-            <button class="btn-icon" onclick="clearCompare()"><i class="fa-solid fa-xmark"></i></button>
-        </div>
+    <div class="input-meta">
+      <span><i class="fa-solid fa-shield-halved"></i>محادثتك محفوظة على جهازك فقط</span>
+      <span><i class="fa-solid fa-clock"></i>يتجدد: <span class="reset-timer" id="reset-timer">--:--:--</span></span>
     </div>
+  </div>
+</main>
 
-    <div id="compare-modal" class="modal-overlay hidden">
-        <div class="modal-box compare-modal-box">
-            <div class="compare-modal-header">
-                <h2 data-i18n="compare_title">مقارنة الجيمات</h2>
-                <button class="btn-icon" onclick="closeCompareModal()"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            <div id="compare-table-container" class="compare-table-container"></div>
-        </div>
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <img src="https://i.ibb.co/btRfr3Z/Whats-App-Image-2026-10-29-at-8-20-02-PM-removebg-preview.png" alt="SHARKS">
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-label">ملفك الشخصي</div>
+    <div class="profile-card" id="profile-card">
+      <div class="profile-avatar" id="profile-avatar">U</div>
+      <div class="profile-info">
+        <h4 id="profile-name">مستخدم جديد</h4>
+        <p id="profile-status">اضغط لإكمال بياناتك</p>
+      </div>
+      <div class="profile-edit-icon"><i class="fa-solid fa-pen"></i></div>
     </div>
+  </div>
 
-    <div id="lightbox" class="lightbox hidden">
-        <div class="lightbox-backdrop" onclick="closeLightbox()"></div>
-        <button class="lightbox-close" onclick="closeLightbox()" title="إغلاق (Esc)">
-            <i class="fa-solid fa-xmark"></i>
-        </button>
-        <div class="lightbox-counter" id="lightbox-counter">1 / 6</div>
-        <button class="lightbox-fullscreen" onclick="toggleFullscreen()" title="ملء الشاشة">
-            <i class="fa-solid fa-expand"></i>
-        </button>
-        <button class="lightbox-nav lightbox-prev" onclick="lightboxPrev()" title="السابق">
-            <i class="fa-solid fa-chevron-right"></i>
-        </button>
-        <div class="lightbox-image-wrap" id="lightbox-image-wrap">
-            <img id="lightbox-image" src="" alt="" draggable="false" oncontextmenu="return false;">
-            <div class="lightbox-watermark">© SHARKS</div>
-            <div class="lightbox-protection"></div>
-        </div>
-        <button class="lightbox-nav lightbox-next" onclick="lightboxNext()" title="التالي">
-            <i class="fa-solid fa-chevron-left"></i>
-        </button>
-        <div class="lightbox-thumbs" id="lightbox-thumbs"></div>
+  <div class="sidebar-section">
+    <div class="sidebar-label">الإحصائيات</div>
+    <div class="stats-grid">
+      <div class="stat-mini">
+        <div class="stat-mini-value" id="stat-remaining">5</div>
+        <div class="stat-mini-label">أسئلة متبقية</div>
+      </div>
+      <div class="stat-mini">
+        <div class="stat-mini-value" id="stat-messages">0</div>
+        <div class="stat-mini-label">رسالة محفوظة</div>
+      </div>
     </div>
+  </div>
 
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-storage-compat.js"></script>
-    <script src="script.js"></script>
+  <div class="sidebar-section">
+    <div class="sidebar-label">إجراءات</div>
+    <button class="action-btn" id="sidebar-settings-btn">
+      <i class="fa-solid fa-user-pen"></i>
+      <span>تعديل بياناتي</span>
+    </button>
+    <button class="action-btn danger" id="clear-chat-btn">
+      <i class="fa-solid fa-trash-can"></i>
+      <span>مسح المحادثة</span>
+    </button>
+    <a href="index.html" class="action-btn">
+      <i class="fa-solid fa-house"></i>
+      <span>الرئيسية</span>
+    </a>
+  </div>
+
+  <div class="sidebar-footer">
+    <p>SHARKS AI <strong>v1.0</strong></p>
+    <p style="margin-top:4px;">مدعوم بـ Gemini</p>
+  </div>
+</aside>
+
+<div class="modal-overlay hidden" id="settings-modal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-header-left">
+        <div class="modal-icon"><i class="fa-solid fa-user-pen"></i></div>
+        <div>
+          <h2>بياناتك الشخصية</h2>
+          <p>هتساعدني أجاوبك بشكل أدق</p>
+        </div>
+      </div>
+      <button class="modal-close" id="close-settings-btn"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <form id="profile-form">
+      <div class="form-group">
+        <label><i class="fa-solid fa-user"></i>الاسم</label>
+        <input type="text" id="pf-name" placeholder="اسمك" maxlength="50">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label><i class="fa-solid fa-cake-candles"></i>العمر</label>
+          <input type="number" id="pf-age" placeholder="25" min="10" max="100">
+        </div>
+        <div class="form-group">
+          <label><i class="fa-solid fa-venus-mars"></i>الجنس</label>
+          <select id="pf-gender">
+            <option value="">اختر</option>
+            <option value="male">ذكر</option>
+            <option value="female">أنثى</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label><i class="fa-solid fa-ruler-vertical"></i>الطول (سم)</label>
+          <input type="number" id="pf-height" placeholder="175" min="100" max="250">
+        </div>
+        <div class="form-group">
+          <label><i class="fa-solid fa-weight-scale"></i>الوزن (كجم)</label>
+          <input type="number" id="pf-weight" placeholder="75" min="30" max="300">
+        </div>
+      </div>
+      <div class="form-group">
+        <label><i class="fa-solid fa-bullseye"></i>هدفك</label>
+        <select id="pf-goal">
+          <option value="">اختر</option>
+          <option value="خسارة الوزن">خسارة الوزن</option>
+          <option value="بناء العضلات">بناء العضلات</option>
+          <option value="المحافظة على الوزن">المحافظة على الوزن</option>
+          <option value="تحسين اللياقة">تحسين اللياقة</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label><i class="fa-solid fa-bolt"></i>مستوى النشاط</label>
+        <select id="pf-activity">
+          <option value="">اختر</option>
+          <option value="قليل الحركة">قليل الحركة</option>
+          <option value="نشاط خفيف">نشاط خفيف</option>
+          <option value="نشاط متوسط">نشاط متوسط</option>
+          <option value="نشاط عالي">نشاط عالي</option>
+          <option value="نشاط شديد">نشاط شديد</option>
+        </select>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn-secondary" id="cancel-settings-btn">إلغاء</button>
+        <button type="submit" class="btn-primary"><i class="fa-solid fa-check"></i>حفظ</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+(function(){
+'use strict';
+
+const API_KEY='AQ.Ab8RN6KPDEXhTVYfdZflw9JTPC-CPi-8v5AnVrok_iWZIckzkg';
+const API_URL='https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
+const MAX_QUESTIONS=5;
+const STORAGE_CHAT='sharks_ai_chat_v2';
+const STORAGE_PROFILE='sharks_ai_profile_v2';
+const STORAGE_COUNTER='sharks_ai_counter_v2';
+const SUGGESTIONS=[
+{icon:'fa-dumbbell',text:'اعمل لي برنامج تمرين للمبتدئين'},
+{icon:'fa-fire',text:'كام سعرة أحتاج في اليوم لخسارة الوزن؟'},
+{icon:'fa-heart-pulse',text:'إيه الفرق بين الكارديو والحديد؟'},
+{icon:'fa-shield-halved',text:'أفضل تمارين لبناء عضلات الصدر'},
+{icon:'fa-location-dot',text:'إزاي أختار الجيم المناسب ليا؟'}
+];
+
+const els={
+messages:document.getElementById('chat-messages'),
+welcome:document.getElementById('welcome-screen'),
+suggestionsContainer:document.getElementById('suggestions-container'),
+input:document.getElementById('message-input'),
+sendBtn:document.getElementById('send-btn'),
+chip:document.getElementById('questions-chip'),
+chipText:document.getElementById('questions-chip-text'),
+timer:document.getElementById('reset-timer'),
+profileCard:document.getElementById('profile-card'),
+profileAvatar:document.getElementById('profile-avatar'),
+profileName:document.getElementById('profile-name'),
+profileStatus:document.getElementById('profile-status'),
+statRemaining:document.getElementById('stat-remaining'),
+statMessages:document.getElementById('stat-messages'),
+settingsModal:document.getElementById('settings-modal'),
+profileForm:document.getElementById('profile-form'),
+sidebar:document.getElementById('sidebar'),
+scrollBottomBtn:document.getElementById('scroll-bottom-btn')
+};
+
+let chatHistory=[];
+let userProfile={};
+let questionCount=0;
+let currentCycleId='';
+let isTyping=false;
+let autoScroll=true;
+
+function getCycleId(){
+const now=new Date();
+const shifted=new Date(now.getTime()-6*60*60*1000);
+return `${shifted.getUTCFullYear()}-${String(shifted.getUTCMonth()+1).padStart(2,'0')}-${String(shifted.getUTCDate()).padStart(2,'0')}`;
+}
+
+function getTimeUntilReset(){
+const now=new Date();
+const next=new Date(now);
+next.setUTCHours(6,0,0,0);
+if(next<=now)next.setUTCDate(next.getUTCDate()+1);
+const diff=next-now;
+const h=Math.floor(diff/3600000);
+const m=Math.floor((diff%3600000)/60000);
+const s=Math.floor((diff%60000)/1000);
+return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+}
+
+function updateTimerUI(){
+if(!els.timer)return;
+els.timer.textContent=getTimeUntilReset();
+}
+
+function startTimer(){
+updateTimerUI();
+setInterval(()=>{
+const newCycle=getCycleId();
+if(newCycle!==currentCycleId){
+currentCycleId=newCycle;
+questionCount=0;
+saveCounter();
+updateCounterUI();
+}
+updateTimerUI();
+},1000);
+}
+
+function saveChat(){try{localStorage.setItem(STORAGE_CHAT,JSON.stringify(chatHistory.slice(-100)))}catch(e){}}
+function loadChat(){try{const d=localStorage.getItem(STORAGE_CHAT);return d?JSON.parse(d):[]}catch(e){return[]}}
+function saveProfile(){try{localStorage.setItem(STORAGE_PROFILE,JSON.stringify(userProfile))}catch(e){}}
+function loadProfile(){try{const d=localStorage.getItem(STORAGE_PROFILE);return d?JSON.parse(d):{}}catch(e){return{}}}
+function saveCounter(){try{localStorage.setItem(STORAGE_COUNTER,JSON.stringify({cycleId:currentCycleId,count:questionCount}))}catch(e){}}
+
+function loadCounter(){
+try{
+const d=localStorage.getItem(STORAGE_COUNTER);
+if(!d)return;
+const p=JSON.parse(d);
+if(p.cycleId===currentCycleId){
+questionCount=p.count||0;
+}else{
+questionCount=0;
+saveCounter();
+}
+}catch(e){questionCount=0}
+}
+
+function escapeHtml(text){
+const div=document.createElement('div');
+div.textContent=text;
+return div.innerHTML;
+}
+
+function parseMarkdown(text){
+if(typeof marked==='undefined')return escapeHtml(text).replace(/\n/g,'<br>');
+try{
+marked.setOptions({breaks:true,gfm:true,headerIds:false,mangle:false});
+return marked.parse(text);
+}catch(e){
+return escapeHtml(text).replace(/\n/g,'<br>');
+}
+}
+
+function formatTime(ts){
+const d=ts?new Date(ts):new Date();
+return d.toLocaleTimeString('ar-EG',{hour:'2-digit',minute:'2-digit'});
+}
+
+function updateCounterUI(){
+const remaining=Math.max(0,MAX_QUESTIONS-questionCount);
+if(els.chipText)els.chipText.textContent=`${remaining} / ${MAX_QUESTIONS}`;
+if(els.statRemaining)els.statRemaining.textContent=remaining;
+if(els.chip){
+els.chip.classList.remove('warning','danger');
+if(remaining===0)els.chip.classList.add('danger');
+else if(remaining<=2)els.chip.classList.add('warning');
+}
+if(els.statRemaining){
+els.statRemaining.classList.remove('warn','danger');
+if(remaining===0)els.statRemaining.classList.add('danger');
+else if(remaining<=2)els.statRemaining.classList.add('warn');
+}
+if(els.sendBtn){
+els.sendBtn.disabled=remaining===0||isTyping;
+}
+if(els.input){
+els.input.disabled=remaining===0;
+els.input.placeholder=remaining===0?'انتهت أسئلتك اليومية. عد بعد 6 صباحاً GMT':'اكتب سؤالك هنا...';
+}
+}
+
+function updateProfileUI(){
+if(!els.profileAvatar||!els.profileName)return;
+const name=userProfile.name||'مستخدم جديد';
+els.profileAvatar.textContent=(name.charAt(0)||'U').toUpperCase();
+els.profileName.textContent=name;
+const parts=[];
+if(userProfile.age)parts.push(userProfile.age+' سنة');
+if(userProfile.weight)parts.push(userProfile.weight+' كجم');
+if(userProfile.goal)parts.push(userProfile.goal);
+els.profileStatus.textContent=parts.length?parts.join(' • '):'اضغط لإكمال بياناتك';
+if(els.statMessages)els.statMessages.textContent=chatHistory.filter(m=>m.role==='user').length;
+}
+
+function renderSuggestions(){
+if(!els.suggestionsContainer)return;
+els.suggestionsContainer.innerHTML=SUGGESTIONS.map(s=>`<button class="suggestion-card" data-prompt="${escapeHtml(s.text)}"><i class="fa-solid ${s.icon}"></i><span>${escapeHtml(s.text)}</span></button>`).join('');
+els.suggestionsContainer.querySelectorAll('.suggestion-card').forEach(btn=>{
+btn.addEventListener('click',()=>{
+const p=btn.getAttribute('data-prompt');
+els.input.value=p;
+els.input.focus();
+autoResize();
+});
+});
+}
+
+function createMessageBubble(role,content,ts){
+const div=document.createElement('div');
+div.className=`message ${role}`;
+div.innerHTML=`<div class="message-avatar"><i class="fa-solid ${role==='user'?'fa-user':'fa-robot'}"></i></div><div class="message-body"><div class="message-content">${content}</div><div class="message-time">${formatTime(ts)}</div></div>`;
+return div;
+}
+
+function hideWelcome(){
+if(els.welcome&&els.welcome.parentNode){
+els.welcome.remove();
+}
+}
+
+function renderMessage(role,text,ts){
+hideWelcome();
+const bubble=createMessageBubble(role,role==='user'?escapeHtml(text).replace(/\n/g,'<br>'):parseMarkdown(text),ts);
+els.messages.appendChild(bubble);
+scrollToBottom(true);
+return bubble;
+}
+
+function renderTypingMessage(role,text,ts){
+return new Promise(resolve=>{
+hideWelcome();
+const bubble=createMessageBubble(role,'',ts);
+els.messages.appendChild(bubble);
+const contentEl=bubble.querySelector('.message-content');
+let i=0;
+const chunk=Math.max(1,Math.floor(text.length/120));
+const speed=10;
+function step(){
+if(i<text.length){
+i=Math.min(i+chunk,text.length);
+contentEl.textContent=text.substring(0,i);
+if(autoScroll)els.messages.scrollTop=els.messages.scrollHeight;
+setTimeout(step,speed);
+}else{
+contentEl.innerHTML=parseMarkdown(text);
+resolve();
+}
+}
+step();
+});
+}
+
+function showTypingIndicator(){
+const div=document.createElement('div');
+div.className='typing-indicator';
+div.id='typing-indicator';
+div.innerHTML=`<div class="message-avatar" style="background:var(--bg-elevated);color:var(--primary-blue);border:1px solid var(--border-color);width:36px;height:36px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;"><i class="fa-solid fa-robot"></i></div><div class="typing-bubble"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>`;
+els.messages.appendChild(div);
+scrollToBottom(true);
+return div;
+}
+
+function removeTypingIndicator(el){
+if(el&&el.parentNode)el.parentNode.removeChild(el);
+}
+
+function scrollToBottom(force){
+if(!autoScroll&&!force)return;
+requestAnimationFrame(()=>{
+els.messages.scrollTop=els.messages.scrollHeight;
+});
+}
+
+function autoResize(){
+if(!els.input)return;
+els.input.style.height='auto';
+els.input.style.height=Math.min(els.input.scrollHeight,150)+'px';
+}
+
+function buildSystemPrompt(){
+let prompt=`أنت SHARKS AI، المساعد الذكي الرسمي لمنصة SHARKS لاكتشاف الجيمات في مصر.
+
+مهمتك مساعدة المستخدمين في كل ما يخص:
+- التمارين الرياضية وبرامج التدريب
+- التغذية وحساب السعرات والماكروز
+- إنقاص الوزن وبناء العضلات
+- اختيار الجيم المناسب
+- الإجابة على أي سؤال رياضي أو صحي
+
+قواعد مهمة:
+- تحدث بالعربية المصرية الودودة
+- كن مختصراً وواضحاً ومباشراً
+- استخدم تنسيق Markdown (عناوين، قوائم، **عريض**، كود) لتنظيم الردود
+- كن متحفظاً في النصائح الطبية وانصح بمراجعة متخصص عند الحاجة
+- لا تكرر نفس السؤال أو المعلومات
+- لا تذكر أنك Gemini أو أي نموذج آخر، أنت SHARKS AI فقط`;
+
+if(userProfile.name)prompt+=`\n\nمعلومات المستخدم:\n- الاسم: ${userProfile.name}`;
+if(userProfile.age)prompt+=`\n- العمر: ${userProfile.age} سنة`;
+if(userProfile.gender)prompt+=`\n- الجنس: ${userProfile.gender==='male'?'ذكر':'أنثى'}`;
+if(userProfile.height)prompt+=`\n- الطول: ${userProfile.height} سم`;
+if(userProfile.weight)prompt+=`\n- الوزن: ${userProfile.weight} كجم`;
+if(userProfile.goal)prompt+=`\n- الهدف: ${userProfile.goal}`;
+if(userProfile.activity)prompt+=`\n- مستوى النشاط: ${userProfile.activity}`;
+
+if(questionCount>=MAX_QUESTIONS){
+prompt+=`\n\nتنبيه حرج: هذا آخر سؤال للمستخدم اليوم (السؤال ${questionCount} من ${MAX_QUESTIONS}). ممنوع تماماً طرح أي سؤال متابعة أو طلب توضيح. قدم إجابة كاملة وشاملة ومباشرة بدون أي أسئلة.`;
+}else{
+const remaining=MAX_QUESTIONS-questionCount;
+prompt+=`\n\nالمستخدم لديه ${remaining} سؤال متبقي اليوم. يمكنك عند الضرورة طرح سؤال توضيحي واحد في نهاية ردك، لكن لا تفرط في الأسئلة.`;
+}
+
+return prompt;
+}
+
+async function callGemini(messages,systemPrompt){
+const contents=messages.map(m=>({role:m.role==='user'?'user':'model',parts:[{text:m.content}]}));
+const body={
+contents:contents,
+systemInstruction:{parts:[{text:systemPrompt}]},
+generationConfig:{temperature:0.8,maxOutputTokens:2048,topP:0.95,topK:40},
+safetySettings:[
+{category:'HARM_CATEGORY_HARASSMENT',threshold:'BLOCK_MEDIUM_AND_ABOVE'},
+{category:'HARM_CATEGORY_HATE_SPEECH',threshold:'BLOCK_MEDIUM_AND_ABOVE'},
+{category:'HARM_CATEGORY_SEXUALLY_EXPLICIT',threshold:'BLOCK_MEDIUM_AND_ABOVE'},
+{category:'HARM_CATEGORY_DANGEROUS_CONTENT',threshold:'BLOCK_MEDIUM_AND_ABOVE'}
+]
+};
+
+const response=await fetch(`${API_URL}?key=${API_KEY}`,{
+method:'POST',
+headers:{'Content-Type':'application/json'},
+body:JSON.stringify(body)
+});
+
+if(!response.ok){
+let errMsg='فشل الاتصال بالذكاء الاصطناعي';
+try{
+const errData=await response.json();
+if(errData.error&&errData.error.message)errMsg=errData.error.message;
+}catch(e){}
+throw new Error(errMsg);
+}
+
+const data=await response.json();
+
+if(!data.candidates||!data.candidates[0]||!data.candidates[0].content||!data.candidates[0].content.parts||!data.candidates[0].content.parts[0]){
+if(data.promptFeedback&&data.promptFeedback.blockReason){
+throw new Error('تم حجب الرد لأسباب أمنية. جرّب سؤالاً آخر.');
+}
+throw new Error('لم أستلم رداً من الذكاء الاصطناعي');
+}
+
+return data.candidates[0].content.parts[0].text;
+}
+
+async function sendMessage(){
+const text=(els.input.value||'').trim();
+if(!text||isTyping)return;
+
+if(questionCount>=MAX_QUESTIONS){
+showToast('انتهت أسئلتك اليومية. عد بعد 6 صباحاً GMT','error');
+return;
+}
+
+isTyping=true;
+els.sendBtn.disabled=true;
+els.input.value='';
+autoResize();
+
+chatHistory.push({role:'user',content:text,timestamp:Date.now()});
+renderMessage('user',text);
+saveChat();
+updateProfileUI();
+
+questionCount++;
+saveCounter();
+updateCounterUI();
+
+const typingEl=showTypingIndicator();
+
+try{
+const apiMessages=chatHistory.map(m=>({role:m.role,content:m.content}));
+const response=await callGemini(apiMessages,buildSystemPrompt());
+removeTypingIndicator(typingEl);
+chatHistory.push({role:'model',content:response,timestamp:Date.now()});
+saveChat();
+await renderTypingMessage('model',response);
+}catch(err){
+removeTypingIndicator(typingEl);
+const errText='عذراً، حدث خطأ أثناء معالجة سؤالك. يرجى المحاولة مرة أخرى.\n\n**تفاصيل:** '+escapeHtml(err.message||'خطأ غير معروف');
+renderMessage('model',errText);
+}finally{
+isTyping=false;
+updateCounterUI();
+updateProfileUI();
+els.input.focus();
+}
+}
+
+function showToast(msg,type){
+type=type||'info';
+const toast=document.createElement('div');
+toast.className='toast '+type;
+const icon=type==='success'?'fa-circle-check':type==='error'?'fa-triangle-exclamation':'fa-circle-info';
+toast.innerHTML=`<i class="fa-solid ${icon}"></i><span>${escapeHtml(msg)}</span>`;
+document.body.appendChild(toast);
+setTimeout(()=>{
+toast.classList.add('removing');
+setTimeout(()=>toast.remove(),300);
+},3000);
+}
+
+function openSettings(){
+if(!els.settingsModal)return;
+document.getElementById('pf-name').value=userProfile.name||'';
+document.getElementById('pf-age').value=userProfile.age||'';
+document.getElementById('pf-gender').value=userProfile.gender||'';
+document.getElementById('pf-height').value=userProfile.height||'';
+document.getElementById('pf-weight').value=userProfile.weight||'';
+document.getElementById('pf-goal').value=userProfile.goal||'';
+document.getElementById('pf-activity').value=userProfile.activity||'';
+els.settingsModal.classList.remove('hidden');
+}
+
+function closeSettings(){
+if(els.settingsModal)els.settingsModal.classList.add('hidden');
+}
+
+function saveProfileFromForm(e){
+e.preventDefault();
+userProfile={
+name:document.getElementById('pf-name').value.trim(),
+age:document.getElementById('pf-age').value.trim(),
+gender:document.getElementById('pf-gender').value,
+height:document.getElementById('pf-height').value.trim(),
+weight:document.getElementById('pf-weight').value.trim(),
+goal:document.getElementById('pf-goal').value,
+activity:document.getElementById('pf-activity').value
+};
+saveProfile();
+updateProfileUI();
+closeSettings();
+showToast('تم حفظ بياناتك بنجاح','success');
+}
+
+function clearChat(){
+if(!confirm('هل أنت متأكد من مسح كل المحادثة؟ لا يمكن التراجع.'))return;
+chatHistory=[];
+saveChat();
+els.messages.innerHTML='';
+const welcome=document.createElement('div');
+welcome.className='welcome-screen';
+welcome.id='welcome-screen';
+welcome.innerHTML=`<div class="welcome-hero"><i class="fa-solid fa-robot"></i></div><h2>أهلاً بك في SHARKS AI</h2><p>مساعدك الشخصي في كل ما يخص اللياقة البدنية والتغذية والتمارين. اسألني أي حاجة عن التمرين أو الأكل أو حتى اختيار الجيم المناسب.</p><div class="suggestions" id="suggestions-container"></div>`;
+els.messages.appendChild(welcome);
+els.welcome=welcome;
+els.suggestionsContainer=document.getElementById('suggestions-container');
+renderSuggestions();
+updateProfileUI();
+showToast('تم مسح المحادثة','info');
+}
+
+function restoreHistory(){
+chatHistory=loadChat();
+if(chatHistory.length===0){
+renderSuggestions();
+return;
+}
+hideWelcome();
+chatHistory.forEach(msg=>{
+renderMessage(msg.role,msg.content,msg.timestamp);
+});
+scrollToBottom(true);
+}
+
+function handleScroll(){
+const threshold=100;
+const distance=els.messages.scrollHeight-els.messages.scrollTop-els.messages.clientHeight;
+autoScroll=distance<threshold;
+if(els.scrollBottomBtn){
+if(distance>200)els.scrollBottomBtn.classList.add('visible');
+else els.scrollBottomBtn.classList.remove('visible');
+}
+}
+
+function init(){
+currentCycleId=getCycleId();
+loadCounter();
+userProfile=loadProfile();
+updateProfileUI();
+updateCounterUI();
+startTimer();
+restoreHistory();
+
+renderSuggestions();
+
+els.input.addEventListener('input',()=>{
+autoResize();
+});
+els.input.addEventListener('keydown',(e)=>{
+if(e.key==='Enter'&&!e.shiftKey){
+e.preventDefault();
+sendMessage();
+}
+});
+els.sendBtn.addEventListener('click',sendMessage);
+els.profileCard.addEventListener('click',openSettings);
+document.getElementById('open-settings-btn').addEventListener('click',openSettings);
+document.getElementById('sidebar-settings-btn').addEventListener('click',openSettings);
+document.getElementById('close-settings-btn').addEventListener('click',closeSettings);
+document.getElementById('cancel-settings-btn').addEventListener('click',closeSettings);
+els.profileForm.addEventListener('submit',saveProfileFromForm);
+document.getElementById('clear-chat-btn').addEventListener('click',clearChat);
+els.messages.addEventListener('scroll',handleScroll);
+if(els.scrollBottomBtn){
+els.scrollBottomBtn.addEventListener('click',()=>{
+autoScroll=true;
+scrollToBottom(true);
+els.scrollBottomBtn.classList.remove('visible');
+});
+}
+document.getElementById('menu-toggle-btn').addEventListener('click',()=>{
+els.sidebar.classList.toggle('open');
+});
+els.settingsModal.addEventListener('click',(e)=>{
+if(e.target===els.settingsModal)closeSettings();
+});
+document.addEventListener('keydown',(e)=>{
+if(e.key==='Escape'&&!els.settingsModal.classList.contains('hidden'))closeSettings();
+});
+document.addEventListener('click',(e)=>{
+if(window.innerWidth<=900&&els.sidebar.classList.contains('open')){
+if(!els.sidebar.contains(e.target)&&!document.getElementById('menu-toggle-btn').contains(e.target)){
+els.sidebar.classList.remove('open');
+}
+}
+});
+autoResize();
+}
+
+if(document.readyState==='loading'){
+document.addEventListener('DOMContentLoaded',init);
+}else{
+init();
+}
+
+})();
+</script>
 </body>
 </html>
